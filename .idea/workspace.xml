@@ -2,24 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/media_maze.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/app.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/1_yandex.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/app/icon.icns" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/app/icon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/app/icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/services/kp.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/services/yandexMusic.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/icons/services/yandexRadio.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/1_yandex.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/1_yandex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,8 +62,20 @@
       <updated>1692341796728</updated>
       <workItem from="1692341798012" duration="4000" />
       <workItem from="1692341879474" duration="478000" />
-      <workItem from="1692342529481" duration="10000" />
+      <workItem from="1692342529481" duration="32000" />
+      <workItem from="1692773862065" duration="89000" />
+      <workItem from="1692780877589" duration="158000" />
+      <workItem from="1692781047484" duration="202000" />
+      <workItem from="1692788945774" duration="6292000" />
     </task>
+    <task id="LOCAL-00001" summary="0.0.1">
+      <created>1692342552648</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1692342552648</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,5 +83,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="0.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.0.1" />
   </component>
 </project>
