@@ -25,23 +25,90 @@ class YandexMusicPage extends Page {
         })
         web.insertCustomCSS([
             {
-                name: ".theme-white .deco-pane-popup, .theme-white .deco-popup-menu, body.theme-white.deco-pane-body, .theme-white .deco-player-controls, .theme-white .deco-progress .progress__bg, .theme-white .deco-pane",
+                name: ".theme-white .rup-settings-context, .theme-white .rup-settings__button .d-button-inner, .theme-white .deco-button-slider-control .deco-button-stylable",
+                style: {
+                    "border": "2px solid !important",
+                }
+            },
+            {
+                name: ".theme-black .rup-settings-context, .theme-black .rup-settings__button .d-button-inner, .theme-black .deco-button-slider-control .deco-button-stylable",
+                style: {
+                    "border": "2px solid !important",
+                }
+            },
+            {
+                name: ".theme-white .deco-pane-popup, .theme-white .deco-text-overlay:after, .theme-white .deco-tooltip",
+                style: {
+                    "background-color": "transparent !important",
+                    "background-image": "none !important",
+                }
+            },
+            {
+                name: ".theme-black .deco-pane-popup, .theme-black .deco-text-overlay:after, .theme-black .deco-tooltip",
+                style: {
+                    "background-color": "transparent !important",
+                    "background-image": "none !important",
+                }
+            },
+            {
+                name: ".theme-white .deco-popup-menu, body.theme-white.deco-pane-body, .theme-white .deco-player-controls, .theme-white .deco-progress .progress__bg, .theme-white .deco-pane",
                 style: {
                     "background-color": "rgba(235, 235, 235, 0.5) !important",
+                    "color": "rgba(44, 44, 44, 1) !important",
                     "border-radius": "8px !important",
                 }
             },
             {
-                name: ".theme-black .deco-pane-popup, .theme-black .deco-popup-menu, body.theme-black.deco-pane-body, .theme-black .deco-player-controls, .theme-black .deco-progress .progress__bg, .theme-black .deco-pane",
+                name: ".theme-black .deco-popup-menu, body.theme-black.deco-pane-body, .theme-black .deco-player-controls, .theme-black .deco-progress .progress__bg, .theme-black .deco-pane",
                 style: {
                     "background-color": "rgba(44, 44, 44, 0.5) !important",
+                    "color": "rgba(235, 235, 235, 1) !important",
                     "border-radius": "8px !important",
                 }
             },
             {
-                name: ".sidebar-cont",
+                name: ".theme-white .sidebar-rup-button",
                 style: {
-                    "backdrop-filter": "blur(16px)",
+                    "background-color": "transparent !important",
+                    "color": "rgba(44, 44, 44, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-black .sidebar-rup-button",
+                style: {
+                    "background-color": "transparent !important",
+                    "color": "rgba(235, 235, 235, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-white .sidebar-rup-button:hover",
+                style: {
+                    "background-color": "rgba(44, 44, 44, 0.5) !important",
+                    "color": "rgba(235, 235, 235, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-black .sidebar-rup-button:hover",
+                style: {
+                    "background-color": "rgba(235, 235, 235, 0.5) !important",
+                    "color": "rgba(44, 44, 44, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            //
+            {
+                name: ".playlist-cover__mosaic",
+                style: {
+                    "outline": "none !important",
+                }
+            },
+            {
+                name: ".sidebar-cont, .player-controls, .progress, .popup, .volume__control, .radio-station__subs",
+                style: {
+                    "backdrop-filter": "blur(16px) !important",
                 }
             },
             {
