@@ -25,70 +25,25 @@ class YandexMusicPage extends Page {
         })
         web.insertCustomCSS([
             {
-                name: ".theme-white .deco-player-controls",
+                name: ".theme-white .deco-pane-popup, .theme-white .deco-popup-menu, body.theme-white.deco-pane-body, .theme-white .deco-player-controls, .theme-white .deco-progress .progress__bg, .theme-white .deco-pane",
                 style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(235, 235, 235, 0.6) !important",
-                }
-            },
-            {
-                name: ".theme-black .deco-player-controls",
-                style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(44, 44, 44, 0.6) !important",
-                }
-            },
-            {
-                name: ".theme-white .deco-pane",
-                style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(235, 235, 235, 0.6) !important",
-                }
-            },
-            {
-                name: ".theme-black .deco-pane",
-                style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(44, 44, 44, 0.6) !important",
-                }
-            },
-            {
-                name: ".theme-white .deco-popup-menu",
-                style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(235, 235, 235, 0.6) !important",
+                    "background-color": "rgba(235, 235, 235, 0.5) !important",
                     "border-radius": "8px !important",
-                    //"border": "1px solid rgba(75, 75, 75, 0.2) !important"
                 }
             },
             {
-                name: ".theme-black .deco-popup-menu",
+                name: ".theme-black .deco-pane-popup, .theme-black .deco-popup-menu, body.theme-black.deco-pane-body, .theme-black .deco-player-controls, .theme-black .deco-progress .progress__bg, .theme-black .deco-pane",
                 style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(44, 44, 44, 0.6) !important",
+                    "background-color": "rgba(44, 44, 44, 0.5) !important",
                     "border-radius": "8px !important",
-                    //"border": "1px solid rgba(205, 205, 205, 0.2) !important"
                 }
             },
             {
-                name: ".theme-white .deco-pane-popup",
+                name: ".sidebar-cont",
                 style: {
                     "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(235, 235, 235, 0.6) !important",
-                    "border-radius": "8px !important",
-                    //"border": "1px solid rgba(75, 75, 75, 0.2) !important"
                 }
             },
-            {
-                name: ".theme-black .deco-pane-popup",
-                style: {
-                    "backdrop-filter": "blur(16px)",
-                    "background-color": "rgba(44, 44, 44, 0.6) !important",
-                    "border-radius": "8px !important",
-                    //"border": "1px solid rgba(205, 205, 205, 0.2) !important"
-                }
-            },
-            //
             {
                 name: ".d-track_with-cover .d-track__play, .d-track_selectable:hover:after, .d-hover__overlap, .playlist .d-hover, .playlist__cover, .playlist-cover__mosaic, video, figure, img, .teaser__content, .rup-settings-context, .d-button_rounded.d-button-inner, .d-button_rounded .d-button-inner, .entity-cover.deco-entity-image-placeholder.track-cover.entity-cover_size_Large, .d-cover__wrapper.playlist-cover__wrapper, .playlist-cover__mosaic, .playlist_selectable.playlist::before",
                 style: {
