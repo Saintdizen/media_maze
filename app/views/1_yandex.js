@@ -66,6 +66,42 @@ class YandexMusicPage extends Page {
                     "border-radius": "8px !important",
                 }
             },
+            // Поиск
+            {
+                name: ".theme-white .deco-input",
+                style: {
+                    "background-color": "rgba(235, 235, 235, 0.5) !important",
+                    "color": "rgba(44, 44, 44, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-black .deco-input",
+                style: {
+                    "background-color": "rgba(44, 44, 44, 0.5) !important",
+                    "color": "rgba(235, 235, 235, 1) !important",
+                    "border-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-white .deco-popup-suggest-menu",
+                style: {
+                    "background-color": "rgba(235, 235, 235, 0.5) !important",
+                    "color": "rgba(44, 44, 44, 1) !important",
+                    "border-bottom-left-radius": "8px !important",
+                    "border-bottom-right-radius": "8px !important",
+                }
+            },
+            {
+                name: ".theme-black .deco-popup-suggest-menu",
+                style: {
+                    "background-color": "rgba(44, 44, 44, 0.5) !important",
+                    "color": "rgba(235, 235, 235, 1) !important",
+                    "border-bottom-left-radius": "8px !important",
+                    "border-bottom-right-radius": "8px !important",
+                }
+            },
+            //
             {
                 name: ".theme-white .sidebar-rup-button",
                 style: {
@@ -112,7 +148,7 @@ class YandexMusicPage extends Page {
                 }
             },
             {
-                name: ".d-track_with-cover .d-track__play, .d-track_selectable:hover:after, .d-hover__overlap, .playlist .d-hover, .playlist__cover, .playlist-cover__mosaic, video, figure, img, .teaser__content, .rup-settings-context, .d-button_rounded.d-button-inner, .d-button_rounded .d-button-inner, .entity-cover.deco-entity-image-placeholder.track-cover.entity-cover_size_Large, .d-cover__wrapper.playlist-cover__wrapper, .playlist-cover__mosaic, .playlist_selectable.playlist::before",
+                name: ".d-share .ya-share2__container_size_M .ya-share2__item .ya-share2__badge, .d-button_size_S.d-button-inner, .d-button_size_S .d-button-inner, .popup, .page-main__clips-button .d-button-inner, .d-share-popup .share_hover.d-button, .d-like_theme-hover .d-button, .button_round, .button2_rounded, .d-track_with-cover .d-track__play, .d-track_selectable:hover:after, .d-hover__overlap, .playlist .d-hover, .playlist__cover, .playlist-cover__mosaic, video, figure, img, .teaser__content, .rup-settings-context, .d-button_rounded.d-button-inner, .d-button_rounded .d-button-inner, .entity-cover.deco-entity-image-placeholder.track-cover.entity-cover_size_Large, .d-cover__wrapper.playlist-cover__wrapper, .playlist-cover__mosaic, .playlist_selectable.playlist::before",
                 style: {
                     "border-radius": "8px !important"
                 }
