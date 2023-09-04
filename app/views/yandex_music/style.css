@@ -1,0 +1,134 @@
+:root {
+    --ya_blur: blur(16px);
+    --ya_border_radius: 8px;
+    --ya_margin: 40px;
+    --ya_back_color_light: rgba(240, 240, 240, 0.66);
+    --ya_back_color_dark: rgba(25, 25, 26, 0.66);
+    --ya_color_light: rgba(25, 25, 26, 1);
+    --ya_color_dark: rgba(240, 240, 240, 1);
+}
+
+/* SCROLL BARS */
+*::-webkit-scrollbar {
+    width: var(--ya_border_radius) !important;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: inherit !important;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: var(--ya_border_radius) !important;
+    background: #fcca00 !important;
+}
+
+.theme-white .rup-settings-context, .theme-white .rup-settings__button .d-button-inner, .theme-white .deco-button-slider-control .deco-button-stylable {
+    border: 2px solid !important;
+}
+
+.theme-black .rup-settings-context, .theme-black .rup-settings__button .d-button-inner, .theme-black .deco-button-slider-control .deco-button-stylable {
+    border: 2px solid !important;
+}
+
+.theme-white .deco-pane-popup, .theme-white .deco-text-overlay:after, .theme-white .deco-tooltip {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.theme-black .deco-pane-popup, .theme-black .deco-text-overlay:after, .theme-black .deco-tooltip {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.theme-white .deco-popup-menu, body.theme-white.deco-pane-body, .theme-white .deco-player-controls, .theme-white .deco-progress .progress__bg, .theme-white .deco-pane {
+    background-color: var(--ya_back_color_light) !important;
+    color: var(--ya_color_light) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-black .deco-popup-menu, body.theme-black.deco-pane-body, .theme-black .deco-player-controls, .theme-black .deco-progress .progress__bg, .theme-black .deco-pane {
+    background-color: var(--ya_back_color_dark) !important;
+    color: var(--ya_color_dark) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+/* Поиск */
+.theme-white .deco-input {
+    background-color: var(--ya_back_color_light) !important;
+    color: var(--ya_color_light) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-black .deco-input {
+    background-color: var(--ya_back_color_dark) !important;
+    color: var(--ya_color_dark) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-white .deco-popup-suggest-menu {
+    background-color: var(--ya_back_color_light) !important;
+    color: var(--ya_color_light) !important;
+    border-bottom-left-radius: var(--ya_border_radius) !important;
+    border-bottom-right-radius: var(--ya_border_radius) !important;
+}
+
+.theme-black .deco-popup-suggest-menu {
+    background-color: var(--ya_back_color_dark) !important;
+    color: var(--ya_color_dark) !important;
+    border-bottom-left-radius: var(--ya_border_radius) !important;
+    border-bottom-right-radius: var(--ya_border_radius) !important;
+}
+
+.theme-white .sidebar-rup-button {
+    background-color: transparent !important;
+    color: var(--ya_color_light) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-black .sidebar-rup-button {
+    background-color: transparent !important;
+    color: var(--ya_color_dark) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-white .sidebar-rup-button:hover {
+    background-color: var(--ya_back_color_dark) !important;
+    color: var(--ya_color_dark) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.theme-black .sidebar-rup-button:hover {
+    background-color: var(--ya_back_color_light) !important;
+    color: var(--ya_color_light) !important;
+    border-radius: var(--ya_border_radius) !important;
+}
+
+.playlist-cover__mosaic {
+    outline: none !important;
+}
+
+.sidebar-cont, .player-controls, .progress, .popup, .volume__control, .radio-station__subs {
+    backdrop-filter: var(--ya_blur) !important;
+}
+
+.d-share .ya-share2__container_size_M .ya-share2__item .ya-share2__badge, .d-button_size_S.d-button-inner, .d-button_size_S .d-button-inner, .popup, .page-main__clips-button .d-button-inner, .d-share-popup .share_hover.d-button, .d-like_theme-hover .d-button, .button_round, .button2_rounded, .d-track_with-cover .d-track__play, .d-track_selectable:hover:after, .d-hover__overlap, .playlist .d-hover, .playlist__cover, .playlist-cover__mosaic, video, figure, img, .teaser__content, .rup-settings-context, .d-button_rounded.d-button-inner, .d-button_rounded .d-button-inner, .entity-cover.deco-entity-image-placeholder.track-cover.entity-cover_size_Large, .d-cover__wrapper.playlist-cover__wrapper, .playlist-cover__mosaic, .playlist_selectable.playlist::before {
+    border-radius: var(--ya_border_radius) !important
+}
+
+.rup__animation, .page-users .d-generic-page-head__aside {
+    display: none !important
+}
+
+.page-main__line, .page-main__line_row {
+    margin-bottom: var(--ya_margin) !important
+}
+
+.rup__content-button {
+    margin: auto !important;
+    margin-top: var(--ya_margin)
+}
+
+.rup__content {
+    height: auto !important;
+    margin-bottom: var(--ya_margin) !important
+}

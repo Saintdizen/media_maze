@@ -1,6 +1,6 @@
 const {AppLayout, render} = require('chuijs');
 
-const {YandexMusicPage} = require('./views/1_yandex')
+const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
 
 class App extends AppLayout {
     constructor() {
