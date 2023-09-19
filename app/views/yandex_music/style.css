@@ -1,28 +1,35 @@
 :root {
-    --ya_blur: blur(16px);
+    --ya_blur: saturate(180%) blur(20px);
     --ya_border_radius: 8px;
     --ya_margin: 40px;
-    --ya_back_color_light: rgba(240, 240, 240, 0.66);
-    --ya_back_color_dark: rgba(25, 25, 26, 0.66);
-    --ya_color_light: rgba(25, 25, 26, 1);
-    --ya_color_dark: rgba(240, 240, 240, 1);
+    --ya_back_color_light: rgba(255, 255, 255, 0.65);
+    --ya_back_color_dark: rgba(14, 14, 14, 0.65);
+    --ya_color_light: rgba(29, 29, 31, 1);
+    --ya_color_dark: rgba(255, 255, 255, 1);
 }
 
 /* SCROLL BARS */
-html::-webkit-scrollbar {
-    width: 0 !important;
+*::-webkit-scrollbar {
+    width: 8px !important;
 }
-.sidebar-cont::-webkit-scrollbar {
-    width: 15px !important;
-}
-.sidebar-cont::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
     background-color: transparent !important;
 }
-.sidebar-cont::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     border-radius: var(--ya_border_radius) !important;
     background: #fcca00 !important;
 }
 /* SCROLL BARS */
+
+.theme-white .deco-shade {
+    backdrop-filter: var(--ya_blur) !important;
+    background-color: var(--ya_back_color_light) !important;
+}
+
+.theme-black .deco-shade {
+    backdrop-filter: var(--ya_blur) !important;
+    background-color: var(--ya_back_color_dark) !important;
+}
 
 .theme-white .rup-settings-context, .theme-white .rup-settings__button .d-button-inner, .theme-white .deco-button-slider-control .deco-button-stylable {
     border: 2px solid !important;

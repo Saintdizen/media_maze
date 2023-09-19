@@ -5,9 +5,9 @@ const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
 class App extends AppLayout {
     constructor() {
         super();
-        this.disableAppMenu();
-        this.setAutoCloseRouteMenu(true);
-        this.setLeftPositionWindowControls(true);
+        this.setAutoCloseRouteMenu();
+        this.setLeftPositionWindowControls();
+        this.setSearchToAppMenu();
         this.setRoute(new YandexMusicPage());
     }
 }
