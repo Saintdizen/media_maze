@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/yandex_music/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/yandex_music/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -89,6 +87,12 @@
       <workItem from="1694252135140" duration="1005000" />
       <workItem from="1694254144197" duration="77000" />
       <workItem from="1695145332575" duration="1272000" />
+      <workItem from="1695637946140" duration="796000" />
+      <workItem from="1695639477192" duration="204000" />
+      <workItem from="1695639821565" duration="6000" />
+      <workItem from="1695639851467" duration="116000" />
+      <workItem from="1695640042692" duration="90000" />
+      <workItem from="1695640730355" duration="356000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
