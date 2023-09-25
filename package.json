@@ -63,9 +63,8 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "dmg": {
-      "appId": "electron-blog-example-only-for-mac",
-      "title": "${productName} ${version}",
-      "icon": "resources/icons/app/icon.icns"
+      "appId": "com.media.maze.mac",
+      "title": "${productName} ${version}"
     },
     "directories": {
       "buildResources": "resources",
