@@ -63,7 +63,8 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "dmg": {
-      "title": "${productName} ${version}"
+      "title": "${productName} ${version}",
+      "icon": "resources/icons/app/icon.icns"
     },
     "directories": {
       "buildResources": "resources",
