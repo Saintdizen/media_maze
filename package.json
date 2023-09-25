@@ -17,8 +17,7 @@
     "url": "https://github.com/Saintdizen/media_maze.git"
   },
   "keywords": [
-    "Music",
-    "Video"
+    "Media"
   ],
   "build": {
     "asar": false,
@@ -34,10 +33,7 @@
     "appId": "com.media.maze",
     "linux": {
       "category": "AudioVideo",
-      "target": [
-        "AppImage",
-        "rpm"
-      ],
+      "target": ["AppImage"],
       "desktop": {
         "Name": "Media Maze",
         "Terminal": "false"
@@ -63,7 +59,6 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "dmg": {
-      "backgroundColor": "#FFFFFF",
       "title": "${productName} ${version}"
     },
     "directories": {
