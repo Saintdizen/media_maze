@@ -43,32 +43,6 @@
         "Terminal": "false"
       }
     },
-    "mac": {
-      "target": ["dmg"],
-      "identity": null,
-      "category": "public.app-category.test"
-    },
-    "dmg": {
-      "icon": "resources/icons/app/icon.icns",
-      "iconSize": 75,
-      "window": {
-        "width": 544,
-        "height": 408
-      },
-
-      "contents": [
-        {
-          "x": 450,
-          "y": 280
-        },
-        {
-          "x": 450,
-          "y": 170,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
     "win": {
       "icon": "resources/icons/app/icon.ico",
       "target": [
@@ -87,6 +61,11 @@
       "createStartMenuShortcut": true,
       "installerHeaderIcon": "resources/icons/app/icon.ico",
       "installerIcon": "resources/icons/app/icon.ico"
+    },
+    "dmg": {
+      "appId": "electron-blog-example-only-for-mac",
+      "title": "${productName} ${version}",
+      "icon": "resources/icons/app/icon.icns"
     },
     "directories": {
       "buildResources": "resources",
