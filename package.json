@@ -44,34 +44,30 @@
       }
     },
     "mac": {
-      "target": "dmg",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": true,
-      "extendInfo": {
-        "NSAppleEventsUsageDescription": "Let me use Apple Events.",
-        "NSCameraUsageDescription": "Let me use the camera.",
-        "NSScreenCaptureDescription": "Let me take screenshots."
-      }
+      "target": ["dmg"],
+      "identity": null,
+      "category": "public.app-category.test"
     },
     "dmg": {
-      "iconSize": 100,
+      "icon": "resources/icons/app/icon.icns",
+      "iconSize": 75,
+      "window": {
+        "width": 544,
+        "height": 408
+      },
+
       "contents": [
         {
-          "x": 255,
-          "y": 85,
-          "type": "file"
+          "x": 450,
+          "y": 280
         },
         {
-          "x": 253,
-          "y": 325,
+          "x": 450,
+          "y": 170,
           "type": "link",
           "path": "/Applications"
         }
-      ],
-      "window": {
-        "width": 500,
-        "height": 500
-      }
+      ]
     },
     "win": {
       "icon": "resources/icons/app/icon.ico",

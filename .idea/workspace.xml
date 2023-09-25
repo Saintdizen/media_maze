@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +92,7 @@
       <workItem from="1695639821565" duration="6000" />
       <workItem from="1695639851467" duration="116000" />
       <workItem from="1695640042692" duration="90000" />
-      <workItem from="1695640730355" duration="356000" />
+      <workItem from="1695640730355" duration="973000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -122,7 +122,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694254215178</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="0.1.4">
+      <created>1695641388119</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1695641388119</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,6 +141,7 @@
     <MESSAGE value="0.0.3" />
     <MESSAGE value="0.0.9" />
     <MESSAGE value="0.1.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.2" />
+    <MESSAGE value="0.1.4" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.1.4" />
   </component>
 </project>
