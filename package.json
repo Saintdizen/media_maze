@@ -62,9 +62,9 @@
       "installerHeaderIcon": "resources/icons/app/icon.ico",
       "installerIcon": "resources/icons/app/icon.ico"
     },
-    "mac": {
-      "category": "your.app.category.type",
-      "target": "dmg"
+    "dmg": {
+      "backgroundColor": "#FFFFFF",
+      "title": "${productName} ${version}"
     },
     "directories": {
       "buildResources": "resources",
