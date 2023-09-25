@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,18 +30,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/syzoth/WebstormProjects/media_maze/resources",
-    "list.type.of.created.stylesheet": "CSS",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/syzoth/WebstormProjects/media_maze/resources&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/resources" />
@@ -96,7 +95,7 @@
       <workItem from="1695639821565" duration="6000" />
       <workItem from="1695639851467" duration="116000" />
       <workItem from="1695640042692" duration="90000" />
-      <workItem from="1695640730355" duration="3356000" />
+      <workItem from="1695640730355" duration="3632000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -182,7 +181,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695643812910</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="0.1.4.1">
+      <created>1695644480348</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1695644480348</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,13 +201,13 @@
     <MESSAGE value="0.0.9" />
     <MESSAGE value="0.1.2" />
     <MESSAGE value="0.1.4" />
-    <MESSAGE value="0.1.4.1" />
     <MESSAGE value="0.1.4.2" />
     <MESSAGE value="0.1.4.3" />
     <MESSAGE value="0.1.4.4" />
     <MESSAGE value="0.1.4.5" />
     <MESSAGE value="0.1.4.6" />
     <MESSAGE value="0.1.5.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.5.1" />
+    <MESSAGE value="0.1.4.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.1.4.1" />
   </component>
 </project>
