@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -84,6 +84,6 @@
     "electron-builder": "~23.6.0"
   },
   "dependencies": {
-    "chuijs": "~1.6.3"
+    "chuijs": "~1.6.6"
   }
 }

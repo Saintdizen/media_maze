@@ -3,8 +3,8 @@
     --ya_border_radius: 8px;
     --ya_margin: 40px;
     --ya_back_color_light: rgba(255, 255, 255, 0.65);
-    --ya_back_color_dark: rgba(14, 14, 14, 0.65);
-    --ya_color_light: rgba(29, 29, 31, 1);
+    --ya_back_color_dark: rgba(30, 30, 30, 0.65);
+    --ya_color_light: rgba(45, 45, 45, 1);
     --ya_color_dark: rgba(255, 255, 255, 1);
 }
 

@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/yandex_music/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/yandex_music/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,16 +38,12 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/syzoth/WebstormProjects/media_maze/resources&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/resources" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/views/yandex_music" />
     </key>
@@ -86,16 +84,6 @@
       <workItem from="1692866704565" duration="2338000" />
       <workItem from="1693984592508" duration="160000" />
       <workItem from="1694079927837" duration="22000" />
-      <workItem from="1694246729534" duration="3394000" />
-      <workItem from="1694252135140" duration="1005000" />
-      <workItem from="1694254144197" duration="77000" />
-      <workItem from="1695145332575" duration="1272000" />
-      <workItem from="1695637946140" duration="796000" />
-      <workItem from="1695639477192" duration="204000" />
-      <workItem from="1695639821565" duration="6000" />
-      <workItem from="1695639851467" duration="116000" />
-      <workItem from="1695640042692" duration="90000" />
-      <workItem from="1695640730355" duration="3632000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -118,77 +106,7 @@
       <option name="project" value="LOCAL" />
       <updated>1693820154804</updated>
     </task>
-    <task id="LOCAL-00004" summary="0.1.2">
-      <created>1694254215178</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1694254215178</updated>
-    </task>
-    <task id="LOCAL-00005" summary="0.1.4">
-      <created>1695641388119</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1695641388119</updated>
-    </task>
-    <task id="LOCAL-00006" summary="0.1.4.1">
-      <created>1695642100027</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1695642100027</updated>
-    </task>
-    <task id="LOCAL-00007" summary="0.1.4.2">
-      <created>1695642625277</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1695642625277</updated>
-    </task>
-    <task id="LOCAL-00008" summary="0.1.4.3">
-      <created>1695642740487</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1695642740487</updated>
-    </task>
-    <task id="LOCAL-00009" summary="0.1.4.4">
-      <created>1695642913472</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1695642913472</updated>
-    </task>
-    <task id="LOCAL-00010" summary="0.1.4.5">
-      <created>1695643059084</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1695643059084</updated>
-    </task>
-    <task id="LOCAL-00011" summary="0.1.4.6">
-      <created>1695643320667</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1695643320667</updated>
-    </task>
-    <task id="LOCAL-00012" summary="0.1.5.1">
-      <created>1695643812910</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1695643812910</updated>
-    </task>
-    <task id="LOCAL-00013" summary="0.1.4.1">
-      <created>1695644480348</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1695644480348</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,15 +117,6 @@
     <MESSAGE value="0.0.1" />
     <MESSAGE value="0.0.3" />
     <MESSAGE value="0.0.9" />
-    <MESSAGE value="0.1.2" />
-    <MESSAGE value="0.1.4" />
-    <MESSAGE value="0.1.4.2" />
-    <MESSAGE value="0.1.4.3" />
-    <MESSAGE value="0.1.4.4" />
-    <MESSAGE value="0.1.4.5" />
-    <MESSAGE value="0.1.4.6" />
-    <MESSAGE value="0.1.5.1" />
-    <MESSAGE value="0.1.4.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.4.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.0.9" />
   </component>
 </project>
