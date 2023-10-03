@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.1.8",
+  "version": "0.1.7",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -87,9 +87,9 @@
   },
   "homepage": "https://github.com/Saintdizen/media_maze#readme",
   "devDependencies": {
-    "electron-builder": "~23.6.0"
+    "electron-builder": "~22.11.7"
   },
   "dependencies": {
-    "chuijs": "~1.7.0"
+    "chuijs": "~1.7.1"
   }
 }

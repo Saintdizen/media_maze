@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-    </list>
+    <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -85,7 +83,7 @@
       <workItem from="1696329357485" duration="1473000" />
       <workItem from="1696333226564" duration="1550000" />
       <workItem from="1696336916705" duration="395000" />
-      <workItem from="1696337537148" duration="513000" />
+      <workItem from="1696337537148" duration="723000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -164,7 +162,14 @@
       <option name="project" value="LOCAL" />
       <updated>1696337610880</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="0.1.8.1">
+      <created>1696338096529</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1696338096529</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,9 +182,9 @@
     <MESSAGE value="0.0.9" />
     <MESSAGE value="0.1.8.2" />
     <MESSAGE value="0.1.9.2" />
-    <MESSAGE value="0.1.8.1" />
     <MESSAGE value="0.1.7.1" />
     <MESSAGE value="0.1.7.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.7.2" />
+    <MESSAGE value="0.1.8.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.1.8.1" />
   </component>
 </project>
