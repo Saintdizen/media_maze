@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.1.8",
+  "version": "0.1.7",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -59,13 +59,34 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "mac": {
-      "target": "default",
+      "target": "dmg",
       "hardenedRuntime": true,
-      "entitlements": "resources/mac/entitlements.mac.plist",
-      "entitlementsInherit": "resources/mac/entitlements.mac.plist"
+      "gatekeeperAssess": true,
+      "extendInfo": {
+        "NSAppleEventsUsageDescription": "Let me use Apple Events.",
+        "NSCameraUsageDescription": "Let me use the camera.",
+        "NSScreenCaptureDescription": "Let me take screenshots."
+      }
     },
     "dmg": {
-      "sign": false
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 255,
+          "y": 85,
+          "type": "file"
+        },
+        {
+          "x": 253,
+          "y": 325,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 500,
+        "height": 500
+      }
     },
     "directories": {
       "buildResources": "resources",
@@ -90,6 +111,6 @@
     "electron-builder": "~23.6.0"
   },
   "dependencies": {
-    "chuijs": "~1.7.1"
+    "chuijs": "~1.7.2"
   }
 }
