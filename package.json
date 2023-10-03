@@ -59,7 +59,7 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "mac": {
-      "target": "dmg",
+      "target": ["dmg", "zip"],
       "hardenedRuntime": true,
       "gatekeeperAssess": true,
       "extendInfo": {
