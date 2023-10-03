@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +82,7 @@
       <workItem from="1692866704565" duration="2338000" />
       <workItem from="1693984592508" duration="160000" />
       <workItem from="1694079927837" duration="22000" />
-      <workItem from="1696329357485" duration="883000" />
+      <workItem from="1696329357485" duration="1017000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -113,7 +112,14 @@
       <option name="project" value="LOCAL" />
       <updated>1696329520879</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="0.1.8.1">
+      <created>1696331403439</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1696331403439</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,6 +131,7 @@
     <MESSAGE value="0.0.3" />
     <MESSAGE value="0.0.9" />
     <MESSAGE value="0.1.7.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.7.1" />
+    <MESSAGE value="0.1.8.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.1.8.1" />
   </component>
 </project>

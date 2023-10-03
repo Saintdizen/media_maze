@@ -59,7 +59,7 @@
       "installerIcon": "resources/icons/app/icon.ico"
     },
     "mac": {
-      "target": "dmg+zip"
+      "target": "default"
     },
     "dmg": {
       "title": "${productName} ${version}"
