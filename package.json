@@ -87,7 +87,7 @@
   },
   "homepage": "https://github.com/Saintdizen/media_maze#readme",
   "devDependencies": {
-    "electron-builder": "~24.6.4"
+    "electron-builder": "~23.6.0"
   },
   "dependencies": {
     "chuijs": "~1.7.1"
