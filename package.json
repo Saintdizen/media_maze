@@ -17,43 +17,28 @@
     "url": "https://github.com/Saintdizen/media_maze.git"
   },
   "keywords": [
-    "Media"
+    "Music",
+    "Video"
   ],
   "build": {
     "asar": false,
     "publish": {
       "provider": "github",
       "owner": "saintdizen",
-      "repo": "media_maze"
+      "private": true,
+      "repo": "media_maze",
+      "releaseType": "release",
+      "token": "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"
     },
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",
     "linux": {
-      "category": "Media",
+      "category": "AudioVideo",
       "target": ["AppImage"],
       "desktop": {
         "Name": "Media Maze",
         "Terminal": "false"
       }
-    },
-    "win": {
-      "icon": "resources/icons/app/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "deleteAppDataOnUninstall": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "installerHeaderIcon": "resources/icons/app/icon.ico",
-      "installerIcon": "resources/icons/app/icon.ico"
     },
     "mac": {
       "target": ["dmg", "zip"],
@@ -84,6 +69,21 @@
         "width": 500,
         "height": 500
       }
+    },
+    "win": {
+      "icon": "resources/icons/app/icon.ico",
+      "target": [{
+          "target": ["nsis"],
+          "arch": ["x64"]
+        }]
+    },
+    "nsis": {
+      "oneClick": false,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerHeaderIcon": "resources/icons/app/icon.ico",
+      "installerIcon": "resources/icons/app/icon.ico"
     },
     "directories": {
       "buildResources": "resources",
