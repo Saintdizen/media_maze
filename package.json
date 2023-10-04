@@ -24,7 +24,6 @@
     "publish": {
       "provider": "github",
       "owner": "saintdizen",
-      "private": false,
       "repo": "media_maze",
       "releaseType": "release"
     },
