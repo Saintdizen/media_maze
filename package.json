@@ -43,7 +43,7 @@
     "mac": {
       "signIgnore": "*",
       "category": "public.app-category.media",
-      "target": ["pkg"],
+      "target": ["default", "pkg"],
       "hardenedRuntime": false,
       "gatekeeperAssess": false
     },
