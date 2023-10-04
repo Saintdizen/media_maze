@@ -43,29 +43,9 @@
     "mac": {
       "signIgnore": "*",
       "category": "public.app-category.media",
-      "target": ["default", "pkg"],
+      "target": ["pkg"],
       "hardenedRuntime": false,
       "gatekeeperAssess": false
-    },
-    "dmg": {
-      "iconSize": 100,
-      "contents": [
-        {
-          "x": 255,
-          "y": 85,
-          "type": "file"
-        },
-        {
-          "x": 253,
-          "y": 325,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ],
-      "window": {
-        "width": 500,
-        "height": 500
-      }
     },
     "win": {
       "icon": "resources/icons/app/icon.ico",
