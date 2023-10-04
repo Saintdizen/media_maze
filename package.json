@@ -26,8 +26,7 @@
       "owner": "saintdizen",
       "private": false,
       "repo": "media_maze",
-      "releaseType": "release",
-      "token": "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"
+      "releaseType": "release"
     },
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",
