@@ -28,7 +28,7 @@
       "private": true,
       "repo": "media_maze",
       "releaseType": "release",
-      "token": "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"
+      "token": "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"
     },
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",
