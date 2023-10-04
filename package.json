@@ -24,7 +24,7 @@
     "publish": {
       "provider": "github",
       "owner": "saintdizen",
-      "private": true,
+      "private": false,
       "repo": "media_maze",
       "releaseType": "release",
       "token": "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"
@@ -32,7 +32,7 @@
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",
     "linux": {
-      "category": "AudioVideo",
+      "category": "Media",
       "target": ["AppImage"],
       "desktop": {
         "Name": "Media Maze",
