@@ -24,8 +24,7 @@
     "publish": {
       "provider": "github",
       "owner": "saintdizen",
-      "repo": "media_maze",
-      "releaseType": "release"
+      "repo": "media_maze"
     },
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",

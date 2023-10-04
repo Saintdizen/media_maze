@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,7 +93,7 @@
       <workItem from="1696343499084" duration="568000" />
       <workItem from="1696344720299" duration="9000" />
       <workItem from="1696418752956" duration="368000" />
-      <workItem from="1696422462943" duration="744000" />
+      <workItem from="1696422462943" duration="1377000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -263,7 +263,14 @@
       <option name="project" value="LOCAL" />
       <updated>1696423186345</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="0.1.8.3">
+      <created>1696423373249</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1696423373249</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +300,7 @@
     <MESSAGE value="0.1.7.11" />
     <MESSAGE value="0.1.8.1" />
     <MESSAGE value="0.1.8.2" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.1.8.2" />
+    <MESSAGE value="0.1.8.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.1.8.3" />
   </component>
 </project>
