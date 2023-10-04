@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -41,14 +41,11 @@
       }
     },
     "mac": {
-      "target": ["dmg", "zip"],
-      "hardenedRuntime": true,
-      "gatekeeperAssess": true,
-      "extendInfo": {
-        "NSAppleEventsUsageDescription": "Let me use Apple Events.",
-        "NSCameraUsageDescription": "Let me use the camera.",
-        "NSScreenCaptureDescription": "Let me take screenshots."
-      }
+      "signIgnore": "*",
+      "category": "public.app-category.media",
+      "target": ["default", "pkg"],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
     },
     "dmg": {
       "iconSize": 100,
