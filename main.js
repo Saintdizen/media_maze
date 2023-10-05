@@ -13,7 +13,7 @@ main.start({
     hideOnClose: true,
     tray: [
         new MenuItem().separator(),
-        new MenuItem().help(`Версия: ${require("./package.json").version}`),
+        new MenuItem().help(`Версия: ${json.version}`),
         new MenuItem().separator(),
         new MenuItem().button('Показать | Скрыть', () => main.hideAndShow()),
         new MenuItem().button('Консоль', () => main.toggleDevTools()),
@@ -21,4 +21,4 @@ main.start({
     ]
 });
 
-main.enableAutoUpdateApp(5000, require('./package.json'))
+main.enableAutoUpdateApp(2000, require("./update.json"))
