@@ -21,4 +21,4 @@ main.start({
     ]
 });
 
-main.enableAutoUpdateApp(5000, require('./package.json').version)
+main.enableAutoUpdateApp(5000, require('./package.json'))
