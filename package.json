@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -30,11 +30,7 @@
     "appId": "com.media.maze",
     "linux": {
       "category": "AudioVideo",
-      "target": ["AppImage"],
-      "desktop": {
-        "Name": "Media Maze",
-        "Terminal": "false"
-      }
+      "target": ["AppImage"]
     },
     "mac": {
       "signIgnore": "*",
@@ -79,6 +75,6 @@
     "electron-builder": "~23.6.0"
   },
   "dependencies": {
-    "chuijs": "~1.8.3"
+    "chuijs": "~1.8.4"
   }
 }
