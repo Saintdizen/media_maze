@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42513b59-2517-4b60-9eb8-24240079a843" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/update.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/update.json" beforeDir="false" afterPath="$PROJECT_DIR$/update.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +91,7 @@
       <workItem from="1696488700976" duration="1423000" />
       <workItem from="1696491156647" duration="1125000" />
       <workItem from="1696492334916" duration="4000" />
-      <workItem from="1696492642827" duration="95000" />
+      <workItem from="1696492642827" duration="844000" />
     </task>
     <task id="LOCAL-00001" summary="0.0.1">
       <created>1692342552648</created>
@@ -143,7 +142,14 @@
       <option name="project" value="LOCAL" />
       <updated>1696489453468</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="0.0.1">
+      <created>1696492791822</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1696492791822</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,11 +157,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="0.0.1" />
     <MESSAGE value="0.0.3" />
     <MESSAGE value="0.0.9" />
     <MESSAGE value="0.0.1.1" />
     <MESSAGE value="0.0.2.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.0.2.1" />
+    <MESSAGE value="0.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.0.1" />
   </component>
 </project>
