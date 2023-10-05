@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -16,19 +16,15 @@
     "type": "git",
     "url": "https://github.com/Saintdizen/media_maze.git"
   },
-  "keywords": [
-    "Music",
-    "Video"
-  ],
+  "keywords": ["Media"],
   "build": {
     "asar": false,
     "publish": {
       "provider": "github",
       "owner": "saintdizen",
-      "private": true,
+      "private": false,
       "repo": "media_maze",
-      "releaseType": "release",
-      "token": "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"
+      "releaseType": "release"
     },
     "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "appId": "com.media.maze",
@@ -49,10 +45,7 @@
     },
     "win": {
       "icon": "resources/icons/app/icon.ico",
-      "target": [{
-          "target": "nsis",
-          "arch": ["x64"]
-        }]
+      "target": [{"target": "nsis", "arch": ["x64"]}]
     },
     "nsis": {
       "oneClick": false,
@@ -86,6 +79,6 @@
     "electron-builder": "~23.6.0"
   },
   "dependencies": {
-    "chuijs": "~1.8.2"
+    "chuijs": "~1.8.3"
   }
 }

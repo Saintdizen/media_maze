@@ -1,6 +1,6 @@
 {
-  "version": "0.0.2",
+  "private": false,
+  "version": "0.0.1",
   "owner": "saintdizen",
-  "repo": "media_maze",
-  "token": "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"
+  "repo": "media_maze"
 }
