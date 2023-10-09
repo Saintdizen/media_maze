@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -32,13 +32,6 @@
       "category": "AudioVideo",
       "target": ["AppImage"]
     },
-    "mac": {
-      "signIgnore": "*",
-      "category": "public.app-category.media",
-      "target": ["pkg"],
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
-    },
     "win": {
       "icon": "resources/icons/app/icon.ico",
       "target": [{"target": "nsis", "arch": ["x64"]}]
@@ -57,7 +50,6 @@
     },
     "files": [
       "main.js",
-      "update.json",
       "resources/**/*",
       "app/**/*"
     ]
@@ -75,6 +67,6 @@
     "electron-builder": "~23.6.0"
   },
   "dependencies": {
-    "chuijs": "~1.8.7"
+    "chuijs": "~1.9.5"
   }
 }
