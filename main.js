@@ -21,4 +21,4 @@ main.start({
     ]
 });
 
-main.enableAutoUpdateApp(2000, require("./update.json"))
+main.enableAutoUpdateApp(2000)
