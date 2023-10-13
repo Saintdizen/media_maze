@@ -2,11 +2,12 @@ const {Main, MenuItem} = require('chuijs');
 let json = require("./package.json");
 const main = new Main({
     name: `${json.productName} (${json.version})`,
-    width: 1344,
-    height: 768,
+    width: 1280,
+    height: 720,
     icon: `${__dirname}/resources/icons/app/icon.png`,
     render: `${__dirname}/app/app.js`,
-    devTools: false
+    devTools: false,
+    resizable: true
 });
 
 main.start({
