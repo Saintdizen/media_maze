@@ -141,3 +141,11 @@
     height: auto !important;
     margin-bottom: var(--ya_margin) !important
 }
+
+.head-kids__nav {
+    margin-left: 0;
+}
+
+.head-kids .nav-kids__tab, .head-kids .nav-kids__tab:first-child {
+    margin-left: 30px;
+}
