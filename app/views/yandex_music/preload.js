@@ -1,6 +1,4 @@
 //Mu.blocks.di.repo.player.play();
-//document.querySelector("body > div.page-root.page-root_no-player.deco-pane-back.theme.theme_dark.black > div.head-container > div > div > div.head-kids__left").remove();
-//document.querySelector("body > div.page-root.page-root_no-player.deco-pane-back.theme.theme_dark.black > div.centerblock-wrapper.deco-pane.theme.theme_dark.black > div.footer").remove();
 class Test {
     #div1 = document.createElement("div");
     #div2 = document.createElement("div");
@@ -11,8 +9,6 @@ class Test {
         this.#span1.className = "d-icon deco-icon d-icon_share"
         this.#span1.style.rotate = "180deg";
         this.#span1.id = "test111"
-
-
         this.#div1.addEventListener("click", async (evt) => {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", Mu.blocks.di.repo.player.getTrack()._$f9);
@@ -34,7 +30,6 @@ class Test {
             };
             xhr.send();
         })
-
     }
     render() {
         this.#div1.appendChild(this.#div2)
