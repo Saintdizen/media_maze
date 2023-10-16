@@ -4,27 +4,37 @@
 class Test {
     #div1 = document.createElement("div");
     #div2 = document.createElement("div");
-    #span1 = document.createElement("span")
+    #span1 = document.createElement("span");
     constructor() {
         this.#div1.className = "hq";
         this.#div2.className = "hq__icon player-controls__btn deco-player-controls__button"
         this.#span1.className = "d-icon deco-icon d-icon_share"
-        this.#span1.style.rotate = "180deg"
+        this.#span1.style.rotate = "180deg";
+        this.#span1.id = "test111"
+
+
         this.#div1.addEventListener("click", async (evt) => {
-            let test_link = document.createElement("a");
-            let test = await fetch(Mu.blocks.di.repo.player.getTrack()._$f9);
-            const uri = window.URL.createObjectURL(await test.blob());
-            let artist = Mu.blocks.di.repo.player.getTrack().artists[0].name;
-            let title = Mu.blocks.di.repo.player.getTrack().title;
-            test_link.href = uri
-            test_link.download = `${artist} - ${title}.mp3`;
-            test_link.target = '_blank'
-            //
-            this.#div1.appendChild(test_link)
-            test_link.click()
-            test_link.remove()
-            evt.preventDefault()
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", Mu.blocks.di.repo.player.getTrack()._$f9);
+            xhr.responseType = "arraybuffer";
+            xhr.onloadend = function () {
+                if (this.status === 200) {
+                    let artist = Mu.blocks.di.repo.player.getTrack().artists[0].name;
+                    let title = Mu.blocks.di.repo.player.getTrack().title;
+                    let link = document.createElement("a");
+                    let blob = new Blob([xhr.response], {type: "application/pdf"});
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `${artist} - ${title}.mp3`;
+                    link.target = '_blank'
+                    document.body.appendChild(link)
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }
+            };
+            xhr.send();
         })
+
     }
     render() {
         this.#div1.appendChild(this.#div2)
@@ -33,9 +43,4 @@ class Test {
         test2.appendChild(this.#div1)
     }
 }
-
-
-
-setTimeout(() => {
-    new Test().render();
-}, 250)
+setTimeout(() => new Test().render(), 250)

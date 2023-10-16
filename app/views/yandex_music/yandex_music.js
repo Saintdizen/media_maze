@@ -15,9 +15,11 @@ class YandexMusicPage extends Page {
                 style: Notification.STYLE.SUCCESS,
                 showTime: 1000
             }).show()
-        })
-        web.insertCustomCSS(__dirname + "/style.css");
-        web.executeJavaScriptFromFile(__dirname + "/preload.js");
+        });
+        web.insertCustomRes({
+            cssPath: __dirname + "/style.css",
+            jsPath: __dirname + "/preload.js"
+        });
         this.add(web);
     }
 }
