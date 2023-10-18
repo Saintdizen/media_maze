@@ -16,7 +16,9 @@ class KinopoiskPage extends Page {
                 showTime: 1000
             }).show()
         })
-        //web.insertCustomCSS(__dirname + "/style.css");
+        web.insertCustomRes({
+            cssPath: __dirname + "/style.css"
+        });
         this.add(web);
     }
 }
