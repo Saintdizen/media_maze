@@ -1,18 +1,12 @@
-const {Page, store, ContentBlock, Styles, FieldSet, CheckBox, Notification} = require('chuijs');
+const {store, ContentBlock, Styles, FieldSet, CheckBox, Notification} = require('chuijs');
 const {SettingsMarks} = require("./settings_marks");
 
-class Settings extends Page {
+class Settings {
     #main = new ContentBlock({
         direction: Styles.DIRECTION.COLUMN, wrap: Styles.WRAP.NOWRAP,
         align: Styles.ALIGN.CENTER, justify: Styles.JUSTIFY.CENTER
     })
     constructor() {
-        super();
-        this.setTitle('Настройки');
-        this.setFullHeight()
-        this.disablePadding()
-        this.setMain(false)
-        this.add(this.#main)
         this.#main.add(this.setPlaybackBlock())
     }
     setPlaybackBlock() {
@@ -21,7 +15,7 @@ class Settings extends Page {
         autoplay.setValue(store.get(SettingsMarks.PLAYBACK.autoplay))
         autoplay.addChangeListener((e) => {
             store.set(SettingsMarks.PLAYBACK.autoplay, e.target.checked)
-            new Notification({ title: this.getTitle(), text: `Сохранено: "${autoplay.getTitle()}"`, style: Notification.STYLE.SUCCESS, showTime: 1000 }).show()
+            new Notification({ title: autoplay.getTitle(), text: `Сохранено`, style: Notification.STYLE.SUCCESS, showTime: 1000 }).show()
         })
         // ===
         return new FieldSet({
