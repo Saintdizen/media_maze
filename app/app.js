@@ -1,4 +1,4 @@
-const {AppLayout, render} = require('chuijs');
+const {AppLayout, render, Log} = require('chuijs');
 
 const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
 const {Settings} = require("./views/settings/settings");
@@ -13,4 +13,4 @@ class App extends AppLayout {
     }
 }
 
-render(() => new App()).then(() => console.log("Загружено!"));
+render(() => new App()).then(() => Log.info("Загружено!"));
