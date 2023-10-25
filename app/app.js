@@ -1,15 +1,17 @@
 const {AppLayout, render, Log, Icons, Styles} = require('chuijs');
+const {Settings} = require("./settings/settings");
 
 const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
-const {Settings} = require("./views/settings/settings");
+const {OfflinePlayer} = require("./views/offline_player/offline_player");
 
 class App extends AppLayout {
     constructor() {
         super();
-        this.setSearchToAppMenu();
+        //this.setSearchToAppMenu();
         this.setAutoCloseRouteMenu();
-        this.disableAppMenu()
+        //this.disableAppMenu()
         this.setRoute(new YandexMusicPage());
+        this.setRoute(new OfflinePlayer());
 
         this.addToHeader([
             AppLayout.DIALOG({

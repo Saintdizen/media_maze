@@ -1,5 +1,5 @@
 const {Page, WebView, Notification, ipcRenderer, store} = require('chuijs');
-const {SettingsMarks} = require("../settings/settings_marks");
+const {SettingsMarks} = require("../../settings/settings_marks");
 
 class YandexMusicPage extends Page {
     constructor() {

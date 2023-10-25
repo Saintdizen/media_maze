@@ -1,4 +1,4 @@
-const {Main, MenuItem} = require('chuijs');
+const {Main, MenuItem, path, App} = require('chuijs');
 let json = require("./package.json");
 const main = new Main({
     name: `${json.productName} (${json.version})`,
@@ -7,7 +7,10 @@ const main = new Main({
     icon: `${__dirname}/resources/icons/app/icon.png`,
     render: `${__dirname}/app/app.js`,
     devTools: false,
-    resizable: true
+    resizable: true,
+    paths: {
+        downloadPath: path.join(App.userDataPath(), "downloads")
+    }
 });
 
 main.start({
