@@ -1,4 +1,4 @@
-const {AppLayout, render, Log, Icons, Styles, Notification, Button} = require('chuijs');
+const {AppLayout, render, Log, Icons, Styles} = require('chuijs');
 
 const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
 const {Settings} = require("./views/settings/settings");
