@@ -22,14 +22,14 @@ class App extends AppLayout {
                     title: "Настройки",
                     closeOutSideClick: false,
                     style: {
-                        width: "80%",
+                        width: Styles.SIZE.MAX_CONTENT,
                         height: Styles.SIZE.MAX_CONTENT,
                         direction: Styles.DIRECTION.COLUMN,
                         wrap: Styles.WRAP.NOWRAP,
                         align: Styles.ALIGN.CENTER,
                         justify: Styles.JUSTIFY.CENTER,
                     },
-                    components: [ new Settings().setPlaybackBlock() ]
+                    components: [ new Settings() ]
                 }
             }),
         ])
