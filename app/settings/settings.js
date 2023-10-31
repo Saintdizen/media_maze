@@ -29,7 +29,7 @@ class SettingsElements {
             title: title,
             style: {
                 direction: Styles.DIRECTION.COLUMN, wrap: Styles.WRAP.NOWRAP,
-                align: Styles.ALIGN.CENTER, justify: Styles.JUSTIFY.CENTER,
+                align: Styles.ALIGN.START, justify: Styles.JUSTIFY.CENTER,
                 width: Styles.SIZE.WEBKIT_FILL
             },
             components: components
