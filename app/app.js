@@ -10,7 +10,7 @@ class App extends AppLayout {
         //this.setSearchToAppMenu();
         this.setAutoCloseRouteMenu();
         //this.disableAppMenu()
-        //this.setRoute(new YandexMusicPage());
+        this.setRoute(new YandexMusicPage());
         this.setRoute(new OfflinePlayer());
 
         this.addToHeader([

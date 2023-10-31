@@ -7,7 +7,7 @@ class YandexMusicPage extends Page {
         this.setTitle('Яндекс Музыка');
         this.setFullHeight()
         this.disablePadding()
-        this.setMain(true)
+        this.setMain(false)
         let web = new WebView("https://music.yandex.ru/");
 
         ipcRenderer.on("PLAY_PAUSE", async () => await web.executeJavaScript("if (Mu.blocks.di.repo.player.getState() === 'idle') { Mu.blocks.di.repo.player.play(); } else { Mu.blocks.di.repo.player.audio().togglePause(); }"))
