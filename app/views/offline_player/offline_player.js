@@ -8,7 +8,7 @@ class OfflinePlayer extends Page {
         super();
         this.setTitle('OfflinePlayer');
         this.setFullHeight();
-        this.setMain(true);
+        this.setMain(false);
         let audio = new Audio({
             autoplay: false,
             width: Styles.SIZE.WEBKIT_FILL
