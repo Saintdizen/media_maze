@@ -1,4 +1,4 @@
-const {Page, fs, App, path, Audio, Styles} = require('chuijs');
+const {Page, fs, App, path, Audio, Styles, shell} = require('chuijs');
 
 class OfflinePlayer extends Page {
     #download_path = undefined;
@@ -14,6 +14,19 @@ class OfflinePlayer extends Page {
             width: Styles.SIZE.WEBKIT_FILL
         })
         this.#download_path = path.join(App.userDataPath(), "downloads");
+        this.generatePlaylist();
+        setTimeout(() => audio.setPlayList(this.#playlist), 100)
+        audio.addClickListenerOne(async () => {
+            await shell.openPath(path.join(App.userDataPath(), "downloads"))
+        })
+        audio.addClickListenerTwo(() => {
+            this.generatePlaylist();
+            setTimeout(() => audio.setPlayList(this.#playlist), 100);
+        })
+        this.add(audio)
+    }
+    generatePlaylist() {
+        this.#playlist = []
         fs.readdir(this.#download_path, (err, files) => {
             files.forEach(file => {
                 let artist = file.split(" - ")[0]
@@ -24,13 +37,6 @@ class OfflinePlayer extends Page {
                 })
             });
         });
-
-        setTimeout(() => {
-            audio.setPlayList(this.#playlist)
-        }, 100)
-
-
-        this.add(audio)
     }
 }
 
