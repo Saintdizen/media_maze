@@ -11,7 +11,8 @@ class OfflinePlayer extends Page {
         this.setMain(false);
         let audio = new Audio({
             autoplay: false,
-            width: Styles.SIZE.WEBKIT_FILL
+            width: Styles.SIZE.WEBKIT_FILL,
+            height: Styles.SIZE.WEBKIT_FILL
         })
         this.#download_path = path.join(App.userDataPath(), "downloads");
         this.generatePlaylist();
