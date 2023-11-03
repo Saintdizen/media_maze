@@ -1,4 +1,4 @@
-const {Page, fs, App, path, Audio, Styles, shell} = require('chuijs');
+const {Page, fs, App, path, Audio, Styles, shell, Button} = require('chuijs');
 
 class OfflinePlayer extends Page {
     #download_path = undefined;
@@ -11,19 +11,29 @@ class OfflinePlayer extends Page {
         this.setMain(false);
         let audio = new Audio({
             autoplay: false,
+            playlist: true,
             width: Styles.SIZE.WEBKIT_FILL,
             height: Styles.SIZE.WEBKIT_FILL
         })
         this.#download_path = path.join(App.userDataPath(), "downloads");
         this.generatePlaylist();
         setTimeout(() => audio.setPlayList(this.#playlist), 100)
-        audio.addClickListenerOne(async () => {
-            await shell.openPath(path.join(App.userDataPath(), "downloads"))
-        })
-        audio.addClickListenerTwo(() => {
-            this.generatePlaylist();
-            setTimeout(() => audio.setPlayList(this.#playlist), 100);
-        })
+
+        let openFolder = new Button({
+            title: "Открыть папку",
+            clickEvent: async () => await shell.openPath(path.join(App.userDataPath(), "downloads"))
+        });
+
+        let updateList = new Button({
+            title: "Кнопка с текстом",
+            clickEvent: () => {
+                this.generatePlaylist();
+                setTimeout(() => audio.setPlayList(this.#playlist), 100);
+            }
+        });
+
+        audio.addControls(openFolder, updateList)
+
         this.add(audio)
     }
     generatePlaylist() {
