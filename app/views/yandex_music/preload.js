@@ -1,5 +1,4 @@
 //Mu.blocks.di.repo.player.play();
-
 function render() {
     if (document.getElementById("TESTTT") === null) {
         let div1 = document.createElement("div");
@@ -11,7 +10,7 @@ function render() {
         span1.className = "d-icon deco-icon d-icon_share"
         span1.style.rotate = "180deg";
         span1.id = "test111"
-        div1.addEventListener("click", async (evt) => {
+        div1.addEventListener("click", async () => {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", Mu.blocks.di.repo.player.getTrack()._$f9);
             xhr.responseType = "arraybuffer";
@@ -31,6 +30,7 @@ function render() {
                 }
             };
             xhr.send();
+            window.require("electron").ipcRenderer.send("TEST", "2")
         });
         div1.appendChild(div2)
         div2.appendChild(span1)

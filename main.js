@@ -1,4 +1,4 @@
-const {Main, MenuItem, path, App} = require('chuijs');
+const {Main, MenuItem, path, App, ipcMain} = require('chuijs');
 let json = require("./package.json");
 const main = new Main({
     name: `${json.productName} (${json.version})`,
@@ -28,5 +28,9 @@ main.start({
         new MenuItem().quit('Выход')
     ]
 });
+
+ipcMain.on("TEST", (event, args) => {
+    console.log(args)
+})
 
 main.enableAutoUpdateApp(2000)
