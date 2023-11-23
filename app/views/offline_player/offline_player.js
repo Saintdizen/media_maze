@@ -33,8 +33,8 @@ class OfflinePlayer extends Page {
         });
 
         audio.addControls(openFolder, updateList)
-
         this.add(audio)
+        this.addRouteEvent(this, () => audio.restoreFX())
     }
     generatePlaylist() {
         this.#playlist = []
