@@ -13,28 +13,20 @@ class OfflinePlayer extends Page {
             autoplay: false,
             playlist: true,
             width: Styles.SIZE.WEBKIT_FILL,
-            height: Styles.SIZE.WEBKIT_FILL
+            height: "500px",
+            //pin: Audio.PIN.BOTTOM
         })
         this.#download_path = path.join(App.userDataPath(), "downloads");
         this.generatePlaylist();
         setTimeout(() => audio.setPlayList(this.#playlist), 100)
 
-        let openFolder = new Button({
-            title: "Открыть папку",
-            clickEvent: async () => await shell.openPath(path.join(App.userDataPath(), "downloads"))
-        });
-
-        let updateList = new Button({
-            title: "Кнопка с текстом",
-            clickEvent: () => {
-                this.generatePlaylist();
-                setTimeout(() => audio.setPlayList(this.#playlist), 100);
-            }
-        });
-
-        audio.addControls(openFolder, updateList)
+        audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(audio)
-        this.addRouteEvent(this, () => audio.restoreFX())
+        this.addRouteEvent(this, () => {
+            audio.restoreFX();
+            this.generatePlaylist();
+            setTimeout(() => audio.setPlayList(this.#playlist), 100);
+        })
     }
     generatePlaylist() {
         this.#playlist = []
