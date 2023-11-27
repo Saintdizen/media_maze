@@ -13,7 +13,7 @@ class OfflinePlayer extends Page {
             autoplay: false,
             playlist: true,
             width: Styles.SIZE.WEBKIT_FILL,
-            height: "500px",
+            height: Styles.SIZE.WEBKIT_FILL,
             //pin: Audio.PIN.BOTTOM
         })
         this.#download_path = path.join(App.userDataPath(), "downloads");
