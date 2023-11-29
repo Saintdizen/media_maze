@@ -8,11 +8,11 @@ class YandexMusicPage extends Page {
         this.setFullHeight()
         this.disablePadding()
         this.setMain(true)
-        let web = new WebView("https://music.yandex.ru/");
+        let web = new WebView("https://music.yandex.ru/", true);
 
         ipcRenderer.on("PLAY_PAUSE", async () => await web.executeJavaScript("if (Mu.blocks.di.repo.player.getState() === 'idle') { Mu.blocks.di.repo.player.play(); } else { Mu.blocks.di.repo.player.audio().togglePause(); }"))
-        ipcRenderer.on("NEXT_TRACK", async () => await web.executeJavaScript("Mu.blocks.di.repo.player.source().next()"))
-        ipcRenderer.on("PREV_TRACK", async () => await web.executeJavaScript("Mu.blocks.di.repo.player.source().prev()"))
+        ipcRenderer.on("NEXT_TRACK", async () => await web.executeJavaScript("externalAPI.next()"))
+        ipcRenderer.on("PREV_TRACK", async () => await web.executeJavaScript("externalAPI.prev()"))
 
         if (store.get(SettingsMarks.INTERFACE.new_skin)) {
             web.insertCustomRes({

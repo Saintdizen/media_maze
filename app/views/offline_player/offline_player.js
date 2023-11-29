@@ -32,12 +32,21 @@ class OfflinePlayer extends Page {
         this.#playlist = []
         fs.readdir(this.#download_path, (err, files) => {
             files.forEach(file => {
-                let artist = file.split(" - ")[0]
-                let title = file.split(" - ")[1].replace(".mp3", "")
-                this.#playlist.push({
-                    title: title, artist: artist, album: "", mimetype: Audio.MIMETYPES.MP3,
-                    path: String(path.join(this.#download_path, file))
-                })
+                console.log(file)
+                try {
+                    let artist = file.split(" - ")[0]
+                    let title = file.split(" - ")[1].replace(".mp3", "")
+                    this.#playlist.push({
+                        title: title, artist: artist, album: "", mimetype: Audio.MIMETYPES.MP3,
+                        path: String(path.join(this.#download_path, file))
+                    })
+                } catch (e) {
+                    let title = file.replace(".mp3", "")
+                    this.#playlist.push({
+                        title: title, artist: title, album: title, mimetype: Audio.MIMETYPES.MP3,
+                        path: String(path.join(this.#download_path, file))
+                    })
+                }
             });
         });
     }
