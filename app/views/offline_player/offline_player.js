@@ -1,31 +1,36 @@
-const {Page, fs, App, path, Audio, Styles, shell, Button} = require('chuijs');
+const {Page, fs, App, path, Audio, Styles, ipcRenderer} = require('chuijs');
 
 class OfflinePlayer extends Page {
     #download_path = undefined;
     #playlist = []
-
+    #audio = new Audio({
+        autoplay: false,
+        playlist: true,
+        width: Styles.SIZE.WEBKIT_FILL,
+        height: Styles.SIZE.WEBKIT_FILL,
+        //pin: Audio.PIN.BOTTOM
+    })
     constructor() {
         super();
-        this.setTitle('OfflinePlayer');
+        this.setTitle('Оффлайн проигрыватель');
         this.setFullHeight();
         this.setMain(false);
-        let audio = new Audio({
-            autoplay: false,
-            playlist: true,
-            width: Styles.SIZE.WEBKIT_FILL,
-            height: Styles.SIZE.WEBKIT_FILL,
-            //pin: Audio.PIN.BOTTOM
-        })
+
+
+        ipcRenderer.on("PLAY_PAUSE", async () => this.#audio.play())
+        ipcRenderer.on("NEXT_TRACK", async () => this.#audio.next())
+        ipcRenderer.on("PREV_TRACK", async () => this.#audio.prev())
+
         this.#download_path = path.join(App.userDataPath(), "downloads");
         this.generatePlaylist();
-        setTimeout(() => audio.setPlayList(this.#playlist), 100)
+        setTimeout(() => this.#audio.setPlayList(this.#playlist), 100)
 
-        audio.openFolder(path.join(App.userDataPath(), "downloads"))
-        this.add(audio)
+        this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
+        this.add(this.#audio)
         this.addRouteEvent(this, () => {
-            audio.restoreFX();
+            this.#audio.restoreFX();
             this.generatePlaylist();
-            setTimeout(() => audio.setPlayList(this.#playlist), 100);
+            setTimeout(() => this.#audio.setPlayList(this.#playlist), 100);
         })
     }
     generatePlaylist() {
