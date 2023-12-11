@@ -67,6 +67,6 @@
     "electron-builder": "~24.6.4"
   },
   "dependencies": {
-    "chuijs": "~2.4.7"
+    "chuijs": "~2.4.8"
   }
 }
