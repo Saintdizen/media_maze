@@ -16,7 +16,6 @@ class OfflinePlayer extends Page {
         this.setFullHeight();
         this.setMain(false);
 
-
         ipcRenderer.on("PLAY_PAUSE", async () => this.#audio.play())
         ipcRenderer.on("NEXT_TRACK", async () => this.#audio.next())
         ipcRenderer.on("PREV_TRACK", async () => this.#audio.prev())
