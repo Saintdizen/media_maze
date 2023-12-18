@@ -15,7 +15,7 @@ class App extends AppLayout {
 
         this.addToHeader([
             AppLayout.DIALOG({
-                title: "Настройки",
+                //title: "Настройки",
                 icon: Icons.ACTIONS.SETTINGS,
                 reverse: false,
                 dialogOptions: {

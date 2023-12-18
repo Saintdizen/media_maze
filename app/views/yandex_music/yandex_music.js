@@ -10,9 +10,9 @@ class YandexMusicPage extends Page {
         this.disablePadding()
         this.setMain(true)
 
-        this.#js("PLAY_PAUSE", "if (Mu.blocks.di.repo.player.getState() === 'idle') { Mu.blocks.di.repo.player.play(); } else { Mu.blocks.di.repo.player.audio().togglePause(); }")
-        this.#js("NEXT_TRACK", "externalAPI.next()")
-        this.#js("PREV_TRACK", "externalAPI.prev()")
+        //this.#js("PLAY_PAUSE", "if (Mu.blocks.di.repo.player.getState() === 'idle') { Mu.blocks.di.repo.player.play(); } else { Mu.blocks.di.repo.player.audio().togglePause(); }")
+        //this.#js("NEXT_TRACK", "externalAPI.next()")
+        //this.#js("PREV_TRACK", "externalAPI.prev()")
 
         if (store.get(SettingsMarks.INTERFACE.new_skin)) {
             this.#web.insertCustomRes({
@@ -35,9 +35,9 @@ class YandexMusicPage extends Page {
 
         this.add(this.#web);
     }
-    #js(channel, js) {
-        try { ipcRenderer.on(channel, async () => await this.#web.executeJavaScript(js)) } catch (e) { /*===*/ }
-    }
+    /*#js(channel, js) {
+        try { ipcRenderer.on(channel, async () => await this.#web.executeJavaScript(js)) } catch (e) { // === }
+    }*/
 }
 
 exports.YandexMusicPage = YandexMusicPage
