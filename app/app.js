@@ -13,9 +13,28 @@ class App extends AppLayout {
 
         let ya_page = new YandexMusicPage()
         let off_page = new OfflinePlayer()
-        this.setRoute(ya_page);
+        //this.setRoute(ya_page);
 
-        this.addToHeader([
+        this.addToHeaderLeftBeforeTitle([
+            AppLayout.TABS({
+                    default: 0,
+                    tabs: [
+                        AppLayout.BUTTON({
+                                icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
+                                clickEvent: () => new Route().go(ya_page)
+                            }
+                        ),
+                        AppLayout.BUTTON({
+                                icon: Icons.FILE.DOWNLOAD_FOR_OFFLINE,
+                                clickEvent: () => new Route().go(off_page)
+                            }
+                        ),
+                    ]
+                }
+            )
+        ])
+
+        this.addToHeaderRight([
             AppLayout.DIALOG({
                 //title: "Настройки",
                 icon: Icons.ACTIONS.SETTINGS,
@@ -34,20 +53,6 @@ class App extends AppLayout {
                     components: [ new Settings() ]
                 }
             }),
-            AppLayout.BUTTON({
-                    title: "Оффлайн проигрыватель",
-                    icon: Icons.FILE.DOWNLOAD_FOR_OFFLINE,
-                    reverse: true,
-                    clickEvent: () => new Route().go(off_page)
-                }
-            ),
-            AppLayout.BUTTON({
-                    title: "Музыка",
-                    icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                    reverse: true,
-                    clickEvent: () => new Route().go(ya_page)
-                }
-            ),
         ])
     }
 }
