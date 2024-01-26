@@ -124,7 +124,7 @@
     border-radius: var(--ya_border_radius) !important
 }
 
-.rup__animation, .page-users .d-generic-page-head__aside, .head-kids__left, .footer, div[class='plus-points head-kids__plus-points'] {
+.rup__animation, .page-users .d-generic-page-head__aside, .head-kids__left, .footer, div[class='plus-points head-kids__plus-points'], .head-kids__app {
     display: none !important;
 }
 

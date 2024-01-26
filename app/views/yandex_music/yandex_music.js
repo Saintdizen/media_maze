@@ -14,11 +14,9 @@ class YandexMusicPage extends Page {
         //this.#js("NEXT_TRACK", "externalAPI.next()")
         //this.#js("PREV_TRACK", "externalAPI.prev()")
 
-        if (store.get(SettingsMarks.INTERFACE.new_skin)) {
-            this.#web.insertCustomRes({
-                cssPath: __dirname + "/style.css"
-            });
-        }
+        this.#web.insertCustomRes({
+            cssPath: __dirname + "/style.css"
+        });
 
         if (store.get(SettingsMarks.TRACKS.download)) {
             this.#web.insertCustomRes({

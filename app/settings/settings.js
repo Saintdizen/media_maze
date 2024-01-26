@@ -9,9 +9,6 @@ class Settings {
     #elements = new SettingsElements();
     constructor() {
         this.#main.add(
-            this.#elements.setFieldSet("Интерфейс", [
-                this.#elements.setCheckBox("Новый интерфейс (Требуется перезапуск)", SettingsMarks.INTERFACE.new_skin)
-            ]),
             this.#elements.setFieldSet("Музыка", [
                 this.#elements.setCheckBox("Загрузка музыки (Требуется перезапуск)", SettingsMarks.TRACKS.download)
             ]),
