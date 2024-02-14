@@ -18,18 +18,13 @@ function render() {
         dl_button.style.height = "-webkit-fill-available"
         dl_button.className = "hq__icon player-controls__btn deco-player-controls__button"
         dl_button.addEventListener("click", async () => {
-            let xhr = new XMLHttpRequest();
-            xhr.open("GET", Mu.blocks.di.repo.player.getTrack()._$f9);
-            xhr.responseType = "blob";
-            xhr.onloadend = function () {
-                if (this.status === 200) {
-                    let artist = getArtists(externalAPI.getCurrentTrack().artists)
-                    let title = externalAPI.getCurrentTrack().title;
-                    let blob = new Blob([xhr.response], {type: "audio/mp3"});
-                    createLink(blob, artist, title)
-                }
-            };
-            xhr.send();
+            fetch(Mu.blocks.di.repo.player.getTrack()._$f9, {"headers": {}, "method": "GET"}).then(async (res) => {
+                return await res.blob();
+            }).then(async (blob) => {
+                let artist = getArtists(externalAPI.getCurrentTrack().artists)
+                let title = externalAPI.getCurrentTrack().title;
+                await createLink(blob, artist, title)
+            })
         });
         // ===
         dl_main.appendChild(dl_button)
@@ -38,7 +33,7 @@ function render() {
     }
 }
 
-function createLink(blob, artist, title) {
+async function createLink(blob, artist, title) {
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `${artist} - ${title}.mp3`;
