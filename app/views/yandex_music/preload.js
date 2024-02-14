@@ -20,7 +20,7 @@ function render() {
         dl_button.addEventListener("click", async () => {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", Mu.blocks.di.repo.player.getTrack()._$f9);
-            xhr.responseType = "arraybuffer";
+            xhr.responseType = "blob";
             xhr.onloadend = function () {
                 if (this.status === 200) {
                     let artist = getArtists(externalAPI.getCurrentTrack().artists)

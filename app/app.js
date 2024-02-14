@@ -11,22 +11,18 @@ class App extends AppLayout {
         this.setAutoCloseRouteMenu();
         this.disableAppMenu()
 
-        let ya_page = new YandexMusicPage()
-        let off_page = new OfflinePlayer()
-        //this.setRoute(ya_page);
-
         this.addToHeaderLeftBeforeTitle([
             AppLayout.TABS({
                     default: 0,
                     tabs: [
                         AppLayout.BUTTON({
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                                clickEvent: () => new Route().go(ya_page)
+                                clickEvent: () => new Route().go(new YandexMusicPage())
                             }
                         ),
                         AppLayout.BUTTON({
                                 icon: Icons.FILE.DOWNLOAD_FOR_OFFLINE,
-                                clickEvent: () => new Route().go(off_page)
+                                clickEvent: () => new Route().go(new OfflinePlayer())
                             }
                         ),
                     ]
