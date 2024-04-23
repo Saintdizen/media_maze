@@ -1,8 +1,8 @@
-const {Page, Button, Audio, Styles, path, App, fs} = require('chuijs');
-const {YaApi} = require("./ya_api");
+const {Page, Audio, Styles, path, App} = require('chuijs');
+const storage = require("electron-json-storage");
+storage.setDataPath(App.userDataPath() + "/playlists");
 
 class Player extends Page {
-    #api = new YaApi()
     #audio = new Audio({
         autoplay: false,
         playlist: true,
@@ -21,26 +21,27 @@ class Player extends Page {
         //ipcRenderer.on("PREV_TRACK", async () => this.#audio.prev())
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
+        this.add(this.#audio)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-
+            this.generatePlayList()
         })
+    }
 
-        let auth = new Button({
-            title: "auth",
-            clickEvent: async () => await this.#api.auth()
-        })
-        let getPlaylists = new Button({
-            title: "getPlaylists",
-            clickEvent: async () => {
-                await this.#api.getAccountStatus()
-                await this.#audio.setPlayList(await this.#api.getTracks())
+    generatePlayList() {
+        let playlist_new = []
+        storage.get('0_playlists', (error, data) => {
+            if (error) throw error;
+            for (let d of data.items) {
+                storage.get(String(d), (error, data) => {
+                    if (error) throw error;
+                    for (let track of data.tracks) {
+                        playlist_new.push(track)
+                    }
+                });
             }
-        })
-
-        //
-        this.add(auth, getPlaylists)
-        this.add(this.#audio)
+        });
+        setTimeout(() => this.#audio.setPlayList(playlist_new), 100);
     }
 
 }

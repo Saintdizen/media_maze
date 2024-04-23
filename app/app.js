@@ -1,11 +1,11 @@
 const {AppLayout, render, Log, Icons, Styles, Route} = require('chuijs');
 const {Settings} = require("./settings/settings");
 
-const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
-const {OfflinePlayer} = require("./views/offline_player/offline_player");
+const {YaApi} = require("./views/player/ya_api");
 const {Player} = require("./views/player/player");
 
 class App extends AppLayout {
+    #api = new YaApi()
     constructor() {
         super();
         //this.setSearchToAppMenu();
@@ -20,12 +20,7 @@ class App extends AppLayout {
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
                                 clickEvent: () => new Route().go(new Player())
                             }
-                        ),
-                        AppLayout.BUTTON({
-                                icon: Icons.FILE.DOWNLOAD_FOR_OFFLINE,
-                                clickEvent: () => new Route().go(new OfflinePlayer())
-                            }
-                        ),
+                        )
                     ]
                 }
             )
@@ -50,6 +45,18 @@ class App extends AppLayout {
                     components: [ new Settings() ]
                 }
             }),
+            AppLayout.BUTTON({
+                title: "Авторизация",
+                //icon: undefined,
+                reverse: true,
+                clickEvent: async () => await this.#api.auth()
+            }),
+            AppLayout.BUTTON({
+                title: "TEST",
+                //icon: undefined,
+                reverse: true,
+                clickEvent: async () => await this.#api.getTracks()
+            })
         ])
     }
 }

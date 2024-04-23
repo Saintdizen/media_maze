@@ -2,79 +2,105 @@ const {YMApi, WrappedYMApi} = require('ym-api-meowed');
 const {XMLParser} = require("fast-xml-parser");
 const crypto = require('node:crypto');
 const {DownloadTrackCodec, DownloadTrackQuality} = require("ym-api-meowed/dist/types");
-const {Audio, path} = require("chuijs");
+const {Audio, App} = require("chuijs");
+const storage = require('electron-json-storage');
 
 class YaApi {
-    #test_token = "y0_AgAAAAAFcl_-AAG8XgAAAAEC1hRAAAA3td4TXRxKIKH1nrNXs-22ogHYJg"
     #api = new YMApi();
     #wapi = new WrappedYMApi();
     url = 'https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d'
-    #access_token = null
-    // userdata
-    #uid = null
     constructor() {
-        //
+        storage.setDataPath(App.userDataPath() + "/playlists");
     }
 
     async auth() {
-        const { BrowserWindow } = require('@electron/remote')
-        let win = new BrowserWindow({ width: 800, height: 600 })
-        await win.loadURL(this.url)
-        win.webContents.on("did-start-navigation", async (event, details) => {
-            if (details.includes("access_token")) {
-                const regex = '#access_token=(.*)&token_type';
-                const found = details.match(regex);
-                this.#access_token = found[1]
-            }
-        })
-        await this.#api.init({access_token: this.#test_token, uid: 1});
-        await this.#wapi.init({access_token: this.#test_token, uid: 1});
-        return this.#access_token;
-    }
-
-    async getAccountStatus() {
-        let res = null
         try {
-            res = await this.#api.getAccountStatus();
+            const { BrowserWindow } = require('@electron/remote')
+            let win = new BrowserWindow({ width: 800, height: 600 })
+            await win.loadURL(this.url)
+            win.webContents.on("did-start-navigation", async (event, details) => {
+                if (details.includes("access_token")) {
+                    const regex = '#access_token=(.*)&token_type';
+                    const found = details.match(regex);
+                    win.close()
+
+                    await this.#api.init({access_token: found[1], uid: 1});
+                    await this.#wapi.init({access_token: found[1], uid: 1});
+
+                    let res = await this.#api.getAccountStatus();
+
+                    storage.set("user", {
+                        access_token: found[1],
+                        user_id: res.account.uid
+                    }, (error) => {
+                        if (error) throw error;
+                    });
+                }
+            })
         } catch (e) {
             console.log(`api error ${e.message}`);
         }
-        this.#uid = res.account.uid
-        return res.account.uid
+
     }
 
     async getTracks() {
-        let playlist_mass = []
-        try {
-            let pls = await this.#api.getUserPlaylists(this.#uid)
-            for (let playlist of pls) {
-                let pl = await this.#wapi.getPlaylist(playlist.kind, playlist.uid);
-                for (let trs of pl.tracks) {
-                    console.log(`${pl.tracks.indexOf(trs)} / ${pl.tracks.length}`)
-                    try {
-                        let tr = await this.#api.getSingleTrack(trs.id);
-                        let objects_track = {
-                            title: tr.title,
-                            artist: tr.artists[0].name,
-                            album: tr.albums[0].title,
-                            mimetype: Audio.MIMETYPES.MP3,
-                            path: await this.#getLink(trs.id)
+        storage.get("user", async (error, data) => {
+            if (error) throw error;
+            console.log(data.access_token)
+            let api = new YMApi();
+            let wapi = new WrappedYMApi();
+            await api.init({access_token: data.access_token, uid: 1});
+            await wapi.init({access_token: data.access_token, uid: 1});
+
+            let pl_mass = []
+            let track_mass = []
+            try {
+                let pls = await api.getUserPlaylists(data.user_id)
+                for (let playlist of pls) {
+                    pl_mass.push(playlist.kind)
+                    track_mass = []
+                    let pl = await wapi.getPlaylist(playlist.kind, playlist.uid);
+                    for (let trs of pl.tracks) {
+                        console.log(`${pl.tracks.indexOf(trs) + 1} / ${pl.tracks.length}`)
+                        try {
+                            let tr = await api.getSingleTrack(trs.id);
+                            let di = await wapi.getConcreteDownloadInfo(trs.id, DownloadTrackCodec.MP3, DownloadTrackQuality.High)
+
+                            let objects_track = {
+                                title: tr.title,
+                                artist: tr.artists[0].name,
+                                album: tr.albums[0].title,
+                                mimetype: Audio.MIMETYPES.MP3,
+                                path: await this.#getLink(di.downloadInfoUrl, trs.id)
+                            }
+
+                            track_mass.push(objects_track)
+                        } catch (e) {
+                            console.log(e)
                         }
-                        playlist_mass.push(objects_track)
-                    } catch (e) {
-                        console.log(e)
                     }
+                    storage.set(String(playlist.kind), {
+                        playlist: pl.title,
+                        tracks: track_mass
+                    }, (error) => {
+                        if (error) throw error;
+                    });
                 }
+                storage.set("0_playlists", {
+                    items: pl_mass
+                }, (error) => {
+                    if (error) throw error;
+                });
+
+            } catch (e) {
+                console.log(`api error ${e.message}`);
             }
-        } catch (e) {
-            console.log(`api error ${e.message}`);
-        }
-        return playlist_mass
+
+        });
     }
 
-    async #getLink(track_id = String()) {
-        let di = await this.#wapi.getConcreteDownloadInfo(track_id, DownloadTrackCodec.MP3, DownloadTrackQuality.High)
-        let res = await fetch(di.downloadInfoUrl)
+    async #getLink(downloadInfoUrl, track_id = String()) {
+        let res = await fetch(downloadInfoUrl)
         let text = await res.text()
         const parsedXml = new XMLParser().parse(text);
         let host = parsedXml['download-info'].host
