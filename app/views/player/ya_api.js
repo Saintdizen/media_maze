@@ -50,19 +50,21 @@ class YaApi {
             for (let playlist of pls) {
                 let pl = await this.#wapi.getPlaylist(playlist.kind, playlist.uid);
                 for (let trs of pl.tracks) {
-                    let tr = await this.#api.getSingleTrack(trs.id);
-                    console.log(tr)
-                    //console.log(tr.albums)
-                    //let di1 = await this.#getLink(trs.id)
-                    playlist_mass.push({
-                        title: tr.title,
-                        artist: tr.artists[0].name,
-                        album: "",
-                        mimetype: Audio.MIMETYPES.MP3,
-                        path: await this.#getLink(trs.id)
-                    })
+                    console.log(`${pl.tracks.indexOf(trs)} / ${pl.tracks.length}`)
+                    try {
+                        let tr = await this.#api.getSingleTrack(trs.id);
+                        let objects_track = {
+                            title: tr.title,
+                            artist: tr.artists[0].name,
+                            album: tr.albums[0].title,
+                            mimetype: Audio.MIMETYPES.MP3,
+                            path: await this.#getLink(trs.id)
+                        }
+                        playlist_mass.push(objects_track)
+                    } catch (e) {
+                        console.log(e)
+                    }
                 }
-                break
             }
         } catch (e) {
             console.log(`api error ${e.message}`);
