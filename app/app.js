@@ -3,6 +3,7 @@ const {Settings} = require("./settings/settings");
 
 const {YandexMusicPage} = require('./views/yandex_music/yandex_music')
 const {OfflinePlayer} = require("./views/offline_player/offline_player");
+const {Player} = require("./views/player/player");
 
 class App extends AppLayout {
     constructor() {
@@ -17,7 +18,7 @@ class App extends AppLayout {
                     tabs: [
                         AppLayout.BUTTON({
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                                clickEvent: () => new Route().go(new YandexMusicPage())
+                                clickEvent: () => new Route().go(new Player())
                             }
                         ),
                         AppLayout.BUTTON({
