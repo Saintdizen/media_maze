@@ -21,13 +21,16 @@ class YaApi {
             let win = new BrowserWindow({ width: 800, height: 600 })
             await win.loadURL(this.url)
             win.webContents.on("did-start-navigation", async (event, details) => {
+                console.log(details)
                 if (details.includes("access_token")) {
                     const regex = '#access_token=(.*)&token_type';
                     const found = details.match(regex);
-                    win.close()
+                    //win.close()
                     await this.#api.init({access_token: found[1], uid: 1});
                     await this.#wapi.init({access_token: found[1], uid: 1});
                     let res = await this.#api.getAccountStatus();
+                    console.log(res)
+                    console.log(found[1])
                     this.#udb.addUserData(found[1], res.account.uid)
                 }
             })
