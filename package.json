@@ -79,7 +79,6 @@
   },
   "dependencies": {
     "chuijs": "~2.5.9",
-    "electron-json-storage": "^4.6.0",
     "fast-xml-parser": "^4.3.6",
     "request": "^2.88.2",
     "sqlite3": "^5.1.7",
