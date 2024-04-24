@@ -64,7 +64,6 @@ class YaApi {
                             Audio.MIMETYPES.MP3,
                             path
                         )
-                        break
                     } catch (e) {
                         console.log(e)
                     }
