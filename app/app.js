@@ -1,10 +1,10 @@
-const {AppLayout, render, Log, Icons, Styles, Route} = require('chuijs');
+const {AppLayout, render, Log, Icons, Styles, Route, App} = require('chuijs');
 const {Settings} = require("./settings/settings");
 
 const {YaApi} = require("./views/player/ya_api");
 const {Player} = require("./views/player/player");
 
-class App extends AppLayout {
+class Apps extends AppLayout {
     #api = new YaApi()
     constructor() {
         super();
@@ -49,16 +49,12 @@ class App extends AppLayout {
                 title: "Авторизация",
                 //icon: undefined,
                 reverse: true,
-                clickEvent: async () => await this.#api.auth()
-            }),
-            AppLayout.BUTTON({
-                title: "TEST",
-                //icon: undefined,
-                reverse: true,
-                clickEvent: async () => await this.#api.getTracks()
+                clickEvent: async () => {
+                    await this.#api.start()
+                }
             })
         ])
     }
 }
 
-render(() => new App()).then(() => Log.info("Загружено!"));
+render(() => new Apps()).then(() => Log.info("Загружено!"));

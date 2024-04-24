@@ -17,15 +17,21 @@ class UserDB {
         console.log(`Connection with SQLite (${filepath}) has been established`);
     }
     createUserTable() {
-        this.#user_db.exec(`CREATE TABLE IF NOT EXISTS user (access_token VARCHAR(50) NOT NULL, user_id INTEGER NOT NULL);`);
+        return new Promise((resolve, reject) => {
+            this.#user_db.exec(`CREATE TABLE IF NOT EXISTS user (access_token VARCHAR(50) NOT NULL, user_id INTEGER NOT NULL);`);
+            resolve("ok")
+        })
     }
     addUserData(access_token, user_id) {
-        this.#user_db.run(`INSERT INTO user (access_token, user_id) VALUES (?, ?)`,
-            [access_token, user_id],
-            (error) => {
-                if (error) console.error(error.message);
-            }
-        );
+        return new Promise((resolve, reject) => {
+            this.#user_db.run(`INSERT INTO user (access_token, user_id) VALUES (?, ?)`,
+                [access_token, user_id],
+                (error) => {
+                    if (error) reject(error.message);
+                    resolve("ok")
+                }
+            );
+        })
     }
     updateUserData(user_id, access_token) {
         this.#user_db.run(`UPDATE user SET access_token = ? WHERE user_id = ?`,
@@ -85,9 +91,17 @@ class PlaylistDB {
             console.log(`Inserted a row with the ID: ${track_id}`);
         });
     }
-    select() {
+    select(name) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT * FROM pl_1017;`, (error, rows) => {
+            this.#pl_db.all(`SELECT * FROM ${name};`, (error, rows) => {
+                if (error) reject(error.message);
+                resolve(rows)
+            });
+        })
+    }
+    selectTables() {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.all(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;`, (error, rows) => {
                 if (error) reject(error.message);
                 resolve(rows)
             });

@@ -1,4 +1,4 @@
-const {Page, Audio, Styles, path, App} = require('chuijs');
+const {Page, Audio, Styles, path, App, ipcRenderer} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 
 class Player extends Page {
@@ -18,7 +18,6 @@ class Player extends Page {
 
         //ipcRenderer.on("PLAY_PAUSE", async () => this.#audio.play())
         //ipcRenderer.on("NEXT_TRACK", async () => this.#audio.next())
-        //ipcRenderer.on("PREV_TRACK", async () => this.#audio.prev())
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio)
@@ -26,13 +25,23 @@ class Player extends Page {
             this.#audio.restoreFX();
             this.generatePlayList()
         })
+
+        ipcRenderer.on("TEST", () => {
+            console.log("test")
+            this.generatePlayList()
+        })
     }
 
     generatePlayList() {
-        this.#pdb.select().then(p => {
-            console.log(p)
-            setTimeout(() => this.#audio.setPlayList(p), 100);
+        let playlist = []
+        this.#pdb.selectTables().then(tables => {
+            for (let table of tables) {
+                this.#pdb.select(table.name).then(pl => {
+                    for (let track of pl) playlist.push(track)
+                })
+            }
         })
+        setTimeout(() => this.#audio.setPlayList(playlist), 500);
     }
 
 }
