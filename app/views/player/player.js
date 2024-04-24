@@ -1,8 +1,8 @@
 const {Page, Audio, Styles, path, App} = require('chuijs');
-const storage = require("electron-json-storage");
-storage.setDataPath(App.userDataPath() + "/playlists");
+const {PlaylistDB} = require("../../sqlite/sqlite");
 
 class Player extends Page {
+    #pdb = new PlaylistDB(App.userDataPath())
     #audio = new Audio({
         autoplay: false,
         playlist: true,
@@ -29,19 +29,10 @@ class Player extends Page {
     }
 
     generatePlayList() {
-        let playlist_new = []
-        storage.get('0_playlists', (error, data) => {
-            if (error) throw error;
-            for (let d of data.items) {
-                storage.get(String(d), (error, data) => {
-                    if (error) throw error;
-                    for (let track of data.tracks) {
-                        playlist_new.push(track)
-                    }
-                });
-            }
-        });
-        setTimeout(() => this.#audio.setPlayList(playlist_new), 100);
+        this.#pdb.select().then(p => {
+            console.log(p)
+            setTimeout(() => this.#audio.setPlayList(p), 100);
+        })
     }
 
 }
