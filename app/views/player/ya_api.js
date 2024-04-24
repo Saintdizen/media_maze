@@ -18,7 +18,7 @@ class YaApi {
             this.auth().then(() => {
                 this.#getTracks().then(p => {
                     console.log(p)
-                    App.getWebContents().getFocusedWebContents().send("TEST")
+                    App.getWebContents().getAllWebContents()[0].send("TEST")
                 })
             })
         })
@@ -31,17 +31,19 @@ class YaApi {
                 let win = new BrowserWindow({width: 800, height: 600})
                 await win.loadURL(this.url)
                 win.webContents.on("did-start-navigation", async (event, details) => {
+                    event.preventDefault()
                     if (details.includes("access_token")) {
-                        win.close()
                         const regex = '#access_token=(.*)&token_type';
                         const found = details.match(regex);
+                        console.log(found[1])
                         await api.init({access_token: found[1], uid: 1});
                         await wapi.init({access_token: found[1], uid: 1});
                         let res = await api.getAccountStatus();
                         await udb.addUserData(found[1], res.account.uid)
+                        win.close()
+                        resolve("OK")
                     }
                 })
-                resolve("OK")
             } catch (e) {
                 console.log(`api error ${e.message}`);
                 reject(e)
@@ -75,13 +77,12 @@ class YaApi {
                                 Audio.MIMETYPES.MP3,
                                 path
                             )
-                            break
                         } catch (e) {
                             console.log(e)
                         }
                     }
                 }
-                resolve("ok")
+                resolve("OK")
             } catch (e) {
                 console.log(`api error ${e.message}`);
                 reject(e)

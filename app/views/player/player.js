@@ -27,7 +27,7 @@ class Player extends Page {
         })
 
         ipcRenderer.on("TEST", () => {
-            console.log("test")
+            console.log("Генерация плейлиста")
             this.generatePlayList()
         })
     }
