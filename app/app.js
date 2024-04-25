@@ -1,4 +1,4 @@
-const {AppLayout, render, Log, Icons, Styles, Route, YaApi, App, Notification} = require('chuijs');
+const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 
