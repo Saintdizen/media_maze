@@ -78,14 +78,13 @@ class PlaylistDB {
                 artist TEXT NOT NULL,
                 album TEXT NOT NULL,
                 mimetype TEXT NOT NULL,
-                path TEXT NOT NULL,
-                offline_path TEXT NOT NULL
+                path TEXT NOT NULL
             );
         `);
     }
-    addTrack(pl_kind, track_id, title, artist, album, mimetype, path) {
-        this.#pl_db.run(`INSERT OR IGNORE INTO pl_${pl_kind} (track_id, title, artist, album, mimetype, path, offline_path) VALUES (?, ?, ?, ?, ?, ?, ?);`,
-        [track_id, title, artist, album, mimetype, path, ""],
+    addTrack(pl_kind, track_id, title, artist, album, mimetype) {
+        this.#pl_db.run(`INSERT OR IGNORE INTO pl_${pl_kind} (track_id, title, artist, album, mimetype, path) VALUES (?, ?, ?, ?, ?, ?);`,
+        [track_id, title, artist, album, mimetype, ""],
         (error) => {
             if (error) console.error(error.message);
             console.log(`Inserted a row with the ID: ${track_id}`);
