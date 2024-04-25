@@ -1,5 +1,4 @@
-const {AppLayout, render, Log, Icons, Styles, Route, YaApi, App} = require('chuijs');
-const {Settings} = require("./settings/settings");
+const {AppLayout, render, Log, Icons, Styles, Route, YaApi, App, Notification} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 
@@ -10,10 +9,6 @@ class Apps extends AppLayout {
 
     constructor() {
         super();
-        this.#udb.selectUserData().then(data => {
-            global.access_token = data.access_token
-            global.user_id = data.user_id
-        })
         //this.setSearchToAppMenu();
         this.setAutoCloseRouteMenu();
         this.disableAppMenu()
@@ -33,54 +28,72 @@ class Apps extends AppLayout {
             )
         ])
 
-        this.addToHeaderRight([
-            AppLayout.DIALOG({
-                //title: "Настройки",
-                icon: Icons.ACTIONS.SETTINGS,
-                reverse: false,
-                dialogOptions: {
-                    title: "Настройки",
-                    closeOutSideClick: false,
-                    style: {
-                        width: Styles.SIZE.MAX_CONTENT,
-                        height: Styles.SIZE.MAX_CONTENT,
-                        direction: Styles.DIRECTION.COLUMN,
-                        wrap: Styles.WRAP.NOWRAP,
-                        align: Styles.ALIGN.CENTER,
-                        justify: Styles.JUSTIFY.CENTER,
-                    },
-                    components: [ new Settings() ]
-                }
-            }),
-            AppLayout.BUTTON({
-                title: "Авторизация",
-                //icon: undefined,
-                reverse: true,
-                clickEvent: async () => {
-                    await this.#udb.createUserTable()
-                    let udata = await this.#api.auth()
-                    await this.#udb.addUserData(udata.access_token, udata.user_id)
-                    await this.#udb.selectUserData().then(data => {
-                        this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
-                            for (let playlist of playl) {
-                                for (let track of playlist.tracks) {
-                                    let pname = playlist.playlist_name.replace("pl_", "")
-                                    await this.#pdb.createPlaylistTable(pname)
-                                    this.#pdb.addTrack(
-                                        pname,
-                                        track.track_id,
-                                        track.title,
-                                        track.artist,
-                                        track.album,
-                                        track.mimetype
-                                    )
-                                }
+        let auth = AppLayout.BUTTON({
+            title: "Авторизация",
+            //icon: undefined,
+            reverse: true,
+            clickEvent: async () => {
+                await this.#udb.createUserTable()
+                let udata = await this.#api.auth()
+                await this.#udb.addUserData(udata.access_token, udata.user_id)
+                this.removeToHeaderRight([auth])
+                //
+                let ub = await this.generateUserButton(udata.access_token, udata.user_id)
+                this.addToHeaderRight([ub])
+                await this.#udb.selectUserData().then(data => {
+                    this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
+                        for (let playlist of playl) {
+                            for (let track of playlist.tracks) {
+                                let pname = playlist.playlist_name.replace("pl_", "")
+                                await this.#pdb.createPlaylistTable(pname)
+                                await this.#pdb.addTrack(
+                                    pname,
+                                    track.track_id,
+                                    track.title,
+                                    track.artist,
+                                    track.album,
+                                    track.mimetype
+                                ).finally(() => {
+                                    let wc = App.getWebContents().getAllWebContents()
+                                    for (let test of wc) test.send("GENPLAYLIST")
+                                })
                             }
-                        })
+                        }
                     })
-                }
-            })
-        ])
+                })
+            }
+        })
+
+        this.#udb.selectUserData().then(async data => {
+            global.access_token = data.access_token
+            global.user_id = data.user_id
+            let ub = await this.generateUserButton(data.access_token, data.user_id)
+            this.addToHeaderRight([ub])
+        }).catch(() => {
+            this.addToHeaderRight([auth])
+        })
+    }
+
+    async generateUserButton(access_token, user_id) {
+        let datas = await this.#api.getUserData(access_token, user_id)
+        let displayName = datas.account.displayName
+        let defaultEmail = datas.defaultEmail
+        return AppLayout.USER_PROFILE({
+            username: `${displayName} [${defaultEmail}]`,
+            image: {
+                noImage: true
+            },
+            items: [
+                AppLayout.USER_PROFILE_ITEM({
+                    title: "Обновление токена",
+                    clickEvent: () => {
+                        new Notification({
+                            title: "Токен", text: "Токен обновлен (ЭТО ПРОСТО СООБЩЕНИЕ)", showTime: 1000
+                        }).show()
+                    }
+                })
+            ]
+        })
     }
 }
 

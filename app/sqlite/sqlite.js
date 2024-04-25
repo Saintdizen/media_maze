@@ -83,12 +83,19 @@ class PlaylistDB {
         `);
     }
     addTrack(pl_kind, track_id, title, artist, album, mimetype) {
-        this.#pl_db.run(`INSERT OR IGNORE INTO pl_${pl_kind} (track_id, title, artist, album, mimetype, path) VALUES (?, ?, ?, ?, ?, ?);`,
-        [track_id, title, artist, album, mimetype, ""],
-        (error) => {
-            if (error) console.error(error.message);
-            console.log(`Inserted a row with the ID: ${track_id}`);
-        });
+        return new Promise((resolve, reject) => {
+            this.#pl_db.run(`INSERT OR IGNORE INTO pl_${pl_kind} (track_id, title, artist, album, mimetype, path) VALUES (?, ?, ?, ?, ?, ?);`,
+            [track_id, title, artist, album, mimetype, ""],
+            (error) => {
+                if (error) {
+                    console.error(error.message);
+                    reject(error)
+                }
+                resolve("OK")
+                console.log(`Inserted a row with the ID: ${track_id}`);
+            });
+        })
+
     }
     select(name) {
         return new Promise((resolve, reject) => {

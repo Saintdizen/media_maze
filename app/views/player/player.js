@@ -14,7 +14,7 @@ class Player extends Page {
         super();
         this.setTitle('Проигрыватель');
         this.setFullHeight();
-        this.setMain(false);
+        this.setMain(true);
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio)
@@ -24,10 +24,10 @@ class Player extends Page {
             this.#generatePlayList()
         })
 
-        // ipcRenderer.on("GENPLAYLIST", () => {
-        //     console.log("Генерация плейлиста")
-        //     this.generatePlayList()
-        // })
+        ipcRenderer.on("GENPLAYLIST", () => {
+            console.log("Генерация плейлиста")
+            this.#generatePlayList()
+        })
     }
 
     #generatePlayList() {
