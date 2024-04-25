@@ -12,14 +12,11 @@ class Apps extends AppLayout {
         let dialog = new Dialog({
             width: "500px",
             height: "500px",
-            closeOutSideClick: true
+            closeOutSideClick: false
         })
+        // Настройка диалога
         dialog.addToBody(new Button({ title: "Закрыть диалоговое окно", clickEvent: () => dialog.close() }))
-
-
-
-        //this.setSearchToAppMenu();
-        this.setAutoCloseRouteMenu();
+        // Настройка диалога
         this.disableAppMenu()
         this.addToHeaderLeftBeforeTitle([
             AppLayout.TABS({
@@ -64,10 +61,6 @@ class Apps extends AppLayout {
                                     track.album,
                                     track.mimetype
                                 )
-                                // ).finally(() => {
-                                //     let wc = App.getWebContents().getAllWebContents()
-                                //     for (let test of wc) test.send("GENPLAYLIST")
-                                // })
                             }
                             if (playl.indexOf(playlist) + 1 === playl.length) {
                                 let wc = App.getWebContents().getAllWebContents()
