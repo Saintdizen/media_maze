@@ -10,14 +10,16 @@ class Player extends Page {
         height: Styles.SIZE.WEBKIT_FILL,
         //pin: Audio.PIN.BOTTOM
     })
-    constructor() {
+    #dialog = undefined
+    constructor(dialog) {
         super();
+        this.#dialog = dialog
         this.setTitle('Проигрыватель');
         this.setFullHeight();
         this.setMain(true);
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
-        this.add(this.#audio)
+        this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, (e) => {
             console.log(e)
             this.#audio.restoreFX();
@@ -27,6 +29,7 @@ class Player extends Page {
         ipcRenderer.on("GENPLAYLIST", () => {
             console.log("Генерация плейлиста")
             this.#generatePlayList()
+            this.#dialog.close()
         })
     }
 
@@ -47,9 +50,10 @@ class Player extends Page {
                 })
             }
         })
-        setTimeout(() => this.#audio.setPlayList(playlist), 500);
+        setTimeout(() => {
+            this.#audio.setPlayList(playlist)
+        }, 500);
     }
-
 }
 
 exports.Player = Player

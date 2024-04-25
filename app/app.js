@@ -1,4 +1,4 @@
-const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification} = require('chuijs');
+const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, Button} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 
@@ -9,6 +9,15 @@ class Apps extends AppLayout {
 
     constructor() {
         super();
+        let dialog = new Dialog({
+            width: "500px",
+            height: "500px",
+            closeOutSideClick: true
+        })
+        dialog.addToBody(new Button({ title: "Закрыть диалоговое окно", clickEvent: () => dialog.close() }))
+
+
+
         //this.setSearchToAppMenu();
         this.setAutoCloseRouteMenu();
         this.disableAppMenu()
@@ -19,7 +28,7 @@ class Apps extends AppLayout {
                         AppLayout.BUTTON({
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
                                 clickEvent: () => {
-                                    new Route().go(new Player())
+                                    new Route().go(new Player(dialog))
                                 }
                             }
                         )
@@ -33,6 +42,7 @@ class Apps extends AppLayout {
             //icon: undefined,
             reverse: true,
             clickEvent: async () => {
+                dialog.open()
                 await this.#udb.createUserTable()
                 let udata = await this.#api.auth()
                 await this.#udb.addUserData(udata.access_token, udata.user_id)
@@ -53,10 +63,15 @@ class Apps extends AppLayout {
                                     track.artist,
                                     track.album,
                                     track.mimetype
-                                ).finally(() => {
-                                    let wc = App.getWebContents().getAllWebContents()
-                                    for (let test of wc) test.send("GENPLAYLIST")
-                                })
+                                )
+                                // ).finally(() => {
+                                //     let wc = App.getWebContents().getAllWebContents()
+                                //     for (let test of wc) test.send("GENPLAYLIST")
+                                // })
+                            }
+                            if (playl.indexOf(playlist) + 1 === playl.length) {
+                                let wc = App.getWebContents().getAllWebContents()
+                                for (let test of wc) test.send("GENPLAYLIST")
                             }
                         }
                     })
