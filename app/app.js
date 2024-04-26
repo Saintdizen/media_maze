@@ -1,4 +1,6 @@
-const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, Button} = require('chuijs');
+const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, Button, ProgressBar, H, Styles,
+    ipcRenderer
+} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 
@@ -6,16 +8,22 @@ class Apps extends AppLayout {
     #api = new YaApi()
     #udb = new UserDB(App.userDataPath())
     #pdb = new PlaylistDB(App.userDataPath())
-
+    #progressTracks = new ProgressBar()
     constructor() {
         super();
         let dialog = new Dialog({
             width: "500px",
-            height: "500px",
+            height: Styles.SIZE.MAX_CONTENT,
             closeOutSideClick: false
         })
+
         // Настройка диалога
-        dialog.addToBody(new Button({ title: "Закрыть диалоговое окно", clickEvent: () => dialog.close() }))
+        this.#progressTracks.setWidth(Styles.SIZE.WEBKIT_FILL)
+        dialog.addToBody(this.#progressTracks)
+
+        this.#progressTracks.setProgressCountText("Чтение плейлистов:")
+        this.#progressTracks.setProgressText("")
+
         // Настройка диалога
         this.disableAppMenu()
         this.addToHeaderLeftBeforeTitle([
@@ -47,9 +55,25 @@ class Apps extends AppLayout {
                 //
                 let ub = await this.generateUserButton(udata.access_token, udata.user_id)
                 this.addToHeaderRight([ub])
+
+                ipcRenderer.on("SEND_PLAYLIST_DATA", (event, args) => {
+                    //console.log(args)
+                    this.#progressTracks.setProgressCountText(`Чтение плейлиста: ${args.playlistName}`)
+                    this.#progressTracks.setMax(args.max)
+                })
+
+                ipcRenderer.on("SEND_TRACK_DATA", (event, args) => {
+                    //console.log(args)
+                    this.#progressTracks.setValue(args.index)
+                    this.#progressTracks.setProgressText(args.trackName)
+                })
+
                 await this.#udb.selectUserData().then(data => {
                     this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
                         for (let playlist of playl) {
+                            this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.playlist_name}`)
+                            this.#progressTracks.setMax(playlist.tracks.length)
+
                             for (let track of playlist.tracks) {
                                 let pname = playlist.playlist_name.replace("pl_", "")
                                 await this.#pdb.createPlaylistTable(pname)
@@ -61,6 +85,9 @@ class Apps extends AppLayout {
                                     track.album,
                                     track.mimetype
                                 )
+
+                                this.#progressTracks.setValue(playlist.tracks.indexOf(track))
+                                this.#progressTracks.setProgressText(`${track.artist} - ${track.title}`)
                             }
                             if (playl.indexOf(playlist) + 1 === playl.length) {
                                 let wc = App.getWebContents().getAllWebContents()
