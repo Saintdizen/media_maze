@@ -20,14 +20,12 @@ class Player extends Page {
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio, this.#dialog)
-        this.addRouteEvent(this, (e) => {
-            console.log(e)
+        this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-            this.#generatePlayList()
+            this.#generatePlayList();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
-            console.log("Генерация плейлиста")
             this.#generatePlayList()
             this.#dialog.close()
         })
@@ -50,9 +48,7 @@ class Player extends Page {
                 })
             }
         })
-        setTimeout(() => {
-            this.#audio.setPlayList(playlist)
-        }, 500);
+        setTimeout(() => this.#audio.setPlayList(playlist), 500);
     }
 }
 

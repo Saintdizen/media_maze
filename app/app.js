@@ -1,6 +1,4 @@
-const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, Button, ProgressBar, H, Styles,
-    ipcRenderer
-} = require('chuijs');
+const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 
@@ -132,4 +130,9 @@ class Apps extends AppLayout {
     }
 }
 
-render(() => new Apps()).then(() => Log.info("Загружено!"));
+
+
+
+render(() => new Apps()).finally(render => {
+    Log.info(render)
+})
