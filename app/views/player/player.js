@@ -14,9 +14,9 @@ class Player extends Page {
     constructor(dialog) {
         super();
         this.#dialog = dialog
-        this.setTitle('Проигрыватель');
+        this.setTitle('Media Maze');
         this.setFullHeight();
-        this.setMain(true);
+        this.setMain(false);
 
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio, this.#dialog)
@@ -53,3 +53,28 @@ class Player extends Page {
 }
 
 exports.Player = Player
+
+// generatePlaylist() {
+//     let dl_path = path.join(App.userDataPath(), "downloads")
+//     let playlist = []
+//     fs.readdir(dl_path, (err, files) => {
+//         files.forEach(file => {
+//             console.log(file)
+//             try {
+//                 let artist = file.split(" - ")[0]
+//                 let title = file.split(" - ")[1].replace(".mp3", "")
+//                 playlist.push({
+//                     title: title, artist: artist, album: "", mimetype: Audio.MIMETYPES.MP3,
+//                     path: String(path.join(dl_path, file))
+//                 })
+//             } catch (e) {
+//                 let title = file.replace(".mp3", "")
+//                 playlist.push({
+//                     title: title, artist: title, album: title, mimetype: Audio.MIMETYPES.MP3,
+//                     path: String(path.join(dl_path, file))
+//                 })
+//             }
+//         });
+//     });
+//     setTimeout(() => this.#audio.setPlayList(playlist), 100);
+// }

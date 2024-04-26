@@ -1,6 +1,7 @@
-const {AppLayout, render, Log, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
+const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
+const {Settings} = require("./views/settings/settings");
 
 class Apps extends AppLayout {
     #api = new YaApi()
@@ -21,7 +22,6 @@ class Apps extends AppLayout {
 
         this.#progressTracks.setProgressCountText("Чтение плейлистов:")
         this.#progressTracks.setProgressText("")
-
         // Настройка диалога
         this.disableAppMenu()
         this.addToHeaderLeftBeforeTitle([
@@ -41,8 +41,8 @@ class Apps extends AppLayout {
         ])
 
         let auth = AppLayout.BUTTON({
-            title: "Авторизация",
-            //icon: undefined,
+            title: "Войти",
+            icon: Icons.AUDIO_VIDEO.QUEUE_MUSIC,
             reverse: true,
             clickEvent: async () => {
                 dialog.open()
@@ -96,13 +96,17 @@ class Apps extends AppLayout {
                 })
             }
         })
+        this.addToHeaderRight([auth])
 
         this.#udb.selectUserData().then(async data => {
             global.access_token = data.access_token
             global.user_id = data.user_id
             let ub = await this.generateUserButton(data.access_token, data.user_id)
+            this.removeToHeaderRight([auth])
             this.addToHeaderRight([ub])
-        }).catch(() => {
+        }).catch(err => {
+            console.log(err)
+            this.removeToHeaderRight([auth])
             this.addToHeaderRight([auth])
         })
     }
@@ -124,15 +128,17 @@ class Apps extends AppLayout {
                             title: "Токен", text: "Токен обновлен (ЭТО ПРОСТО СООБЩЕНИЕ)", showTime: 1000
                         }).show()
                     }
-                })
+                }),
+                // AppLayout.BUTTON({
+                //         icon: Icons.ACTIONS.SETTINGS,
+                //         clickEvent: () => {
+                //             new Route().go(new Settings())
+                //         }
+                //     }
+                // )
             ]
         })
     }
 }
 
-
-
-
-render(() => new Apps()).finally(render => {
-    Log.info(render)
-})
+render(() => new Apps()).catch(err => console.error(err))

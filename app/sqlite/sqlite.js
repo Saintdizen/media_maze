@@ -1,5 +1,4 @@
 const fs = require("fs");
-const {Audio} = require("chuijs");
 const sqlite3 = require("sqlite3").verbose();
 
 
@@ -14,7 +13,6 @@ class UserDB {
                 if (error) return console.error(error.message);
             });
         }
-        console.log(`Connection with SQLite (${filepath}) has been established`);
     }
     createUserTable() {
         return new Promise((resolve, reject) => {
@@ -44,7 +42,7 @@ class UserDB {
     selectUserData() {
         return new Promise((resolve, reject) => {
             this.#user_db.each(`SELECT * FROM user;`, (error, row) => {
-                if (error) reject(error.message);
+                if (error) reject(error);
                 resolve(row)
             });
         })
@@ -68,7 +66,6 @@ class PlaylistDB {
                 if (error) return console.error(error.message);
             });
         }
-        console.log(`Connection with SQLite (${filepath}) has been established`);
     }
     createPlaylistTable(pl_kind) {
         this.#pl_db.exec(`
