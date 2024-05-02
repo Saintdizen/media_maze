@@ -1,6 +1,7 @@
 const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
+const {Feed} = require("./views/feed/feed");
 
 class Apps extends AppLayout {
     #api = new YaApi()
@@ -31,6 +32,13 @@ class Apps extends AppLayout {
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
                                 clickEvent: () => {
                                     new Route().go(new Player(dialog))
+                                }
+                            }
+                        ),
+                        AppLayout.BUTTON({
+                                icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
+                                clickEvent: () => {
+                                    new Route().go(new Feed())
                                 }
                             }
                         )
