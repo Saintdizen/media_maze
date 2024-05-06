@@ -7,7 +7,7 @@ class Feed extends Page {
         autoplay: false,
         playlist: false,
         width: Styles.SIZE.WEBKIT_FILL,
-        // height: Styles.SIZE.WEBKIT_FILL,
+        height: Styles.SIZE.WEBKIT_FILL,
         //pin: Audio.PIN.BOTTOM
     })
     constructor() {
@@ -32,32 +32,26 @@ class Feed extends Page {
             title: "getAllStationsList",
             clickEvent: () => {
                 this.#udb.selectUserData().then(async data => {
-                    let test = await new YaApi().getAllStationsList(data.access_token, data.user_id)
-                    console.log(test)
+                    let stationsAll = await new YaApi().getAllStationsList(data.access_token, data.user_id)
+                    console.log(stationsAll)
 
-                    let stations1 = test.filter(station => this.filterByDiversity(station))
-                    console.log(stations1)
+                    // let stations1 = stationsAll.filter(station => this.filterByDiversity(station))
+                    // console.log(stations1)
+                    //
+                    // let stations2 = stationsAll.filter(station => this.filterByLanguage(station))
+                    // console.log(stations2)
 
-                    let stations2 = stations1.filter(station => this.filterByLanguage(station))
-                    console.log(stations2)
-
-                    let stations3 = stations2.filter(station => this.filterByMoodEnergy(station))
+                    let stations3 = stationsAll.filter(station => this.filterByMoodEnergy(station))
                     console.log(stations3)
 
-                    // for (let station of test) {
-                    //     let diversity = station.station.restrictions2.diversity.possibleValues.filter((datas) => datas.value === "favorite")
-                    //     if (diversity.length > 0) {
-                    //         console.log(station)
-                    //     }
-                    //
-                    //     console.log(diversity)
-                    //     // console.log(station.station.restrictions2.diversity.possibleValues)
-                    //     // console.log(station.station.restrictions2.language.possibleValues)
-                    //     // console.log(station.station.restrictions2.moodEnergy.possibleValues)
-                    // }
+                    let sid = `${stations3[0].station.id.type}:${stations3[0].station.id.tag}`
 
-                    // let test2 = await new YaApi().getRecomendedStationsList(data.access_token, data.user_id)
-                    // console.log(test2)
+                    let tracks = await new YaApi().getStationTracks(data.access_token, data.user_id, {
+                        stationId: sid
+                    })
+
+                    console.log(tracks)
+
                 })
             }
         })
@@ -66,18 +60,37 @@ class Feed extends Page {
     }
 
     filterByDiversity(station) {
-        let tt = station.station.restrictions2.diversity.possibleValues.filter((datas) => datas.value === "favorite")
-        return tt.length
+        return station.settings2.diversity === Feed.FILTERS.diversity.default.value
     }
 
     filterByLanguage(station) {
-        let tt = station.station.restrictions2.language.possibleValues.filter((datas) => datas.value === "russian")
-        return tt.length
+        return station.settings2.language === Feed.FILTERS.language.without_words.value
     }
 
     filterByMoodEnergy(station) {
-        let tt = station.station.restrictions2.moodEnergy.possibleValues.filter((datas) => datas.value === "fun")
-        return tt.length
+        return station.settings2.moodEnergy === Feed.FILTERS.moodEnergy.fun.value
+    }
+
+    static FILTERS = {
+        diversity: {
+            favorite: {value: 'favorite', name: 'Любимое' },
+            discover: {value: 'discover', name: 'Незнакомое' },
+            popular: {value: 'popular', name: 'Популярное' },
+            default: {value: 'default', name: 'Любое' }
+        },
+        language: {
+            russian: {value: 'russian', name: 'Русский' },
+            not_russian: {value: 'not-russian', name: 'Иностранный' },
+            any: {value: 'any', name: 'Любой' },
+            without_words: {value: 'without-words', name: 'Без слов' }
+        },
+        moodEnergy: {
+            active: {value: 'active', name: 'Бодрое' },
+            fun: {value: 'fun', name: 'Весёлое' },
+            calm: {value: 'calm', name: 'Спокойное' },
+            sad: {value: 'sad', name: 'Грустное' },
+            all: {value: 'all', name: 'Любое' }
+        }
     }
 }
 
