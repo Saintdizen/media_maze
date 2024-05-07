@@ -34,11 +34,12 @@ class Player extends Page {
             for (let table of tables) {
                 this.#pdb.select(table.name).then(pl => {
                     for (let track of pl) {
+                        console.log(track)
                         playlist.push({
                             track_id: track.track_id,
                             title: track.title,
                             artist: track.artist,
-                            album: track.album,
+                            album: `https://${track.album.replace("%%", "800x800")}`,
                             mimetype: track.mimetype
                         })
                     }

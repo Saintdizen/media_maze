@@ -78,7 +78,7 @@
     "electron-builder": "~24.6.4"
   },
   "dependencies": {
-    "chuijs": "~2.8.2",
+    "chuijs": "~2.8.4",
     "request": "^2.88.2",
     "sqlite3": "5.1.6"
   }
