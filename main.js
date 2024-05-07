@@ -2,8 +2,8 @@ const {Main, MenuItem, path, App, formatBytes} = require('chuijs');
 let json = require("./package.json");
 const main = new Main({
     name: `${json.productName} (${json.version})`,
-    width: 1024,
-    height: 680,
+    width: 960,
+    height: 540,
     icon: `${__dirname}/resources/icons/app/icon.png`,
     render: `${__dirname}/app/app.js`,
     devTools: false,

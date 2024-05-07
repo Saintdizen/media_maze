@@ -4,11 +4,8 @@ const {PlaylistDB} = require("../../sqlite/sqlite");
 class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
     #audio = new YaAudio({
-        autoplay: false,
-        playlist: true,
         width: Styles.SIZE.WEBKIT_FILL,
-        height: Styles.SIZE.WEBKIT_FILL,
-        //pin: Audio.PIN.BOTTOM
+        height: Styles.SIZE.WEBKIT_FILL
     })
     #dialog = undefined
     constructor(dialog) {

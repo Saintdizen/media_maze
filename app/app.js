@@ -35,13 +35,13 @@ class Apps extends AppLayout {
                                 }
                             }
                         ),
-                        AppLayout.BUTTON({
-                                icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                                clickEvent: () => {
-                                    new Route().go(new Feed())
-                                }
-                            }
-                        )
+                        // AppLayout.BUTTON({
+                        //         icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
+                        //         clickEvent: () => {
+                        //             new Route().go(new Feed())
+                        //         }
+                        //     }
+                        // )
                     ]
                 }
             )
