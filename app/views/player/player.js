@@ -27,11 +27,28 @@ class Player extends Page {
             this.#dialog.close()
         })
 
-        let playlist_dialog = new Dialog({ closeOutSideClick: true, width: "80%", height: "70%", transparentBack: true })
+        this.#audio.addFunctionButton(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.AUDIO_VIDEO.SHUFFLE,
+                clickEvent: () => {}
+            })
+        )
+
+
+        let playlists = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
+        playlists.addToBody(this.#audio.getPlaylist())
+        this.add(playlists)
+        this.#audio.addFunctionButton(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.AUDIO_VIDEO.PLAYLIST_ADD,
+                clickEvent: () => playlists.open()
+            })
+        )
+
+
+        let playlist_dialog = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
         playlist_dialog.addToBody(this.#audio.getPlaylist())
-
         this.add(playlist_dialog)
-
         this.#audio.addFunctionButton(
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
