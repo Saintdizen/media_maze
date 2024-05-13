@@ -1,4 +1,4 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 
 class Player extends Page {
@@ -26,15 +26,26 @@ class Player extends Page {
             this.#generatePlayList()
             this.#dialog.close()
         })
+
+        let playlist_dialog = new Dialog({ closeOutSideClick: true, width: "80%", height: "70%", transparentBack: true })
+        playlist_dialog.addToBody(this.#audio.getPlaylist())
+
+        this.add(playlist_dialog)
+
+        this.#audio.addFunctionButton(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
+                clickEvent: () => playlist_dialog.open()
+            })
+        )
     }
 
     #generatePlayList() {
         let playlist = []
-        this.#pdb.selectTables().then(tables => {
-            for (let table of tables) {
-                this.#pdb.select(table.name).then(pl => {
+        this.#pdb.getPlaylists().then(async playlists => {
+            for (let table of playlists) {
+                this.#pdb.getPlaylist(table.name).then(pl => {
                     for (let track of pl) {
-                        console.log(track)
                         playlist.push({
                             track_id: track.track_id,
                             title: track.title,

@@ -1,7 +1,7 @@
 const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
-const {Feed} = require("./views/feed/feed");
+const {Stations} = require("./views/stations/stations");
 
 class Apps extends AppLayout {
     #api = new YaApi()

@@ -94,17 +94,24 @@ class PlaylistDB {
         })
 
     }
-    select(name) {
+    getPlaylists() {
+        let list = []
         return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT * FROM ${name};`, (error, rows) => {
+            this.#pl_db.all(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;`, (error, rows) => {
                 if (error) reject(error.message);
-                resolve(rows)
+                for (let tt of rows) {
+                    list.push({
+                        name: tt.name,
+                        id: tt.name.replace("pl_", "")
+                    })
+                }
+                resolve(list)
             });
         })
     }
-    selectTables() {
+    getPlaylist(name) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;`, (error, rows) => {
+            this.#pl_db.all(`SELECT * FROM ${name}`, (error, rows) => {
                 if (error) reject(error.message);
                 resolve(rows)
             });

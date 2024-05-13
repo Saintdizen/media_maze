@@ -1,7 +1,7 @@
 const {Page, YaAudio, Styles, Button, App, YaApi} = require('chuijs');
 const {UserDB} = require("../../sqlite/sqlite");
 
-class Feed extends Page {
+class Stations extends Page {
     #udb = new UserDB(App.userDataPath())
     #audio = new YaAudio({
         autoplay: false,
@@ -60,15 +60,15 @@ class Feed extends Page {
     }
 
     filterByDiversity(station) {
-        return station.settings2.diversity === Feed.FILTERS.diversity.default.value
+        return station.settings2.diversity === Stations.FILTERS.diversity.default.value
     }
 
     filterByLanguage(station) {
-        return station.settings2.language === Feed.FILTERS.language.without_words.value
+        return station.settings2.language === Stations.FILTERS.language.without_words.value
     }
 
     filterByMoodEnergy(station) {
-        return station.settings2.moodEnergy === Feed.FILTERS.moodEnergy.fun.value
+        return station.settings2.moodEnergy === Stations.FILTERS.moodEnergy.fun.value
     }
 
     static FILTERS = {
@@ -94,4 +94,4 @@ class Feed extends Page {
     }
 }
 
-exports.Feed = Feed
+exports.Feed = Stations
