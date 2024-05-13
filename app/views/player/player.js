@@ -1,4 +1,4 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons, Button} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 
 class Player extends Page {
@@ -8,6 +8,9 @@ class Player extends Page {
         height: Styles.SIZE.WEBKIT_FILL
     })
     #dialog = undefined
+    //
+    #played_list = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
+    #playlist_list = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
     constructor(dialog) {
         super();
         this.#dialog = dialog
@@ -24,6 +27,7 @@ class Player extends Page {
 
         ipcRenderer.on("GENPLAYLIST", () => {
             this.#generatePlayList()
+            this.#genPlList()
             this.#dialog.close()
         })
 
@@ -34,27 +38,56 @@ class Player extends Page {
             })
         )
 
+        this.#genPlList()
 
-        let playlists = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
-        playlists.addToBody(this.#audio.getPlaylist())
-        this.add(playlists)
+        this.add(this.#playlist_list)
         this.#audio.addFunctionButton(
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.AUDIO_VIDEO.PLAYLIST_ADD,
-                clickEvent: () => playlists.open()
+                clickEvent: () => this.#playlist_list.open()
             })
         )
 
-
-        let playlist_dialog = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
-        playlist_dialog.addToBody(this.#audio.getPlaylist())
-        this.add(playlist_dialog)
+        this.#played_list.addToBody(this.#audio.getPlaylist())
+        this.add(this.#played_list)
         this.#audio.addFunctionButton(
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
-                clickEvent: () => playlist_dialog.open()
+                clickEvent: () => this.#played_list.open()
             })
         )
+    }
+
+    #genPlList() {
+        this.#pdb.getPlaylists().then(async playlists => {
+            for (let table of playlists) {
+                let button = new Button({
+                    reverse: false,
+                    title: table.name,
+                    icon: undefined,
+                    clickEvent: () => {
+                        let playlist = []
+                        this.#pdb.getPlaylist(table.name).then(pl => {
+                            for (let track of pl) {
+                                playlist.push({
+                                    track_id: track.track_id,
+                                    title: track.title,
+                                    artist: track.artist,
+                                    album: `https://${track.album.replace("%%", "800x800")}`,
+                                    mimetype: track.mimetype
+                                })
+                            }
+                        })
+                        this.#playlist_list.close()
+                        setTimeout(() => {
+                            this.#audio.setPlayList(playlist.reverse())
+                            this.#played_list.open()
+                        }, 250);
+                    }
+                })
+                this.#playlist_list.addToBody(button)
+            }
+        })
     }
 
     #generatePlayList() {
