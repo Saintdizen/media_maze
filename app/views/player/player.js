@@ -5,7 +5,8 @@ class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
     #audio = new YaAudio({
         width: Styles.SIZE.WEBKIT_FILL,
-        height: Styles.SIZE.WEBKIT_FILL
+        height: Styles.SIZE.WEBKIT_FILL,
+        coverPath: `file://${require('path').join(__dirname, 'cover.png')}`
     })
     #dialog = undefined
     //
