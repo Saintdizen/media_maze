@@ -1,4 +1,4 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons, Button} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons, Button, Notification} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 
 class Player extends Page {
@@ -11,6 +11,7 @@ class Player extends Page {
     //
     #played_list = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
     #playlist_list = new Dialog({ closeOutSideClick: true, width: "91%", height: "85%", transparentBack: true })
+    #playlist = []
     constructor(dialog) {
         super();
         this.#dialog = dialog
@@ -31,10 +32,30 @@ class Player extends Page {
             this.#dialog.close()
         })
 
+        // let ce = new CustomElement({
+        //     id: "123"
+        // })
+        //
+        // this.add(ce)
+
         this.#audio.addFunctionButton(
-            YaAudio.FUNCTION_BUTTON({
-                icon: Icons.AUDIO_VIDEO.SHUFFLE,
-                clickEvent: () => {}
+            YaAudio.FUNCTION_ACTIVE_BUTTON({
+                value: false,
+                icon_on: Icons.AUDIO_VIDEO.SHUFFLE_ON,
+                icon_off: Icons.AUDIO_VIDEO.SHUFFLE,
+                activateEvent: (evt) => {
+                    if (evt.target.checked) {
+                        this.#audio.setPlayList(shuffle(this.#playlist.slice()))
+                        new Notification({
+                            title: "Перемешать", text: evt.target.checked, showTime: 1000
+                        }).show()
+                    } else {
+                        this.#audio.setPlayList(this.#playlist)
+                        new Notification({
+                            title: "Перемешать", text: evt.target.checked, showTime: 1000
+                        }).show()
+                    }
+                },
             })
         )
 
@@ -66,10 +87,10 @@ class Player extends Page {
                     title: table.name,
                     icon: undefined,
                     clickEvent: () => {
-                        let playlist = []
+                        this.#playlist = []
                         this.#pdb.getPlaylist(table.name).then(pl => {
                             for (let track of pl) {
-                                playlist.push({
+                                this.#playlist.push({
                                     track_id: track.track_id,
                                     title: track.title,
                                     artist: track.artist,
@@ -80,7 +101,7 @@ class Player extends Page {
                         })
                         this.#playlist_list.close()
                         setTimeout(() => {
-                            this.#audio.setPlayList(playlist.reverse())
+                            this.#audio.setPlayList(this.#playlist)
                             this.#played_list.open()
                         }, 250);
                     }
@@ -91,12 +112,12 @@ class Player extends Page {
     }
 
     #generatePlayList() {
-        let playlist = []
+        this.#playlist = []
         this.#pdb.getPlaylists().then(async playlists => {
             for (let table of playlists) {
                 this.#pdb.getPlaylist(table.name).then(pl => {
                     for (let track of pl) {
-                        playlist.push({
+                        this.#playlist.push({
                             track_id: track.track_id,
                             title: track.title,
                             artist: track.artist,
@@ -107,8 +128,26 @@ class Player extends Page {
                 })
             }
         })
-        setTimeout(() => this.#audio.setPlayList(playlist), 500);
+        setTimeout(() => this.#audio.setPlayList(this.#playlist), 500);
     }
+}
+
+const shuffle = (array) => {
+    let m = array.length, t, i;
+
+    // Пока есть элементы для перемешивания
+    while (m) {
+
+        // Взять оставшийся элемент
+        i = Math.floor(Math.random() * m--);
+
+        // И поменять его местами с текущим элементом
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    }
+
+    return array;
 }
 
 exports.Player = Player
