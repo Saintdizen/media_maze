@@ -17,8 +17,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     background: var(--ap_main_background);
     border-radius: var(--border_radius);
     margin: var(--margin);

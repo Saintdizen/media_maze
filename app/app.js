@@ -75,8 +75,14 @@ class Apps extends AppLayout {
 
                 await this.#udb.selectUserData().then(data => {
                     this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
+                        await this.#pdb.createPlaylistDictTable()
                         for (let playlist of playl) {
-                            this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.playlist_name}`)
+                            await this.#pdb.addPlaylistData(
+                                playlist.playlist_name,
+                                playlist.playlist_title
+                            )
+
+                            this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.playlist_title}`)
                             this.#progressTracks.setMax(playlist.tracks.length)
 
                             for (let track of playlist.tracks) {

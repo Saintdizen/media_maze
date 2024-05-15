@@ -67,6 +67,36 @@ class PlaylistDB {
             });
         }
     }
+    createPlaylistDictTable() {
+        this.#pl_db.exec(`
+            CREATE TABLE IF NOT EXISTS pl_list (
+                pl_kind TEXT PRIMARY KEY,
+                pl_title TEXT NOT NULL
+            );
+        `);
+    }
+    addPlaylistData(pl_kind, pl_title) {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.run(`INSERT OR IGNORE INTO pl_list (pl_kind, pl_title) VALUES (?, ?);`,
+                [pl_kind, pl_title],
+                (error) => {
+                    if (error) {
+                        console.error(error.message);
+                        reject(error)
+                    }
+                    resolve("OK")
+                    console.log(`Inserted a row with the ID: ${pl_kind}`);
+                });
+        })
+    }
+    getPlaylists() {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.all(`SELECT * FROM pl_list`, (error, rows) => {
+                if (error) reject(error.message);
+                resolve(rows)
+            });
+        })
+    }
     createPlaylistTable(pl_kind) {
         this.#pl_db.exec(`
             CREATE TABLE IF NOT EXISTS pl_${pl_kind} (
@@ -90,22 +120,6 @@ class PlaylistDB {
                 }
                 resolve("OK")
                 console.log(`Inserted a row with the ID: ${track_id}`);
-            });
-        })
-
-    }
-    getPlaylists() {
-        let list = []
-        return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;`, (error, rows) => {
-                if (error) reject(error.message);
-                for (let tt of rows) {
-                    list.push({
-                        name: tt.name,
-                        id: tt.name.replace("pl_", "")
-                    })
-                }
-                resolve(list)
             });
         })
     }

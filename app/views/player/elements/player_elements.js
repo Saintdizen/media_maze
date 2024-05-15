@@ -65,7 +65,7 @@ class PlayerDialogButton {
     })
     constructor(table, listener = () => {}) {
         this.#main_block.addEventListener("click", listener)
-        this.#title.innerText(table.id)
+        this.#title.innerText(table.pl_title)
         this.#download.innerHTML(new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML())
         //
         this.#controls.set().appendChild(this.#download.set())

@@ -24,11 +24,11 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-            this.#generatePlayList();
+            //this.#generatePlayList();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
-            this.#generatePlayList()
+            //this.#generatePlayList()
             this.#test()
             this.#dialog.close()
         })
@@ -66,37 +66,38 @@ class Player extends Page {
         this.add(this.playlist_list, this.track_list)
     }
 
-    #generatePlayList() {
-        this.#playlist = []
-        this.#pdb.getPlaylists().then(async playlists => {
-            for (let table of playlists) {
-                this.#pdb.getPlaylist(table.name).then(pl => {
-                    for (let track of pl) {
-                        this.#playlist.push({
-                            track_id: track.track_id,
-                            title: track.title,
-                            artist: track.artist,
-                            album: `https://${track.album.replace("%%", "800x800")}`,
-                            mimetype: track.mimetype
-                        })
-                    }
-                })
-            }
-        })
-        setTimeout(() => this.#audio.setPlayList(this.#playlist), 500);
-    }
+    // #generatePlayList() {
+    //     this.#playlist = []
+    //     this.#pdb.getPlaylists().then(async playlists => {
+    //         for (let table of playlists) {
+    //             this.#pdb.getPlaylist(table.name).then(pl => {
+    //                 for (let track of pl) {
+    //                     this.#playlist.push({
+    //                         track_id: track.track_id,
+    //                         title: track.title,
+    //                         artist: track.artist,
+    //                         album: `https://${track.album.replace("%%", "800x800")}`,
+    //                         mimetype: track.mimetype
+    //                     })
+    //                 }
+    //             })
+    //         }
+    //     })
+    //     setTimeout(() => this.#audio.setPlayList(this.#playlist), 500);
+    // }
 
     #test() {
         this.#pdb.getPlaylists().then(async playlists => {
+            console.log(playlists)
             for (let table of playlists) {
                 let button = new PlayerDialogButton(table, (evt) => {
                     if (evt.target.id === "test_download") {
                         new Notification({
-                            title: "test_download", text: table.name, showTime: 1000
+                            title: table.pl_title, text: table.pl_kind, showTime: 1000
                         }).show()
                     } else {
                         this.#playlist = []
-                        this.#pdb.getPlaylist(table.name).then(pl => {
+                        this.#pdb.getPlaylist(table.pl_kind).then(pl => {
                             for (let track of pl) {
                                 this.#playlist.push({
                                     track_id: track.track_id,
@@ -111,7 +112,7 @@ class Player extends Page {
                         setTimeout(() => {
                             this.#audio.setPlayList(this.#playlist)
                             this.track_list.addToMainBlock(this.#audio.getPlaylist().getPlaylist())
-                            this.track_list.setTitle(table.name)
+                            this.track_list.setTitle(table.pl_title)
                             this.track_list.open()
                         }, 250);
                     }
