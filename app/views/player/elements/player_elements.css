@@ -72,3 +72,8 @@
 .test_track_list_main_block  chui_playlist_list chui_track:hover {
     background: var(--blue_prime_background_trans);
 }
+
+#test_dialog_pl_list_title {
+    border-radius: var(--border_radius);
+    padding: 5px;
+}

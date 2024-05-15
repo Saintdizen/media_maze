@@ -1,5 +1,6 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Dialog, Icons, Notification, CustomElement, Icon} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
+const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
 
 class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
@@ -11,16 +12,14 @@ class Player extends Page {
     #dialog = undefined
     //
     #playlist = []
-    playlist_list = this.#dialog_gen()
-    track_list = this.#dialog_gen()
+    playlist_list = new PlayerDialog()
+    track_list = new PlayerDialog("60%", "90%")
     constructor(dialog) {
         super();
         this.#dialog = dialog
         this.setTitle('Media Maze');
         this.setFullHeight();
         this.setMain(false);
-        this.add(this.playlist_list, this.track_list)
-
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
@@ -64,6 +63,7 @@ class Player extends Page {
         )
 
         this.#test()
+        this.add(this.playlist_list, this.track_list)
     }
 
     #generatePlayList() {
@@ -86,92 +86,43 @@ class Player extends Page {
         setTimeout(() => this.#audio.setPlayList(this.#playlist), 500);
     }
 
-    #dialog_gen() {
-        let dialog = new Dialog({ closeOutSideClick: false, width: "91%", height: "85%", transparentBack: true })
-        let button_close = new CustomElement({
-            id: "test_close_button_one",
-            pathToCSS: "app/views/player/test.css"
-        })
-        button_close.set().innerHTML = new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML()
-        button_close.set().addEventListener("click", () => dialog.close())
-        dialog.addToHeader(button_close)
-        return dialog
-    }
-
-    #playlist_button_gen(name, listener = () => {}) {
-        let main_block = new CustomElement({
-            id: "test_main_block",
-            className: "test_main_block",
-            pathToCSS: "app/views/player/test.css"
-        })
-        main_block.set().addEventListener("click", listener)
-        //
-        let title = new CustomElement({
-            id: "test_title",
-            className: "test_title",
-            pathToCSS: "app/views/player/test.css"
-        })
-        title.set().innerText = name
-        //
-        let controls = new CustomElement({
-            id: "test_controls_block",
-            className: "test_controls_block",
-            pathToCSS: "app/views/player/test.css"
-        })
-        controls.set().addEventListener("click", () => {
-            console.log("controls")
-        })
-        let download = new CustomElement({
-            id: "test_download",
-            className: "test_controls_button",
-            pathToCSS: "app/views/player/test.css"
-        })
-        download.set().innerHTML = new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML()
-        download.set().addEventListener("click", () => {
-            console.log("download")
-        })
-        //
-        controls.set().appendChild(download.set())
-        //
-        main_block.set().appendChild(title.set())
-        main_block.set().appendChild(controls.set())
-        return main_block
-    }
-
     #test() {
-        let test = new CustomElement({
-            id: "test_track_list_main_block",
-            className: "test_track_list_main_block",
-            pathToCSS: "app/views/player/test.css"
-        })
-        this.track_list.addToBody(test)
         this.#pdb.getPlaylists().then(async playlists => {
             for (let table of playlists) {
-                let button = this.#playlist_button_gen(table.name, () => {
-                    this.#playlist = []
-                    this.#pdb.getPlaylist(table.name).then(pl => {
-                        for (let track of pl) {
-                            this.#playlist.push({
-                                track_id: track.track_id,
-                                title: track.title,
-                                artist: track.artist,
-                                album: `https://${track.album.replace("%%", "800x800")}`,
-                                mimetype: track.mimetype
-                            })
-                        }
-                    })
-                    this.playlist_list.close()
-                    setTimeout(() => {
-                        this.#audio.setPlayList(this.#playlist)
-                        test.set().appendChild(this.#audio.getPlaylist().getPlaylist())
-                        this.track_list.open()
-                    }, 250);
+                let button = new PlayerDialogButton(table, (evt) => {
+                    if (evt.target.id === "test_download") {
+                        new Notification({
+                            title: "test_download", text: table.name, showTime: 1000
+                        }).show()
+                    } else {
+                        this.#playlist = []
+                        this.#pdb.getPlaylist(table.name).then(pl => {
+                            for (let track of pl) {
+                                this.#playlist.push({
+                                    track_id: track.track_id,
+                                    title: track.title,
+                                    artist: track.artist,
+                                    album: `https://${track.album.replace("%%", "800x800")}`,
+                                    mimetype: track.mimetype
+                                })
+                            }
+                        })
+                        this.playlist_list.close()
+                        setTimeout(() => {
+                            this.#audio.setPlayList(this.#playlist)
+                            this.track_list.addToMainBlock(this.#audio.getPlaylist().getPlaylist())
+                            this.track_list.setTitle(table.name)
+                            this.track_list.open()
+                        }, 250);
+                    }
                 })
-                this.playlist_list.addToBody(button)
+                this.playlist_list.addToMainBlock(button.set())
             }
         })
     }
 }
+
+exports.Player = Player
 
 const shuffle = (array) => {
     let m = array.length, t, i;
@@ -190,8 +141,6 @@ const shuffle = (array) => {
 
     return array;
 }
-
-exports.Player = Player
 
 // generatePlaylist() {
 //     let dl_path = path.join(App.userDataPath(), "downloads")
