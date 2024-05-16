@@ -1,6 +1,8 @@
-const {Main, MenuItem, path, App, formatBytes, ipcMain, BrowserWindow} = require('chuijs');
+const {Main, MenuItem, path, App, ipcMain, BrowserWindow, ipcRenderer, YaApi} = require('chuijs');
 let json = require("./package.json");
 require('electron-file-downloader')();
+const {download} = require("electron-file-downloader");
+const {PlaylistDB, UserDB} = require("./app/sqlite/sqlite");
 const main = new Main({
     name: `${json.productName} (${json.version})`,
     width: 960,
@@ -31,11 +33,38 @@ main.start({
 });
 
 ipcMain.on("download", async (event, info) => {
-    console.log(event, info)
-    const {download} = require("electron-file-downloader");
-
-    await download(BrowserWindow.getFocusedWindow(), info.url, info.properties)
+    for (let track of info.data) {
+        let info = await save(track)
+        let pdb = new PlaylistDB(App.userDataPath())
+        await pdb.updateRow(track.table, track.track_id, info)
+        console.log(info)
+    }
 });
+
+function save(track) {
+    return new Promise(async resolve => {
+        let udb = new UserDB(App.userDataPath())
+        let api = new YaApi()
+        udb.selectUserData().then(async (udt) => {
+            let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+            await download(BrowserWindow.getAllWindows()[0], link, {
+                directory: track.savePath,
+                filename: track.filename,
+                // onStarted: (event) => {
+                //     event.on('done', (event, state) => {
+                //         resolve({
+                //             state: state,
+                //             path: event.getSavePath()
+                //         })
+                //     })
+                // },
+                // onProgress: (event) => {
+                //     console.log(event.progress, event.speed, event.remaining, event.total, event.downloaded, event.status)
+                // }
+            }).then(dl => resolve(dl.DownloadItem.getSavePath()))
+        })
+    })
+}
 
 // App.get().on('session-created', (session) => {
 //     session.on('will-download', (e, item, contents) => {

@@ -1,11 +1,9 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, YaApi} = require('chuijs');
-const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification} = require('chuijs');
+const {PlaylistDB} = require("../../sqlite/sqlite");
 const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
 
 class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
-    #udb = new UserDB(App.userDataPath())
-    #api = new YaApi()
     #audio = new YaAudio({
         width: Styles.SIZE.WEBKIT_FILL,
         height: Styles.SIZE.WEBKIT_FILL,
@@ -73,25 +71,19 @@ class Player extends Page {
             for (let table of playlists) {
                 let button = new PlayerDialogButton(table, async (evt) => {
                     if (evt.target.id === "test_download") {
-                        new Notification({
-                            title: table.pl_title, text: table.pl_kind, showTime: 1000
-                        }).show()
-                        let udt = await this.#udb.selectUserData()
-                        let dpl = await this.#pdb.getPlaylist(table.pl_kind)
-                        for (let dtr of dpl) {
-                            console.log(dtr)
-                            this.#api.getLink(dtr.track_id, udt.access_token, udt.user_id).then(link => {
-                                let pth = require("path").join(App.downloadsPath(), table.pl_kind)
-                                ipcRenderer.send("download", {
-                                    url: link,
-                                    properties: {
-                                        directory: pth,
-                                        filename: `${dtr.artist} - ${dtr.title}.mp3`
-                                    }
-                                });
-                            })
-                        }
-
+                        new Notification({ title: table.pl_title, text: table.pl_kind, showTime: 1000 }).show()
+                        this.#pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                            let links = []
+                            for (let dtr of dpl) {
+                                links.push({
+                                    table: table.pl_kind,
+                                    track_id: dtr.track_id,
+                                    savePath: require("path").join(App.userDataPath(), 'downloads', table.pl_kind),
+                                    filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`
+                                })
+                            }
+                            ipcRenderer.send("download", {data: links});
+                        })
                     } else {
                         this.#playlist = []
                         this.#pdb.getPlaylist(table.pl_kind).then(pl => {

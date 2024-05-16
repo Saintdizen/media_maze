@@ -131,13 +131,16 @@ class PlaylistDB {
             });
         })
     }
-    updateRow(id, name) {
-        this.#pl_db.run(`UPDATE sharks SET name = ? WHERE id = ?`,
-        [name, id],
-        (error) => {
-            if (error) console.error(error.message);
-            console.log(`Row ${id} has been updated`);
-        });
+    updateRow(t_name, track_id, path) {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.run(`UPDATE ${t_name} SET path = ? WHERE track_id = ?`,
+                [path, track_id],
+                (error) => {
+                    if (error) reject(error.message);
+                    this.#pl_db.close()
+                    resolve(`Row ${track_id} has been updated`)
+                });
+        })
     }
     async deleteRow(id) {
         this.#pl_db.run(`DELETE FROM sharks WHERE id = ?`, [id],
