@@ -80,12 +80,8 @@ class PlaylistDB {
             this.#pl_db.run(`INSERT OR IGNORE INTO pl_list (pl_kind, pl_title) VALUES (?, ?);`,
                 [pl_kind, pl_title],
                 (error) => {
-                    if (error) {
-                        console.error(error.message);
-                        reject(error)
-                    }
-                    resolve("OK")
-                    console.log(`Inserted a row with the ID: ${pl_kind}`);
+                    if (error) reject(error)
+                    resolve(`Inserted a row with the ID: ${pl_kind}`)
                 });
         })
     }
@@ -114,12 +110,16 @@ class PlaylistDB {
             this.#pl_db.run(`INSERT OR IGNORE INTO pl_${pl_kind} (track_id, title, artist, album, mimetype, path) VALUES (?, ?, ?, ?, ?, ?);`,
             [track_id, title, artist, album, mimetype, ""],
             (error) => {
-                if (error) {
-                    console.error(error.message);
-                    reject(error)
-                }
-                resolve("OK")
-                console.log(`Inserted a row with the ID: ${track_id}`);
+                if (error) reject(error.message)
+                resolve(`Inserted a row with the ID: ${track_id}`)
+            });
+        })
+    }
+    getTrack(name, track_id) {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.all(`SELECT * FROM ${name} WHERE track_id = ?`, [track_id], (error, rows) => {
+                if (error) reject(error.message);
+                resolve(rows[0])
             });
         })
     }
@@ -131,13 +131,12 @@ class PlaylistDB {
             });
         })
     }
-    updateRow(t_name, track_id, path) {
+    updateTrack(t_name, track_id, path) {
         return new Promise((resolve, reject) => {
             this.#pl_db.run(`UPDATE ${t_name} SET path = ? WHERE track_id = ?`,
                 [path, track_id],
                 (error) => {
                     if (error) reject(error.message);
-                    this.#pl_db.close()
                     resolve(`Row ${track_id} has been updated`)
                 });
         })

@@ -34,11 +34,12 @@ main.start({
 
 ipcMain.on("download", async (event, info) => {
     for (let track of info.data) {
-        let info = await save(track)
         let pdb = new PlaylistDB(App.userDataPath())
-        await pdb.updateRow(track.table, track.track_id, info)
-        console.log(info)
+        let info = await save(track)
+        await pdb.updateTrack(track.table, track.track_id, info)
+        BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_DONE", track)
     }
+    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_DONE")
 });
 
 function save(track) {

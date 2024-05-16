@@ -62,6 +62,13 @@ class Player extends Page {
 
         this.#generatePlayList()
         this.add(this.playlist_list, this.track_list)
+        // DOWNLOAD_TRACK_DONE
+        ipcRenderer.on("DOWNLOAD_TRACK_DONE", (event, args) => {
+            new Notification({ title: "DOWNLOAD_DONE", text: args.filename_old, showTime: 1000 }).show()
+        })
+        ipcRenderer.on("DOWNLOAD_DONE", () => {
+            new Notification({ title: "DOWNLOAD_DONE", text: "DOWNLOAD_DONE", showTime: 1000 }).show()
+        })
     }
 
     #generatePlayList() {
@@ -75,12 +82,16 @@ class Player extends Page {
                         this.#pdb.getPlaylist(table.pl_kind).then(async dpl => {
                             let links = []
                             for (let dtr of dpl) {
-                                links.push({
-                                    table: table.pl_kind,
-                                    track_id: dtr.track_id,
-                                    savePath: require("path").join(App.userDataPath(), 'downloads', table.pl_kind),
-                                    filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`
-                                })
+                                console.log(dtr)
+                                if (dtr.path === "") {
+                                    links.push({
+                                        table: table.pl_kind,
+                                        track_id: dtr.track_id,
+                                        savePath: require("path").join(App.userDataPath(), 'downloads', table.pl_kind),
+                                        filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`,
+                                        filename_old: `${dtr.artist} - ${dtr.title}.mp3`
+                                    })
+                                }
                             }
                             ipcRenderer.send("download", {data: links});
                         })
