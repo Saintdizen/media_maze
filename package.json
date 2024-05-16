@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "chuijs": "~3.0.0",
+    "electron-file-downloader": "^0.0.1",
     "request": "^2.88.2",
     "sqlite3": "5.1.6"
   }

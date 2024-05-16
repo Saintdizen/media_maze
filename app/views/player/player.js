@@ -1,9 +1,11 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification} = require('chuijs');
-const {PlaylistDB} = require("../../sqlite/sqlite");
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, YaApi} = require('chuijs');
+const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
 const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
 
 class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
+    #udb = new UserDB(App.userDataPath())
+    #api = new YaApi()
     #audio = new YaAudio({
         width: Styles.SIZE.WEBKIT_FILL,
         height: Styles.SIZE.WEBKIT_FILL,
@@ -24,12 +26,10 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-            //this.#generatePlayList();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
-            //this.#generatePlayList()
-            this.#test()
+            this.#generatePlayList()
             this.#dialog.close()
         })
 
@@ -62,39 +62,36 @@ class Player extends Page {
             })
         )
 
-        this.#test()
+        this.#generatePlayList()
         this.add(this.playlist_list, this.track_list)
     }
 
-    // #generatePlayList() {
-    //     this.#playlist = []
-    //     this.#pdb.getPlaylists().then(async playlists => {
-    //         for (let table of playlists) {
-    //             this.#pdb.getPlaylist(table.name).then(pl => {
-    //                 for (let track of pl) {
-    //                     this.#playlist.push({
-    //                         track_id: track.track_id,
-    //                         title: track.title,
-    //                         artist: track.artist,
-    //                         album: `https://${track.album.replace("%%", "800x800")}`,
-    //                         mimetype: track.mimetype
-    //                     })
-    //                 }
-    //             })
-    //         }
-    //     })
-    //     setTimeout(() => this.#audio.setPlayList(this.#playlist), 500);
-    // }
-
-    #test() {
+    #generatePlayList() {
+        this.playlist_list.clear()
+        this.track_list.clear()
         this.#pdb.getPlaylists().then(async playlists => {
-            console.log(playlists)
             for (let table of playlists) {
-                let button = new PlayerDialogButton(table, (evt) => {
+                let button = new PlayerDialogButton(table, async (evt) => {
                     if (evt.target.id === "test_download") {
                         new Notification({
                             title: table.pl_title, text: table.pl_kind, showTime: 1000
                         }).show()
+                        let udt = await this.#udb.selectUserData()
+                        let dpl = await this.#pdb.getPlaylist(table.pl_kind)
+                        for (let dtr of dpl) {
+                            console.log(dtr)
+                            this.#api.getLink(dtr.track_id, udt.access_token, udt.user_id).then(link => {
+                                let pth = require("path").join(App.downloadsPath(), table.pl_kind)
+                                ipcRenderer.send("download", {
+                                    url: link,
+                                    properties: {
+                                        directory: pth,
+                                        filename: `${dtr.artist} - ${dtr.title}.mp3`
+                                    }
+                                });
+                            })
+                        }
+
                     } else {
                         this.#playlist = []
                         this.#pdb.getPlaylist(table.pl_kind).then(pl => {
@@ -127,19 +124,15 @@ exports.Player = Player
 
 const shuffle = (array) => {
     let m = array.length, t, i;
-
     // Пока есть элементы для перемешивания
     while (m) {
-
         // Взять оставшийся элемент
         i = Math.floor(Math.random() * m--);
-
         // И поменять его местами с текущим элементом
         t = array[m];
         array[m] = array[i];
         array[i] = t;
     }
-
     return array;
 }
 

@@ -35,6 +35,9 @@ class PlayerDialog {
     close() {
         this.#dialog.close()
     }
+    clear() {
+        this.#main_block.set().innerHTML = ''
+    }
     addToMainBlock(...components) {
         try {
             for (let component of components) this.#main_block.set().appendChild(component.set());
