@@ -78,6 +78,7 @@
     "electron-builder": "~24.6.4"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "chuijs": "~3.0.5",
     "electron-file-downloader": "^0.0.1",
     "request": "^2.88.2",

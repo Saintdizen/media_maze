@@ -4,6 +4,7 @@ const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, Progre
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 const {Stations} = require("./views/stations/stations");
+const axios = require("request");
 
 class Apps extends AppLayout {
     #api = new YaApi()
