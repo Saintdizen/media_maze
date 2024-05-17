@@ -87,7 +87,7 @@ class Player extends Page {
                                     })
                                 }
                             }
-                            ipcRenderer.send("download", { table: table.pl_kind, data: links});
+                            ipcRenderer.send("download_"+table.pl_kind, {data: links});
 
                             ipcRenderer.once("DOWNLOAD_START_"+table.pl_kind, () => {
                                 const dl_notification = new DownloadProgressNotification({title: "Загрузка ..."})

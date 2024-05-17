@@ -1,8 +1,12 @@
-const {Main, MenuItem, path, App, ipcMain, BrowserWindow, ipcRenderer, YaApi} = require('chuijs');
-let json = require("./package.json");
-require('electron-file-downloader')();
-const {download} = require("electron-file-downloader");
+const {Main, MenuItem, path, App, ipcMain, BrowserWindow, YaApi} = require('chuijs');
+const json = require("./package.json");
+//require('electron-file-downloader')();
+//
 const {PlaylistDB, UserDB} = require("./app/sqlite/sqlite");
+const udb = new UserDB(App.userDataPath())
+const pdb = new PlaylistDB(App.userDataPath())
+const api = new YaApi()
+//
 const main = new Main({
     name: `${json.productName} (${json.version})`,
     width: 960,
@@ -32,45 +36,35 @@ main.start({
     ]
 });
 
-ipcMain.on("download", async (event, info) => {
-    let tracks = info.data;
-    let id = info.table
-    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_START_"+id)
-    for (let track of tracks) {
-        BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_START_"+id, {
-            title: `Загрузка ${track.pl_title}`,
-            track: track.filename_old,
-            number: tracks.indexOf(track) + 1,
-            max: tracks.length
-        })
-        let pdb = new PlaylistDB(App.userDataPath())
-        let info = await save(track)
-        await pdb.updateTrack(track.table, track.track_id, info)
-        // BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_DONE", track)
+pdb.getPlaylists().then(pls => {
+    let window = BrowserWindow.getAllWindows()[0].webContents;
+    for (let pl of pls) {
+        ipcMain.on("download_"+pl.pl_kind, async (event, info) => {
+            let tracks = info.data;
+            window.send("DOWNLOAD_START_"+pl.pl_kind)
+            for (let track of tracks) {
+                window.send("DOWNLOAD_TRACK_START_"+pl.pl_kind, {
+                    title: `Загрузка ${track.pl_title}`,
+                    track: track.filename_old,
+                    number: tracks.indexOf(track) + 1,
+                    max: tracks.length
+                })
+                let info = await save(track)
+                await pdb.updateTrack(track.table, track.track_id, info)
+            }
+            window.send("DOWNLOAD_DONE_"+pl.pl_kind)
+        });
     }
-    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_DONE_"+id)
-});
+})
 
 function save(track) {
     return new Promise(async resolve => {
-        let udb = new UserDB(App.userDataPath())
-        let api = new YaApi()
         udb.selectUserData().then(async (udt) => {
             let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+            const {download} = require("electron-file-downloader")
             await download(BrowserWindow.getAllWindows()[0], link, {
                 directory: track.savePath,
-                filename: track.filename,
-                // onStarted: (event) => {
-                //     event.on('done', (event, state) => {
-                //         resolve({
-                //             state: state,
-                //             path: event.getSavePath()
-                //         })
-                //     })
-                // },
-                // onProgress: (event) => {
-                //     console.log(event.progress, event.speed, event.remaining, event.total, event.downloaded, event.status)
-                // }
+                filename: track.filename
             }).then(dl => resolve(dl.DownloadItem.getSavePath()))
         })
     })
