@@ -1,6 +1,8 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
+
+let dl_notification = undefined
 
 class Player extends Page {
     #pdb = new PlaylistDB(App.userDataPath())
@@ -90,11 +92,15 @@ class Player extends Page {
                             ipcRenderer.send("download_"+table.pl_kind, {data: links});
 
                             ipcRenderer.once("DOWNLOAD_START_"+table.pl_kind, () => {
-                                const dl_notification = new DownloadProgressNotification({title: "Загрузка ..."})
+                                dl_notification = new DownloadProgressNotification({title: "Загрузка ..."})
                                 dl_notification.show()
                                 ipcRenderer.on("DOWNLOAD_TRACK_START_"+table.pl_kind, (event, args) => dl_notification.update(
                                     args.title, args.track, args.number, args.max))
-                                ipcRenderer.on("DOWNLOAD_DONE_"+table.pl_kind, () => dl_notification.done())
+                                ipcRenderer.on("DOWNLOAD_DONE_"+table.pl_kind, () => {
+                                    dl_notification.done()
+                                    this.regeneratePlaylist()
+                                    dl_notification = undefined
+                                })
                             })
                         })
                     } else {

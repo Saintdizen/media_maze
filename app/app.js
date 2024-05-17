@@ -112,6 +112,8 @@ class Apps extends AppLayout {
         })
     }
 
+
+
     async generatePlaylist(auth) {
         this.#dialog.open()
 
