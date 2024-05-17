@@ -106,7 +106,8 @@ class Player extends Page {
                                     title: track.title,
                                     artist: track.artist,
                                     album: `https://${track.album.replace("%%", "800x800")}`,
-                                    mimetype: track.mimetype
+                                    mimetype: track.mimetype,
+                                    path: track.path
                                 })
                             }
                         })
