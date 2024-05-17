@@ -1,4 +1,6 @@
-const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer} = require('chuijs');
+const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer,
+    DownloadProgressNotification
+} = require('chuijs');
 const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 const {Stations} = require("./views/stations/stations");
@@ -45,14 +47,7 @@ class Apps extends AppLayout {
                                     new Route().go(new Player(this.#dialog))
                                 }
                             }
-                        ),
-                        // AppLayout.BUTTON({
-                        //         icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                        //         clickEvent: () => {
-                        //             new Route().go(new Feed())
-                        //         }
-                        //     }
-                        // )
+                        )
                     ]
                 }
             )
@@ -73,9 +68,8 @@ class Apps extends AppLayout {
 
     async regeneratePlaylist() {
         await this.#udb.selectUserData().then(data => {
-            new Notification({
-                title: "Обновление библиотеки", text: "Обновление библиотеки", showTime: 1000
-            }).show()
+            const up_notification = new DownloadProgressNotification({title: "Обновление библиотеки"})
+            up_notification.show()
             this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
                 await this.#pdb.createPlaylistDictTable()
                 for (let playlist of playl) {
@@ -84,6 +78,14 @@ class Apps extends AppLayout {
                         playlist.playlist_title
                     )
                     for (let track of playlist.tracks) {
+
+                        up_notification.update(
+                            "Обновление библиотеки",
+                            `${playlist.playlist_title} (${playl.indexOf(playlist)+1} из ${playl.length})`,
+                            playlist.tracks.indexOf(track) + 1,
+                            playlist.tracks.length
+                        )
+
                         let pname = playlist.playlist_name.replace("pl_", "")
                         await this.#pdb.createPlaylistTable(pname)
                         await this.#pdb.addTrack(
@@ -100,9 +102,7 @@ class Apps extends AppLayout {
                         for (let test of wc) test.send("GENPLAYLIST")
                     }
                 }
-                new Notification({
-                    title: "Обновление библиотеки", text: "Готово!", showTime: 1000, style: Notification.STYLE.SUCCESS
-                }).show()
+                up_notification.done()
             }).catch((err) => {
                 new Notification({
                     title: "Обновление библиотеки", text: err, showTime: 1000, style: Notification.STYLE.ERROR
@@ -180,19 +180,9 @@ class Apps extends AppLayout {
                 noImage: true
             },
             items: [
-                // AppLayout.USER_PROFILE_ITEM({
-                //     title: "Обновление токена",
-                //     clickEvent: () => {
-                //         new Notification({
-                //             title: "Токен", text: "Токен обновлен (ЭТО ПРОСТО СООБЩЕНИЕ)", showTime: 1000
-                //         }).show()
-                //     }
-                // }),
                 AppLayout.USER_PROFILE_ITEM({
                     title: "Обновление библиотеки",
-                    clickEvent: async () => {
-                        await this.regeneratePlaylist()
-                    }
+                    clickEvent: async () => await this.regeneratePlaylist()
                 })
             ]
         })

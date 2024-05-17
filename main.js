@@ -33,13 +33,22 @@ main.start({
 });
 
 ipcMain.on("download", async (event, info) => {
-    for (let track of info.data) {
+    let tracks = info.data;
+    let id = info.table
+    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_START_"+id)
+    for (let track of tracks) {
+        BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_START_"+id, {
+            title: `Загрузка ${track.pl_title}`,
+            track: track.filename_old,
+            number: tracks.indexOf(track) + 1,
+            max: tracks.length
+        })
         let pdb = new PlaylistDB(App.userDataPath())
         let info = await save(track)
         await pdb.updateTrack(track.table, track.track_id, info)
-        BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_DONE", track)
+        // BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_TRACK_DONE", track)
     }
-    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_DONE")
+    BrowserWindow.getAllWindows()[0].webContents.send("DOWNLOAD_DONE_"+id)
 });
 
 function save(track) {

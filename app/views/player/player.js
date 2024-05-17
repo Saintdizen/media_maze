@@ -1,4 +1,4 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification} = require('chuijs');
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification} = require('chuijs');
 const {PlaylistDB} = require("../../sqlite/sqlite");
 const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
 
@@ -24,11 +24,13 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
+            //gen_pl()
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
             this.#generatePlayList()
             this.#dialog.close()
+            //gen_pl()
         })
 
         this.#audio.addFunctionButton(
@@ -62,13 +64,6 @@ class Player extends Page {
 
         this.#generatePlayList()
         this.add(this.playlist_list, this.track_list)
-        // DOWNLOAD_TRACK_DONE
-        ipcRenderer.on("DOWNLOAD_TRACK_DONE", (event, args) => {
-            new Notification({ title: "DOWNLOAD_DONE", text: args.filename_old, showTime: 1000 }).show()
-        })
-        ipcRenderer.on("DOWNLOAD_DONE", () => {
-            new Notification({ title: "DOWNLOAD_DONE", text: "DOWNLOAD_DONE", showTime: 1000 }).show()
-        })
     }
 
     #generatePlayList() {
@@ -78,14 +73,13 @@ class Player extends Page {
             for (let table of playlists) {
                 let button = new PlayerDialogButton(table, async (evt) => {
                     if (evt.target.id === "test_download") {
-                        new Notification({ title: table.pl_title, text: table.pl_kind, showTime: 1000 }).show()
                         this.#pdb.getPlaylist(table.pl_kind).then(async dpl => {
                             let links = []
                             for (let dtr of dpl) {
-                                console.log(dtr)
                                 if (dtr.path === "") {
                                     links.push({
                                         table: table.pl_kind,
+                                        pl_title: table.pl_title,
                                         track_id: dtr.track_id,
                                         savePath: require("path").join(App.userDataPath(), 'downloads', table.pl_kind),
                                         filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`,
@@ -93,7 +87,15 @@ class Player extends Page {
                                     })
                                 }
                             }
-                            ipcRenderer.send("download", {data: links});
+                            ipcRenderer.send("download", { table: table.pl_kind, data: links});
+
+                            ipcRenderer.once("DOWNLOAD_START_"+table.pl_kind, () => {
+                                const dl_notification = new DownloadProgressNotification({title: "Загрузка ..."})
+                                dl_notification.show()
+                                ipcRenderer.on("DOWNLOAD_TRACK_START_"+table.pl_kind, (event, args) => dl_notification.update(
+                                    args.title, args.track, args.number, args.max))
+                                ipcRenderer.on("DOWNLOAD_DONE_"+table.pl_kind, () => dl_notification.done())
+                            })
                         })
                     } else {
                         this.#playlist = []
@@ -127,39 +129,11 @@ exports.Player = Player
 
 const shuffle = (array) => {
     let m = array.length, t, i;
-    // Пока есть элементы для перемешивания
     while (m) {
-        // Взять оставшийся элемент
         i = Math.floor(Math.random() * m--);
-        // И поменять его местами с текущим элементом
         t = array[m];
         array[m] = array[i];
         array[i] = t;
     }
     return array;
 }
-
-// generatePlaylist() {
-//     let dl_path = path.join(App.userDataPath(), "downloads")
-//     let playlist = []
-//     fs.readdir(dl_path, (err, files) => {
-//         files.forEach(file => {
-//             console.log(file)
-//             try {
-//                 let artist = file.split(" - ")[0]
-//                 let title = file.split(" - ")[1].replace(".mp3", "")
-//                 playlist.push({
-//                     title: title, artist: artist, album: "", mimetype: Audio.MIMETYPES.MP3,
-//                     path: String(path.join(dl_path, file))
-//                 })
-//             } catch (e) {
-//                 let title = file.replace(".mp3", "")
-//                 playlist.push({
-//                     title: title, artist: title, album: title, mimetype: Audio.MIMETYPES.MP3,
-//                     path: String(path.join(dl_path, file))
-//                 })
-//             }
-//         });
-//     });
-//     setTimeout(() => this.#audio.setPlayList(playlist), 100);
-// }
