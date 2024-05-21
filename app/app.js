@@ -1,10 +1,9 @@
 const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer,
     DownloadProgressNotification
 } = require('chuijs');
-const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 const {Player} = require("./views/player/player");
 const {Stations} = require("./views/stations/stations");
-const axios = require("request");
+const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
 
 class Apps extends AppLayout {
     #api = new YaApi()
@@ -111,8 +110,6 @@ class Apps extends AppLayout {
             })
         })
     }
-
-
 
     async generatePlaylist(auth) {
         this.#dialog.open()

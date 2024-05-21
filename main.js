@@ -1,14 +1,8 @@
-const {Main, MenuItem, path, App, ipcMain, BrowserWindow, YaApi} = require('chuijs');
+const {Main, MenuItem, path, App} = require('chuijs');
 const json = require("./package.json");
 const DownloadManager = require("electron-download-manager");
 const dl_path = require("path").join(App.userDataPath(), 'downloads')
-let fs = require('fs');
 DownloadManager.register({downloadFolder: dl_path});
-//
-const {PlaylistDB, UserDB} = require("./app/sqlite/sqlite");
-const udb = new UserDB(App.userDataPath())
-const pdb = new PlaylistDB(App.userDataPath())
-const api = new YaApi()
 //
 const main = new Main({
     name: `${json.productName} (${json.version})`,
@@ -38,45 +32,6 @@ main.start({
         new MenuItem().quit('Выход')
     ]
 });
-
-pdb.getPlaylists().then(pls => {
-    let window = BrowserWindow.getAllWindows()[0].webContents;
-    for (let pl of pls) {
-        ipcMain.on("download_"+pl.pl_kind, async (event, info) => {
-            let tracks = info.data;
-            window.send("DOWNLOAD_START_"+pl.pl_kind)
-            for (let track of tracks) {
-                window.send("DOWNLOAD_TRACK_START_"+pl.pl_kind, {
-                    title: `Загрузка ${track.pl_title}`,
-                    track: track.filename_old,
-                    number: tracks.indexOf(track) + 1,
-                    max: tracks.length
-                })
-                let info = await save(track)
-                await pdb.updateTrack(track.table, track.track_id, info)
-            }
-            window.send("DOWNLOAD_DONE_"+pl.pl_kind)
-        });
-    }
-})
-
-function save(track) {
-    return new Promise(async resolve => {
-        udb.selectUserData().then(async (udt) => {
-            let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
-            DownloadManager.download({
-                url: link, path: track.savePath,
-            }, (error, info) => {
-                if (error) { console.error(error); return; }
-                let new_name = path.join(dl_path, track.savePath, track.filename)
-                fs.rename(info.filePath, new_name, (err) => {
-                    if ( err ) console.error('ERROR: ' + err);
-                    resolve(new_name)
-                });
-            });
-        })
-    })
-}
 
 // App.get().on('session-created', (session) => {
 //     session.on('will-download', (e, item, contents) => {

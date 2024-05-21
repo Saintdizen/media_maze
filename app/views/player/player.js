@@ -1,11 +1,13 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
-const {PlaylistDB} = require("../../sqlite/sqlite");
+const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
 const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
-
-let dl_notification = undefined
+const DownloadManager = require("@electron/remote").require("electron-download-manager");
+const fs = require("fs");
+const udb = new UserDB(App.userDataPath())
+const pdb = new PlaylistDB(App.userDataPath())
+const api = new YaApi()
 
 class Player extends Page {
-    #pdb = new PlaylistDB(App.userDataPath())
     #audio = new YaAudio({
         width: Styles.SIZE.WEBKIT_FILL,
         height: Styles.SIZE.WEBKIT_FILL,
@@ -72,11 +74,12 @@ class Player extends Page {
     #generatePlayList() {
         this.playlist_list.clear()
         this.track_list.clear()
-        this.#pdb.getPlaylists().then(async playlists => {
+        pdb.getPlaylists().then(async playlists => {
             for (let table of playlists) {
-                let button = new PlayerDialogButton(table, async (evt) => {
+                const button = new PlayerDialogButton(table, async (evt) => {
                     if (evt.target.id === "test_download") {
-                        this.#pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                        pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                            const notif = new DownloadProgressNotification({title: `Загрузка ${table.pl_title}`})
                             let links = []
                             for (let dtr of dpl) {
                                 if (dtr.path === "") {
@@ -90,23 +93,20 @@ class Player extends Page {
                                     })
                                 }
                             }
-                            ipcRenderer.send("download_"+table.pl_kind, {data: links});
-
-                            ipcRenderer.once("DOWNLOAD_START_"+table.pl_kind, () => {
-                                dl_notification = new DownloadProgressNotification({title: "Загрузка ..."})
-                                dl_notification.show()
-                                ipcRenderer.on("DOWNLOAD_TRACK_START_"+table.pl_kind, (event, args) => dl_notification.update(
-                                    args.title, args.track, args.number, args.max))
-                                ipcRenderer.on("DOWNLOAD_DONE_"+table.pl_kind, () => {
-                                    dl_notification.done()
-                                    this.regeneratePlaylist()
-                                    dl_notification = undefined
-                                })
-                            })
+                            if (links.length !== 0) {
+                                notif.show()
+                                for (let track of links) {
+                                    notif.update(`Загрузка ${table.pl_title}`, track.filename_old, links.indexOf(track) + 1, links.length)
+                                    let info = await this.save(track)
+                                    await pdb.updateTrack(track.table, track.track_id, info)
+                                }
+                                notif.done()
+                                //await this.#generatePlayList()
+                            }
                         })
                     } else {
                         this.#playlist = []
-                        this.#pdb.getPlaylist(table.pl_kind).then(pl => {
+                        pdb.getPlaylist(table.pl_kind).then(pl => {
                             for (let track of pl) {
                                 this.#playlist.push({
                                     track_id: track.track_id,
@@ -127,8 +127,35 @@ class Player extends Page {
                         }, 250);
                     }
                 })
+                pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                    for (let dtr of dpl) {
+                        if (dtr.path === "") {
+                            button.addDownloadButton()
+                            break
+                        }
+                    }
+                })
                 this.playlist_list.addToMainBlock(button.set())
             }
+        })
+    }
+
+    save(track) {
+        return new Promise(async resolve => {
+            udb.selectUserData().then(async (udt) => {
+                let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+                DownloadManager.download({
+                    url: link, path: track.savePath,
+                }, (error, info) => {
+                    if (error) { console.error(error); return; }
+                    let dl_path = require("path").join(App.userDataPath(), 'downloads')
+                    let new_name = path.join(dl_path, track.savePath, track.filename)
+                    fs.rename(info.filePath, new_name, (err) => {
+                        if ( err ) console.error('ERROR: ' + err);
+                        resolve(new_name)
+                    });
+                });
+            })
         })
     }
 }

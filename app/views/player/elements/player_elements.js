@@ -71,9 +71,11 @@ class PlayerDialogButton {
         this.#title.innerText(table.pl_title)
         this.#download.innerHTML(new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML())
         //
-        this.#controls.set().appendChild(this.#download.set())
         this.#main_block.set().appendChild(this.#title.set())
         this.#main_block.set().appendChild(this.#controls.set())
+    }
+    addDownloadButton() {
+        this.#controls.set().appendChild(this.#download.set())
     }
     set() {
         return this.#main_block
