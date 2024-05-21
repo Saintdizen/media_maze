@@ -2,7 +2,7 @@
   "name": "media-maze",
   "productName": "Media Maze",
   "description": "Media Maze",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
@@ -79,8 +79,8 @@
   },
   "dependencies": {
     "axios": "^1.6.8",
-    "chuijs": "~3.0.5",
-    "electron-file-downloader": "^0.0.1",
+    "chuijs": "~3.0.6",
+    "electron-download-manager": "^2.1.2",
     "request": "^2.88.2",
     "sqlite3": "5.1.6"
   }

@@ -21,6 +21,7 @@ class Player extends Page {
         this.#dialog = dialog
         this.setTitle('Media Maze');
         this.setFullHeight();
+        this.disablePadding();
         this.setMain(false);
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio, this.#dialog)
@@ -83,7 +84,7 @@ class Player extends Page {
                                         table: table.pl_kind,
                                         pl_title: table.pl_title,
                                         track_id: dtr.track_id,
-                                        savePath: require("path").join(App.userDataPath(), 'downloads', table.pl_kind),
+                                        savePath: table.pl_kind,
                                         filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`,
                                         filename_old: `${dtr.artist} - ${dtr.title}.mp3`
                                     })

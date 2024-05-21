@@ -1,6 +1,9 @@
 const {Main, MenuItem, path, App, ipcMain, BrowserWindow, YaApi} = require('chuijs');
 const json = require("./package.json");
-//require('electron-file-downloader')();
+const DownloadManager = require("electron-download-manager");
+const dl_path = require("path").join(App.userDataPath(), 'downloads')
+let fs = require('fs');
+DownloadManager.register({downloadFolder: dl_path});
 //
 const {PlaylistDB, UserDB} = require("./app/sqlite/sqlite");
 const udb = new UserDB(App.userDataPath())
@@ -61,11 +64,16 @@ function save(track) {
     return new Promise(async resolve => {
         udb.selectUserData().then(async (udt) => {
             let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
-            const {download} = require("electron-file-downloader")
-            await download(BrowserWindow.getAllWindows()[0], link, {
-                directory: track.savePath,
-                filename: track.filename
-            }).then(dl => resolve(dl.DownloadItem.getSavePath()))
+            DownloadManager.download({
+                url: link, path: track.savePath,
+            }, (error, info) => {
+                if (error) { console.error(error); return; }
+                let new_name = path.join(dl_path, track.savePath, track.filename)
+                fs.rename(info.filePath, new_name, (err) => {
+                    if ( err ) console.error('ERROR: ' + err);
+                    resolve(new_name)
+                });
+            });
         })
     })
 }
