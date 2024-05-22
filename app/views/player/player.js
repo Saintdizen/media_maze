@@ -1,6 +1,6 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
 const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
-const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
+const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
 const fs = require("fs");
 const udb = new UserDB(App.userDataPath())
@@ -16,8 +16,9 @@ class Player extends Page {
     #dialog = undefined
     //
     #playlist = []
+    search = new PlayerDialogSearch()
     playlist_list = new PlayerDialog()
-    track_list = new PlayerDialog("60%", "90%")
+    track_list = new PlayerDialog("60%", "90%", "Очередь")
     constructor(dialog) {
         super();
         this.#dialog = dialog
@@ -29,16 +30,18 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-            //gen_pl()
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
             this.#generatePlayList()
             this.#dialog.close()
-            //gen_pl()
         })
 
         this.#audio.addFunctionButton(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.ACTIONS.SEARCH,
+                clickEvent: () => this.search.open()
+            }),
             YaAudio.FUNCTION_ACTIVE_BUTTON({
                 value: false,
                 icon_on: Icons.AUDIO_VIDEO.SHUFFLE_ON,
@@ -69,6 +72,9 @@ class Player extends Page {
 
         this.#generatePlayList()
         this.add(this.playlist_list, this.track_list)
+
+        //
+        this.add(this.search)
     }
 
     #generatePlayList() {
