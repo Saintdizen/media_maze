@@ -1,6 +1,6 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
 const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
-const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
+const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
 const fs = require("fs");
 const udb = new UserDB(App.userDataPath())
@@ -16,7 +16,6 @@ class Player extends Page {
     #dialog = undefined
     //
     #playlist = []
-    search = new PlayerDialogSearch()
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
     constructor(dialog) {
@@ -24,7 +23,6 @@ class Player extends Page {
         this.#dialog = dialog
         this.setTitle('Media Maze');
         this.setFullHeight();
-        this.disablePadding();
         this.setMain(false);
         this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(this.#audio, this.#dialog)
@@ -38,10 +36,6 @@ class Player extends Page {
         })
 
         this.#audio.addFunctionButton(
-            YaAudio.FUNCTION_BUTTON({
-                icon: Icons.ACTIONS.SEARCH,
-                clickEvent: () => this.search.open()
-            }),
             YaAudio.FUNCTION_ACTIVE_BUTTON({
                 value: false,
                 icon_on: Icons.AUDIO_VIDEO.SHUFFLE_ON,
@@ -72,9 +66,6 @@ class Player extends Page {
 
         this.#generatePlayList()
         this.add(this.playlist_list, this.track_list)
-
-        //
-        this.add(this.search)
     }
 
     #generatePlayList() {
