@@ -4,13 +4,13 @@ let path_css = require("path").join(__dirname, "player_elements.css")
 class PlayerDialog {
     #dialog = undefined
     #title = new CustomElement({
-        id: "test_dialog_pl_list_title", pathToCSS: path_css
+        tag: "cust_elem", id: "test_dialog_pl_list_title", pathToCSS: path_css
     })
     #button_close = new CustomElement({
-        id: "test_close_button_one", pathToCSS: path_css
+        tag: "cust_elem", id: "test_close_button_one", pathToCSS: path_css
     })
     #main_block = new CustomElement({
-        id: "test_track_list_main_block", className: "test_track_list_main_block", pathToCSS: path_css
+        tag: "cust_elem", id: "test_track_list_main_block", className: "test_track_list_main_block", pathToCSS: path_css
     })
     constructor(width = "max-content", height = "max-content", title = "Список плейлистов") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
@@ -54,17 +54,17 @@ exports.PlayerDialog = PlayerDialog
 
 class PlayerDialogButton {
     #main_block = new CustomElement({
-        id: "test_main_block", className: "test_main_block", pathToCSS: path_css
+        tag: "cust_elem", id: "test_main_block", className: "test_main_block", pathToCSS: path_css
     })
     #title = new CustomElement({
-        id: "test_title", className: "test_title", pathToCSS: path_css
+        tag: "cust_elem", id: "test_title", className: "test_title", pathToCSS: path_css
     })
     //
     #controls = new CustomElement({
-        id: "test_controls_block", className: "test_controls_block", pathToCSS: path_css
+        tag: "cust_elem", id: "test_controls_block", className: "test_controls_block", pathToCSS: path_css
     })
     #download = new CustomElement({
-        id: "test_download", className: "test_controls_button", pathToCSS: path_css
+        tag: "cust_elem", id: "test_download", className: "test_controls_button", pathToCSS: path_css
     })
     constructor(table, listener = () => {}) {
         this.#main_block.addEventListener("click", listener)
