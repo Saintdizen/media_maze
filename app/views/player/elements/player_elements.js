@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles} = require("chuijs");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -12,13 +12,35 @@ class PlayerDialog {
     #main_block = new CustomElement({
         tag: "cust_elem", id: "test_track_list_main_block", className: "test_track_list_main_block", pathToCSS: path_css
     })
+    #search_block = new CustomElement({
+        tag: "cust_elem", id: "test_track_list_main_block2", className: "test_track_list_main_block2", pathToCSS: path_css
+    })
+    #search_input = new TextInput({
+        transparentBack: true,
+        width: Styles.SIZE.WEBKIT_FILL,
+        placeholder: "Поиск"
+    })
     constructor(width = "max-content", height = "max-content", title = "Список плейлистов") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
         this.#title.innerText(title)
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
         this.#dialog.addToHeader(this.#title, this.#button_close)
-        this.#dialog.addToBody(this.#main_block)
+        this.#search_block.set().appendChild(this.#search_input.set())
+        this.#dialog.addToBody(this.#search_block, this.#main_block)
+
+        this.#search_input.addInputListener((event) => {
+            event.preventDefault()
+            for (let node of this.#main_block.set().childNodes) {
+                let text1 = node.childNodes[0].textContent.toLowerCase()
+                let text2 = event.target.value.toLowerCase()
+                if (text1.includes(text2)) {
+                    node.style.display = 'flex'
+                } else {
+                    node.style.display = 'none'
+                }
+            }
+        })
     }
     setTitle(name = String()) {
         this.#title.innerText(name)
