@@ -111,7 +111,43 @@ class Player extends Page {
                                     artist: track.artist,
                                     album: `https://${track.album.replace("%%", "800x800")}`,
                                     mimetype: track.mimetype,
-                                    path: track.path
+                                    path: track.path,
+                                    remove: () => {
+                                        console.log("remove", track)
+                                        for (let dtr of pl) {
+                                            if (dtr.track_id === track.track_id) {
+                                                this.remove(track, table)
+                                            }
+                                        }
+                                    },
+                                    download: async () => {
+                                        const notif = new DownloadProgressNotification({title: `Загрузка ${table.pl_title}`})
+                                        let links = []
+                                        for (let dtr of pl) {
+                                            if (dtr.track_id === track.track_id) {
+                                                if (dtr.path === "") {
+                                                    links.push({
+                                                        table: table.pl_kind,
+                                                        pl_title: table.pl_title,
+                                                        track_id: dtr.track_id,
+                                                        savePath: table.pl_kind,
+                                                        filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`,
+                                                        filename_old: `${dtr.artist} - ${dtr.title}.mp3`
+                                                    })
+                                                    break
+                                                }
+                                            }
+                                        }
+                                        if (links.length !== 0) {
+                                            notif.show()
+                                            for (let track of links) {
+                                                notif.update(`Загрузка ${table.pl_title}`, track.filename_old, links.indexOf(track) + 1, links.length)
+                                                let info = await this.save(track)
+                                                await pdb.updateTrack(track.table, track.track_id, info)
+                                            }
+                                            notif.done()
+                                        }
+                                    }
                                 })
                             }
                         })
@@ -134,6 +170,16 @@ class Player extends Page {
                 })
                 this.playlist_list.addToMainBlock(button.set())
             }
+        })
+    }
+
+    remove(track, table) {
+        return new Promise(async resolve => {
+            console.log(table)
+            udb.selectUserData().then(async (udt) => {
+                await api.removeTrack(udt.access_token, udt.user_id, Number(table.pl_kind.replace("pl_", "")), track.track_id, 833)
+                resolve("DONE")
+            })
         })
     }
 
