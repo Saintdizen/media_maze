@@ -31,13 +31,26 @@ class PlayerDialog {
 
         this.#search_input.addInputListener((event) => {
             event.preventDefault()
-            for (let node of this.#main_block.set().childNodes) {
-                let text1 = node.childNodes[0].textContent.toLowerCase()
-                let text2 = event.target.value.toLowerCase()
-                if (text1.includes(text2)) {
-                    node.style.display = 'flex'
-                } else {
-                    node.style.display = 'none'
+            let children = this.#main_block.set().childNodes
+            if (children.length > 1) {
+                for (let node of children) {
+                    let text1 = node.childNodes[0].textContent.toLowerCase()
+                    let text2 = event.target.value.toLowerCase()
+                    if (text1.includes(text2)) {
+                        node.style.display = 'flex'
+                    } else {
+                        node.style.display = 'none'
+                    }
+                }
+            } else {
+                for (let node of children[0].childNodes) {
+                    let text1 = node.childNodes[1].textContent.toLowerCase()
+                    let text2 = event.target.value.toLowerCase()
+                    if (text1.includes(text2)) {
+                        node.style.display = 'flex'
+                    } else {
+                        node.style.display = 'none'
+                    }
                 }
             }
         })
@@ -52,9 +65,11 @@ class PlayerDialog {
         for (let component of components) this.#dialog.addToBody(component);
     }
     open() {
+        this.#search_input.setValue("")
         this.#dialog.open()
     }
     close() {
+        this.#search_input.setValue("")
         this.#dialog.close()
     }
     clear() {
