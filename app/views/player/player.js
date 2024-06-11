@@ -120,7 +120,6 @@ class Player extends Page {
                                     //     }
                                     // },
                                     download: async () => {
-                                        const notif = new DownloadProgressNotification({title: `Загрузка ${table.pl_title}`})
                                         let links = []
                                         for (let dtr of pl) {
                                             if (dtr.track_id === track.track_id) {
@@ -138,13 +137,10 @@ class Player extends Page {
                                             }
                                         }
                                         if (links.length !== 0) {
-                                            notif.show()
                                             for (let track of links) {
-                                                notif.update(`Загрузка ${table.pl_title}`, track.filename_old, links.indexOf(track) + 1, links.length)
-                                                let info = await this.save(track)
+                                                let info = await this.saveOne(track)
                                                 await pdb.updateTrack(track.table, track.track_id, info)
                                             }
-                                            notif.done()
                                         }
                                     }
                                 })
@@ -183,13 +179,45 @@ class Player extends Page {
             udb.selectUserData().then(async (udt) => {
                 let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
                 DownloadManager.download({
-                    url: link, path: track.savePath,
+                    url: link,
+                    path: track.savePath,
+                    onProgress: (progress, item) => {
+                        console.log(progress, item)
+                    }
                 }, (error, info) => {
+                    console.log(info)
                     if (error) { console.error(error); return; }
                     let dl_path = require("path").join(App.userDataPath(), 'downloads')
                     let new_name = path.join(dl_path, track.savePath, track.filename)
                     fs.rename(info.filePath, new_name, (err) => {
                         if ( err ) console.error('ERROR: ' + err);
+                        resolve(new_name)
+                    });
+                });
+            })
+        })
+    }
+
+    saveOne(track) {
+        const notif = new DownloadProgressNotification({title: "Загрузка трека"})
+        return new Promise(async resolve => {
+            udb.selectUserData().then(async (udt) => {
+                notif.show()
+                let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+                DownloadManager.download({
+                    url: link,
+                    path: track.savePath,
+                    onProgress: (progress, item) => {
+                        notif.update("Загрузка трека", track.filename_old, Number(progress.progress).toFixed(), 100)
+                    }
+                }, (error, info) => {
+                    console.log(info)
+                    if (error) { console.error(error); return; }
+                    let dl_path = require("path").join(App.userDataPath(), 'downloads')
+                    let new_name = path.join(dl_path, track.savePath, track.filename)
+                    fs.rename(info.filePath, new_name, (err) => {
+                        if ( err ) console.error('ERROR: ' + err);
+                        notif.done()
                         resolve(new_name)
                     });
                 });
