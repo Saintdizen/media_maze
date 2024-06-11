@@ -112,14 +112,13 @@ class Player extends Page {
                                     album: `https://${track.album.replace("%%", "800x800")}`,
                                     mimetype: track.mimetype,
                                     path: track.path,
-                                    remove: () => {
-                                        console.log("remove", track)
-                                        for (let dtr of pl) {
-                                            if (dtr.track_id === track.track_id) {
-                                                this.remove(track, table)
-                                            }
-                                        }
-                                    },
+                                    // remove: () => {
+                                    //     for (let dtr of pl) {
+                                    //         if (dtr.track_id === track.track_id) {
+                                    //             this.remove(track, table)
+                                    //         }
+                                    //     }
+                                    // },
                                     download: async () => {
                                         const notif = new DownloadProgressNotification({title: `Загрузка ${table.pl_title}`})
                                         let links = []
@@ -174,12 +173,8 @@ class Player extends Page {
     }
 
     remove(track, table) {
-        return new Promise(async resolve => {
-            console.log(table)
-            udb.selectUserData().then(async (udt) => {
-                await api.removeTrack(udt.access_token, udt.user_id, Number(table.pl_kind.replace("pl_", "")), track.track_id, 833)
-                resolve("DONE")
-            })
+        udb.selectUserData().then(async (udt) => {
+            await api.removeTrack(udt.access_token, udt.user_id, Number(table.pl_kind.replace("pl_", "")), track.track_id)
         })
     }
 
