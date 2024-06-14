@@ -112,13 +112,13 @@ class Player extends Page {
                                     album: `https://${track.album.replace("%%", "800x800")}`,
                                     mimetype: track.mimetype,
                                     path: track.path,
-                                    // remove: () => {
-                                    //     for (let dtr of pl) {
-                                    //         if (dtr.track_id === track.track_id) {
-                                    //             this.remove(track, table)
-                                    //         }
-                                    //     }
-                                    // },
+                                    remove: () => {
+                                        for (let dtr of pl) {
+                                            if (dtr.track_id === track.track_id) {
+                                                this.remove(track, table)
+                                            }
+                                        }
+                                    },
                                     download: async () => {
                                         let links = []
                                         for (let dtr of pl) {
