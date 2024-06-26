@@ -141,12 +141,15 @@ class PlaylistDB {
                 });
         })
     }
-    async deleteRow(id) {
-        this.#pl_db.run(`DELETE FROM sharks WHERE id = ?`, [id],
-        (error) => {
-            if (error) return console.error(error.message);
-            console.log(`Row with the ID ${id} has been deleted`);
-        });
+    async deleteRow(tableName, track_id) {
+        return new Promise((resolve, reject) => {
+            this.#pl_db.run(`DELETE FROM ${tableName} WHERE track_id = ?`,
+                [track_id],
+                (error) => {
+                    if (error) reject(error.message);
+                    resolve(`Row with the ID ${track_id} has been deleted`)
+                });
+        })
     }
 }
 

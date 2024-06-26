@@ -169,8 +169,13 @@ class Player extends Page {
     }
 
     remove(track, table) {
+        console.log(table)
         udb.selectUserData().then(async (udt) => {
             await api.removeTrack(udt.access_token, udt.user_id, Number(table.pl_kind.replace("pl_", "")), track.track_id)
+
+        })
+        pdb.deleteRow(table.pl_kind, track.track_id).then(() => {
+            document.getElementsByName(track.track_id)[0].remove()
         })
     }
 
