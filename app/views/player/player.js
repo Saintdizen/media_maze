@@ -102,57 +102,61 @@ class Player extends Page {
                             }
                         })
                     } else {
+                        //
                         this.#playlist = []
-                        pdb.getPlaylist(table.pl_kind).then(pl => {
-                            for (let track of pl) {
-                                this.#playlist.push({
-                                    track_id: track.track_id,
-                                    title: track.title,
-                                    artist: track.artist,
-                                    album: `https://${track.album.replace("%%", "800x800")}`,
-                                    mimetype: track.mimetype,
-                                    path: track.path,
-                                    remove: () => {
-                                        for (let dtr of pl) {
-                                            if (dtr.track_id === track.track_id) {
-                                                this.remove(track, table)
-                                            }
-                                        }
-                                    },
-                                    download: async () => {
-                                        let links = []
-                                        for (let dtr of pl) {
-                                            if (dtr.track_id === track.track_id) {
-                                                if (dtr.path === "") {
-                                                    links.push({
-                                                        table: table.pl_kind,
-                                                        pl_title: table.pl_title,
-                                                        track_id: dtr.track_id,
-                                                        savePath: table.pl_kind,
-                                                        filename: `${dtr.artist.replaceAll(" ", "_")}_-_${dtr.title.replaceAll(" ", "_")}.mp3`,
-                                                        filename_old: `${dtr.artist} - ${dtr.title}.mp3`
-                                                    })
-                                                    break
+                        let local_tracks = await pdb.getPlaylist(table.pl_kind)
+                        //
+                        api.getTracks(global.access_token, global.user_id).then(tracks => {
+                            for (let playlist of tracks) {
+                                if (playlist.playlist_name === table.pl_kind) {
+                                    for (let track of playlist.tracks) {
+                                        let loc_track = local_tracks.filter(ltrack => {
+                                            return track.track_id === ltrack.track_id
+                                        })[0]
+                                        if (loc_track !== undefined) {
+                                            let test_track = {
+                                                track_id: loc_track.track_id,
+                                                title: loc_track.title,
+                                                artist: loc_track.artist,
+                                                album: `https://${loc_track.album.replace("%%", "800x800")}`,
+                                                mimetype: loc_track.mimetype,
+                                                path: loc_track.path,
+                                                remove: () => {
+                                                    this.remove(loc_track, table)
+                                                },
+                                                download: async () => {
+                                                    let links = []
+                                                    if (loc_track.path === "") {
+                                                        links.push({
+                                                            table: table.pl_kind,
+                                                            pl_title: table.pl_title,
+                                                            track_id: loc_track.track_id,
+                                                            savePath: table.pl_kind,
+                                                            filename: `${loc_track.artist.replaceAll(/\/|\s/gm, '_')}_-_${loc_track.title.replaceAll(/\/|\s/gm, "_")}.mp3`,
+                                                            filename_old: `${loc_track.artist} - ${loc_track.title}.mp3`
+                                                        })
+                                                    }
+                                                    if (links.length !== 0) {
+                                                        for (let track of links) {
+                                                            let info = await this.saveOne(track)
+                                                            await pdb.updateTrack(track.table, track.track_id, info)
+                                                        }
+                                                    }
                                                 }
                                             }
-                                        }
-                                        if (links.length !== 0) {
-                                            for (let track of links) {
-                                                let info = await this.saveOne(track)
-                                                await pdb.updateTrack(track.table, track.track_id, info)
-                                            }
+                                            this.#playlist.push(test_track)
                                         }
                                     }
-                                })
+                                }
                             }
-                        })
-                        this.playlist_list.close()
-                        setTimeout(() => {
+                        }).finally(() => {
                             this.#audio.setPlayList(this.#playlist)
                             this.track_list.addToMainBlock(this.#audio.getPlaylist().getPlaylist())
                             this.track_list.setTitle(table.pl_title)
                             this.track_list.open()
-                        }, 250);
+
+                        })
+                        this.playlist_list.close()
                     }
                 })
                 pdb.getPlaylist(table.pl_kind).then(async dpl => {
@@ -162,8 +166,9 @@ class Player extends Page {
                             break
                         }
                     }
+                    this.playlist_list.addToMainBlock(button.set())
                 })
-                this.playlist_list.addToMainBlock(button.set())
+
             }
         })
     }
