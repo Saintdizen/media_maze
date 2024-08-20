@@ -18,7 +18,7 @@ class Player extends Page {
     #playlist = []
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
-    constructor(dialog) {
+    constructor(dialog, rp) {
         super();
         this.#dialog = dialog
         this.setTitle('Media Maze');
@@ -28,6 +28,7 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
+            rp();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
@@ -111,14 +112,14 @@ class Player extends Page {
                                 if (playlist.playlist_name === table.pl_kind) {
                                     for (let track of playlist.tracks) {
                                         let loc_track = local_tracks.filter(ltrack => {
-                                            return track.track_id === ltrack.track_id
+                                            return String(track.track_id) === String(ltrack.track_id)
                                         })[0]
                                         if (loc_track !== undefined) {
                                             let test_track = {
                                                 track_id: loc_track.track_id,
                                                 title: loc_track.title,
                                                 artist: loc_track.artist,
-                                                album: `https://${loc_track.album.replace("%%", "800x800")}`,
+                                                album: `https://${loc_track.album.replaceAll("%%", "800x800")}`,
                                                 mimetype: loc_track.mimetype,
                                                 path: loc_track.path,
                                                 remove: () => {

@@ -43,8 +43,8 @@ class Apps extends AppLayout {
                     tabs: [
                         AppLayout.BUTTON({
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                                clickEvent: () => {
-                                    new Route().go(new Player(this.#dialog))
+                                clickEvent: async () => {
+                                    new Route().go(new Player(this.#dialog, await this.regeneratePlaylist()))
                                 }
                             }
                         )
