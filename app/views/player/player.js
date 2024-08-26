@@ -1,33 +1,34 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
 const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
-const {PlayerDialog, PlayerDialogButton} = require("./elements/player_elements");
+const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
-const fs = require("fs");
+const fs= require("fs");
 const udb = new UserDB(App.userDataPath())
 const pdb = new PlaylistDB(App.userDataPath())
 const api = new YaApi()
 
 class Player extends Page {
-    #audio = new YaAudio({
-        width: Styles.SIZE.WEBKIT_FILL,
-        height: Styles.SIZE.WEBKIT_FILL,
-        coverPath: `file://${require('path').join(__dirname, 'cover.png')}`
-    })
     #dialog = undefined
     //
-    #playlist = []
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
+    search_list = new PlayerDialogSearch("60%", "90%", "Поиск")
     constructor(dialog) {
         super();
+        global.playlist = []
+        global.player = new YaAudio({
+            width: Styles.SIZE.WEBKIT_FILL,
+            height: Styles.SIZE.WEBKIT_FILL,
+            coverPath: `file://${require('path').join(__dirname, 'cover.png')}`
+        })
         this.#dialog = dialog
         this.setTitle('Media Maze');
         this.setFullHeight();
         this.setMain(false);
-        this.#audio.openFolder(path.join(App.userDataPath(), "downloads"))
-        this.add(this.#audio, this.#dialog)
+        global.player.openFolder(path.join(App.userDataPath(), "downloads"))
+        this.add(global.player, this.#dialog)
         this.addRouteEvent(this, () => {
-            this.#audio.restoreFX();
+            global.player.restoreFX();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
@@ -35,19 +36,23 @@ class Player extends Page {
             this.#dialog.close()
         })
 
-        this.#audio.addFunctionButton(
+        global.player.addFunctionButton(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.ACTIONS.SEARCH,
+                clickEvent: () => this.search_list.open()
+            }),
             YaAudio.FUNCTION_ACTIVE_BUTTON({
                 value: false,
                 icon_on: Icons.AUDIO_VIDEO.SHUFFLE_ON,
                 icon_off: Icons.AUDIO_VIDEO.SHUFFLE,
                 activateEvent: (evt) => {
                     if (evt.target.checked) {
-                        this.#audio.setPlayList(shuffle(this.#playlist.slice()))
+                        global.player.setPlayList(shuffle(global.playlist.slice()))
                         new Notification({
                             title: "Перемешать", text: evt.target.checked, showTime: 1000
                         }).show()
                     } else {
-                        this.#audio.setPlayList(this.#playlist)
+                        global.player.setPlayList(global.playlist)
                         new Notification({
                             title: "Перемешать", text: evt.target.checked, showTime: 1000
                         }).show()
@@ -65,7 +70,7 @@ class Player extends Page {
         )
 
         this.#generatePlayList()
-        this.add(this.playlist_list, this.track_list)
+        this.add(this.playlist_list, this.track_list, this.search_list)
     }
 
     #generatePlayList() {
@@ -103,7 +108,7 @@ class Player extends Page {
                         })
                     } else {
                         //
-                        this.#playlist = []
+                        global.playlist = []
                         let local_tracks = await pdb.getPlaylist(table.pl_kind)
                         //
                         api.getTracks(global.access_token, global.user_id).then(tracks => {
@@ -114,6 +119,7 @@ class Player extends Page {
                                             return String(track.track_id) === String(ltrack.track_id)
                                         })[0]
                                         if (loc_track !== undefined) {
+                                            console.log(loc_track.mimetype)
                                             let test_track = {
                                                 track_id: loc_track.track_id,
                                                 title: loc_track.title,
@@ -144,14 +150,14 @@ class Player extends Page {
                                                     }
                                                 }
                                             }
-                                            this.#playlist.push(test_track)
+                                            global.playlist.push(test_track)
                                         }
                                     }
                                 }
                             }
                         }).finally(() => {
-                            this.#audio.setPlayList(this.#playlist)
-                            this.track_list.addToMainBlock(this.#audio.getPlaylist().getPlaylist())
+                            global.player.setPlayList(global.playlist)
+                            this.track_list.addToMainBlock(global.player.getPlaylist().getPlaylist())
                             this.track_list.setTitle(table.pl_title)
                             this.track_list.open()
 
