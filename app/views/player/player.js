@@ -18,7 +18,7 @@ class Player extends Page {
     #playlist = []
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
-    constructor(dialog, rp) {
+    constructor(dialog) {
         super();
         this.#dialog = dialog
         this.setTitle('Media Maze');
@@ -28,7 +28,6 @@ class Player extends Page {
         this.add(this.#audio, this.#dialog)
         this.addRouteEvent(this, () => {
             this.#audio.restoreFX();
-            rp();
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
