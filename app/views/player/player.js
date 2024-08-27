@@ -12,7 +12,7 @@ class Player extends Page {
     //
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
-    search_list = new PlayerDialogSearch("60%", "90%", "Поиск")
+    search_list = new PlayerDialogSearch("83%", "80%", "Поиск")
     constructor(dialog) {
         super();
         global.playlist = []

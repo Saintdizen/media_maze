@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, ProgressBar, Spinner} = require("chuijs");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -140,6 +140,12 @@ class PlayerDialogSearch {
         width: Styles.SIZE.WEBKIT_FILL,
         placeholder: "Поиск"
     })
+    #search_button = new Button({
+        //reverse: Boolean(),
+        title: "Поиск",
+        icon: undefined,
+        transparentBack: false
+    })
     constructor(width = "max-content", height = "max-content", title = "Поиск") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
         this.#title.innerText(title)
@@ -147,38 +153,69 @@ class PlayerDialogSearch {
         this.#button_close.addEventListener("click", () => this.#dialog.close())
         this.#dialog.addToHeader(this.#title, this.#button_close)
         this.#search_block.set().appendChild(this.#search_input.set())
+        this.#search_block.set().appendChild(this.#search_button.set())
         this.#dialog.addToBody(this.#search_block, this.#main_block)
 
-        this.#search_input.addInputListener(async (event) => {
-            event.preventDefault()
-            let res = await new YaApi().search(global.access_token, global.user_id, event.target.value)
-            let res_json = {
-                q: event.target.value,
-                results: res.tracks.results
+        this.#search_button.addClickListener(async () => {
+            await this.#renderSearchResults()
+        })
+    }
+    async #renderSearchResults() {
+        global.playlist = []
+        let spinner_big = new Spinner(Spinner.SIZE.BIG, 'auto');
+        this.addToMainBlock(spinner_big)
+        this.#search_button.setDisabled(true)
+        for (let i = 0; i <= 10; i++) {
+            let res = await new YaApi().searchTracks(global.access_token, global.user_id, this.#search_input.getValue(), i, 5000)
+            try {
+                if (res.tracks.results.length === 0) {
+                    break;
+                }
+                console.log(res)
+                let res_json = {
+                    q: this.#search_input.getValue(),
+                    results: res.tracks.results
+                }
+                this.#test(res_json)
+            } catch (e) {
+                break;
+            }
+        }
+        global.player.setPlayList([...new Set(global.playlist)])
+        this.addToMainBlock(global.player.getPlaylist().getPlaylist())
+        this.#search_button.setDisabled(false)
+    }
+    #test(res_json) {
+        for (let s_track of res_json.results) {
+            let artist_name = []
+            for (let artist of s_track.artists) artist_name.push(artist.name)
+
+            let cover = undefined
+            try {
+                cover = `https://${s_track.coverUri.replaceAll("%%", "800x800")}`
+            } catch (e) {
+                cover = ""
             }
 
-            global.playlist = []
-            for (let s_track of res_json.results) {
-                console.log(s_track)
+            let test_track = {
+                track_id: s_track.id,
+                title: s_track.title,
+                artist: artist_name.join(", ").toString(),
+                album: cover,
+                mimetype: "audio/mpeg",
+                path: ""
+            }
 
-                let link = await new YaApi().getLink(s_track.id, global.access_token, global.user_id)
+            let val = this.#search_input.getValue().toLowerCase()
 
-                let test_track = {
-                    track_id: s_track.id,
-                    title: s_track.title,
-                    artist: s_track.id,
-                    album: `https://${s_track.coverUri.replaceAll("%%", "800x800")}`,
-                    mimetype: "audio/mpeg",
-                    path: link
-                }
+            if (artist_name.join(", ").toString().toLowerCase().includes(val)) {
                 global.playlist.push(test_track)
             }
 
-            global.player.setPlayList(global.playlist)
-            this.addToMainBlock(global.player.getPlaylist().getPlaylist())
-            // global.player
-            // global.playlist
-        })
+            if (s_track.title.toLowerCase().includes(val)) {
+                global.playlist.push(test_track)
+            }
+        }
     }
     setTitle(name = String()) {
         this.#title.innerText(name)
@@ -190,17 +227,18 @@ class PlayerDialogSearch {
         for (let component of components) this.#dialog.addToBody(component);
     }
     open() {
-        this.#search_input.setValue("")
+        //this.#search_input.setValue("")
         this.#dialog.open()
     }
     close() {
-        this.#search_input.setValue("")
+        //this.#search_input.setValue("")
         this.#dialog.close()
     }
     clear() {
         this.#main_block.set().innerHTML = ''
     }
     addToMainBlock(...components) {
+        this.clear()
         try {
             for (let component of components) this.#main_block.set().appendChild(component.set());
         } catch {
