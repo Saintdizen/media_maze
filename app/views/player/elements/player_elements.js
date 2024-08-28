@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, ProgressBar, Spinner} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -123,6 +123,7 @@ exports.PlayerDialogButton = PlayerDialogButton
 
 class PlayerDialogSearch {
     #dialog = undefined
+    #dialog_add_pl = undefined
     #title = new CustomElement({
         tag: "cust_elem", id: "test_dialog_pl_list_title", pathToCSS: path_css
     })
@@ -148,13 +149,14 @@ class PlayerDialogSearch {
     })
     constructor(width = "max-content", height = "max-content", title = "Поиск") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
+        this.#dialog_add_pl = new PlayerDialog("50%", "50%", "Добавить в плейлист")
         this.#title.innerText(title)
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
         this.#dialog.addToHeader(this.#title, this.#button_close)
         this.#search_block.set().appendChild(this.#search_input.set())
         this.#search_block.set().appendChild(this.#search_button.set())
-        this.#dialog.addToBody(this.#search_block, this.#main_block)
+        this.#dialog.addToBody(this.#search_block, this.#main_block, this.#dialog_add_pl)
 
         this.#search_button.addClickListener(async () => {
             await this.#renderSearchResults()
@@ -176,7 +178,7 @@ class PlayerDialogSearch {
                     q: this.#search_input.getValue(),
                     results: res.tracks.results
                 }
-                this.#test(res_json)
+                this.#searchResults(res_json, this.#search_input.getValue().toLowerCase())
             } catch (e) {
                 break;
             }
@@ -185,37 +187,50 @@ class PlayerDialogSearch {
         this.addToMainBlock(global.player.getPlaylist().getPlaylist())
         this.#search_button.setDisabled(false)
     }
-    #test(res_json) {
+    #searchResults(res_json, input_value) {
         for (let s_track of res_json.results) {
             let artist_name = []
             for (let artist of s_track.artists) artist_name.push(artist.name)
-
             let cover = undefined
             try {
                 cover = `https://${s_track.coverUri.replaceAll("%%", "800x800")}`
             } catch (e) {
                 cover = ""
             }
-
             let test_track = {
                 track_id: s_track.id,
                 title: s_track.title,
                 artist: artist_name.join(", ").toString(),
                 album: cover,
                 mimetype: "audio/mpeg",
-                path: ""
+                path: "",
+                addToPlaylist: async () => {
+                    let res = await new YaApi().getUserPlaylists(global.access_token, global.user_id)
+                    for (let pl of res) {
+                        let res2 = await new YaApi().getPlaylist(global.access_token, global.user_id, pl.kind)
+                        let tt = res2.tracks.filter((track) => String(track.id) === String(s_track.id))
+                        this.#dialog_add_pl.addToMainBlock(this.#setButtonTest("", pl.title, false))
+                        console.log(tt)
+                    }
+                    this.#dialog_add_pl.open()
+                }
             }
-
-            let val = this.#search_input.getValue().toLowerCase()
-
-            if (artist_name.join(", ").toString().toLowerCase().includes(val)) {
-                global.playlist.push(test_track)
-            }
-
-            if (s_track.title.toLowerCase().includes(val)) {
-                global.playlist.push(test_track)
-            }
+            if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) global.playlist.push(test_track)
+            if (s_track.title.toLowerCase().includes(input_value)) global.playlist.push(test_track)
         }
+    }
+    #setButtonTest(cover, name, exists) {
+        let chui_playlist = document.createElement("chui_playlist");
+        let chui_playlist_cover = document.createElement("chui_playlist_cover")
+        let chui_playlist_name = document.createElement("chui_playlist_name");
+        let chui_playlist_exists = document.createElement("chui_playlist_exists");
+
+        chui_playlist_name.innerText = name;
+
+        chui_playlist.appendChild(chui_playlist_cover)
+        chui_playlist.appendChild(chui_playlist_name)
+        chui_playlist.appendChild(chui_playlist_exists)
+        return chui_playlist
     }
     setTitle(name = String()) {
         this.#title.innerText(name)

@@ -86,3 +86,21 @@
     z-index: 100;
     display: flex;
 }
+
+chui_playlist {
+    display: flex;
+    padding: var(--test_padding);
+    color: var(--text_color);
+    border-radius: var(--border_radius);
+    height: max-content;
+    align-items: center;
+    justify-content: space-between;
+}
+
+chui_playlist:hover {
+    background: var(--blue_prime_background);
+}
+
+chui_playlist:hover chui_playlist_name {
+    color: var(--text_color_hover);
+}
