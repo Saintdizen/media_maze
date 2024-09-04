@@ -1,4 +1,5 @@
 const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
+const {playlists} = require("../../../start");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -205,10 +206,9 @@ class PlayerDialogSearch {
                 mimetype: "audio/mpeg",
                 path: "",
                 addToPlaylist: async () => {
-                    let res = await new YaApi().getUserPlaylists(global.access_token, global.user_id)
-                    for (let pl of res) {
-                        let res2 = await new YaApi().getPlaylist(global.access_token, global.user_id, pl.kind)
-                        let tt = res2.tracks.filter((track) => String(track.id) === String(s_track.id))
+                    this.#dialog_add_pl.clear()
+                    for (let pl of playlists) {
+                        let tt = pl.tracks.filter((track) => String(track.id) === String(s_track.id))
                         this.#dialog_add_pl.addToMainBlock(this.#setButtonTest("", pl.title, false))
                         console.log(tt)
                     }

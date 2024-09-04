@@ -2,13 +2,9 @@ const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, Progre
     DownloadProgressNotification
 } = require('chuijs');
 const {Player} = require("./views/player/player");
-const {Stations} = require("./views/stations/stations");
-const {PlaylistDB, UserDB} = require("./sqlite/sqlite");
+let {DataBases} = require("./start")
 
 class Apps extends AppLayout {
-    #api = new YaApi()
-    #udb = new UserDB(App.userDataPath())
-    #pdb = new PlaylistDB(App.userDataPath())
     #progressTracks = new ProgressBar()
     #dialog = new Dialog({
         width: "500px",
@@ -53,9 +49,7 @@ class Apps extends AppLayout {
             )
         ])
 
-        this.#udb.selectUserData().then(async data => {
-            global.access_token = data.access_token
-            global.user_id = data.user_id
+        DataBases.USER_DB.selectUserData().then(async data => {
             let ub = await this.generateUserButton(data.access_token, data.user_id)
             this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([ub])
@@ -67,13 +61,13 @@ class Apps extends AppLayout {
     }
 
     async regeneratePlaylist() {
-        await this.#udb.selectUserData().then(data => {
+        await DataBases.USER_DB.selectUserData().then(data => {
             const up_notification = new DownloadProgressNotification({title: "Обновление библиотеки"})
             up_notification.show()
-            this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
-                await this.#pdb.createPlaylistDictTable()
+            new YaApi(data.access_token, data.user_id).getTracks().then(async playl => {
+                await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
                 for (let playlist of playl) {
-                    await this.#pdb.addPlaylistData(
+                    await DataBases.PLAYLISTS_DB.addPlaylistData(
                         playlist.playlist_name,
                         playlist.playlist_title
                     )
@@ -87,8 +81,8 @@ class Apps extends AppLayout {
                         )
 
                         let pname = playlist.playlist_name.replace("pl_", "")
-                        await this.#pdb.createPlaylistTable(pname)
-                        await this.#pdb.addTrack(
+                        await DataBases.PLAYLISTS_DB.createPlaylistTable(pname)
+                        await DataBases.PLAYLISTS_DB.addTrack(
                             pname,
                             track.track_id,
                             track.title,
@@ -113,10 +107,9 @@ class Apps extends AppLayout {
 
     async generatePlaylist(auth) {
         this.#dialog.open()
-
-        await this.#udb.createUserTable()
-        let udata = await this.#api.auth()
-        await this.#udb.addUserData(udata.access_token, udata.user_id)
+        await DataBases.USER_DB.createUserTable()
+        let udata = await new YaApi().auth()
+        await DataBases.USER_DB.addUserData(udata.access_token, udata.user_id)
         this.removeToHeaderRight([auth])
         //
         let ub = await this.generateUserButton(udata.access_token, udata.user_id)
@@ -134,22 +127,21 @@ class Apps extends AppLayout {
             this.#progressTracks.setProgressText(args.trackName)
         })
 
-        await this.#udb.selectUserData().then(data => {
-            this.#api.getTracks(data.access_token, data.user_id).then(async playl => {
-                await this.#pdb.createPlaylistDictTable()
+        await DataBases.USER_DB.selectUserData().then(data => {
+            new YaApi(data.access_token, data.user_id).getTracks().then(async playl => {
+                await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
                 for (let playlist of playl) {
-                    await this.#pdb.addPlaylistData(
+                    await DataBases.PLAYLISTS_DB.addPlaylistData(
                         playlist.playlist_name,
                         playlist.playlist_title
                     )
-
                     this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.playlist_title}`)
                     this.#progressTracks.setMax(playlist.tracks.length)
 
                     for (let track of playlist.tracks) {
                         let pname = playlist.playlist_name.replace("pl_", "")
-                        await this.#pdb.createPlaylistTable(pname)
-                        await this.#pdb.addTrack(
+                        await DataBases.PLAYLISTS_DB.createPlaylistTable(pname)
+                        await DataBases.PLAYLISTS_DB.addTrack(
                             pname,
                             track.track_id,
                             track.title,
@@ -170,8 +162,10 @@ class Apps extends AppLayout {
         })
     }
 
-    async generateUserButton(access_token, user_id) {
-        let datas = await this.#api.getUserData(access_token, user_id)
+    async generateUserButton(token, id) {
+        let datas = await new YaApi(token, id).getUserData()
+        global.access_token = token
+        global.user_id = id
         let displayName = datas.account.displayName
         let defaultEmail = datas.defaultEmail
         return AppLayout.USER_PROFILE({

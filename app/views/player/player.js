@@ -1,11 +1,9 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
-const {PlaylistDB, UserDB} = require("../../sqlite/sqlite");
+
 const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
 const fs= require("fs");
-const udb = new UserDB(App.userDataPath())
-const pdb = new PlaylistDB(App.userDataPath())
-const api = new YaApi()
+let {playlists, DataBases} = require("../../start")
 
 class Player extends Page {
     #dialog = undefined
@@ -27,8 +25,13 @@ class Player extends Page {
         this.setMain(false);
         global.player.openFolder(path.join(App.userDataPath(), "downloads"))
         this.add(global.player, this.#dialog)
-        this.addRouteEvent(this, () => {
+        this.addRouteEvent(this, async () => {
             global.player.restoreFX();
+            let api = new YaApi(global.access_token, global.user_id)
+            for (let test of await api.getUserPlaylists()) {
+                let pl = await api.getPlaylist(test.kind)
+                playlists.push(pl)
+            }
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
@@ -76,11 +79,11 @@ class Player extends Page {
     #generatePlayList() {
         this.playlist_list.clear()
         this.track_list.clear()
-        pdb.getPlaylists().then(async playlists => {
+        DataBases.PLAYLISTS_DB.getPlaylists().then(async playlists => {
             for (let table of playlists) {
                 const button = new PlayerDialogButton(table, async (evt) => {
                     if (evt.target.id === "test_download") {
-                        pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                        DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind).then(async dpl => {
                             const notif = new DownloadProgressNotification({title: `Загрузка ${table.pl_title}`})
                             let links = []
                             for (let dtr of dpl) {
@@ -100,7 +103,7 @@ class Player extends Page {
                                 for (let track of links) {
                                     notif.update(`Загрузка ${table.pl_title}`, track.filename_old, links.indexOf(track) + 1, links.length)
                                     let info = await this.save(track)
-                                    await pdb.updateTrack(track.table, track.track_id, info)
+                                    await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
                                 }
                                 notif.done()
                                 //await this.#generatePlayList()
@@ -109,9 +112,9 @@ class Player extends Page {
                     } else {
                         //
                         global.playlist = []
-                        let local_tracks = await pdb.getPlaylist(table.pl_kind)
+                        let local_tracks = await DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind)
                         //
-                        api.getTracks(global.access_token, global.user_id).then(tracks => {
+                        new YaApi(global.access_token, global.user_id).getTracks().then(tracks => {
                             for (let playlist of tracks) {
                                 if (playlist.playlist_name === table.pl_kind) {
                                     for (let track of playlist.tracks) {
@@ -145,7 +148,7 @@ class Player extends Page {
                                                     if (links.length !== 0) {
                                                         for (let track of links) {
                                                             let info = await this.saveOne(track)
-                                                            await pdb.updateTrack(track.table, track.track_id, info)
+                                                            await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
                                                         }
                                                     }
                                                 }
@@ -165,7 +168,7 @@ class Player extends Page {
                         this.playlist_list.close()
                     }
                 })
-                pdb.getPlaylist(table.pl_kind).then(async dpl => {
+                DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind).then(async dpl => {
                     for (let dtr of dpl) {
                         if (dtr.path === "") {
                             button.addDownloadButton()
@@ -181,19 +184,19 @@ class Player extends Page {
 
     remove(track, table) {
         console.log(table)
-        udb.selectUserData().then(async (udt) => {
-            await api.removeTrack(udt.access_token, udt.user_id, Number(table.pl_kind.replace("pl_", "")), track.track_id)
+        DataBases.USER_DB.selectUserData().then(async (udt) => {
+            await new YaApi(udt.access_token, udt.user_id).removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
 
         })
-        pdb.deleteRow(table.pl_kind, track.track_id).then(() => {
+        DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
             document.getElementsByName(track.track_id)[0].remove()
         })
     }
 
     save(track) {
         return new Promise(async resolve => {
-            udb.selectUserData().then(async (udt) => {
-                let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+            DataBases.USER_DB.selectUserData().then(async (udt) => {
+                let link = await new YaApi(udt.access_token, udt.user_id).getLink(track.track_id)
                 DownloadManager.download({
                     url: link,
                     path: track.savePath,
@@ -217,9 +220,9 @@ class Player extends Page {
     saveOne(track) {
         const notif = new DownloadProgressNotification({title: "Загрузка трека"})
         return new Promise(async resolve => {
-            udb.selectUserData().then(async (udt) => {
+            DataBases.USER_DB.selectUserData().then(async (udt) => {
                 notif.show()
-                let link = await api.getLink(track.track_id, udt.access_token, udt.user_id)
+                let link = await new YaApi(udt.access_token, udt.user_id).getLink(track.track_id)
                 DownloadManager.download({
                     url: link,
                     path: track.savePath,
