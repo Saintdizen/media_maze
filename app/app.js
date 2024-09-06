@@ -51,18 +51,27 @@ class Apps extends AppLayout {
         ])
 
         DataBases.USER_DB.selectUserData().then(async data => {
-            console.log(data)
             let ub = await this.generateUserButton(data.access_token, data.user_id)
             this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([ub])
         }).catch(err => {
-            console.log(err)
+            console.error(err)
             this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([this.#auth])
+        })
+
+
+        ipcRenderer.on("REGEN_PLAYLISTS", async () => {
+            await this.regeneratePlaylist()
         })
     }
 
     async regeneratePlaylist() {
+        globalThis.playlists = []
+        for (let test of await new YaApi().getUserPlaylists()) {
+            let pl = await new YaApi().getPlaylist(test.kind)
+            globalThis.playlists.push(pl)
+        }
         await DataBases.USER_DB.selectUserData().then(data => {
             const up_notification = new DownloadProgressNotification({title: "Обновление библиотеки"})
             up_notification.show()

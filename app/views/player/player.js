@@ -25,6 +25,7 @@ class Player extends Page {
         this.add(globalThis.player, this.#dialog)
         this.addRouteEvent(this, async () => {
             player.restoreFX();
+            globalThis.playlists = []
             for (let test of await new YaApi().getUserPlaylists()) {
                 let pl = await new YaApi().getPlaylist(test.kind)
                 globalThis.playlists.push(pl)
@@ -180,9 +181,10 @@ class Player extends Page {
 
     remove(track, table) {
         console.log(table)
-        DataBases.USER_DB.selectUserData().then(async (udt) => {
+        DataBases.USER_DB.selectUserData().then(async () => {
             await new YaApi().removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
-
+            let wc = App.getWebContents().getAllWebContents()
+            for (let test of wc) test.send("REGEN_PLAYLISTS")
         })
         DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
             document.getElementsByName(track.track_id)[0].remove()

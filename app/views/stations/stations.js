@@ -43,15 +43,10 @@ class Stations extends Page {
 
                     let stations3 = stationsAll.filter(station => this.filterByMoodEnergy(station))
                     console.log(stations3)
-
                     let sid = `${stations3[0].station.id.type}:${stations3[0].station.id.tag}`
-
                     let tracks = await new YaApi().getStationTracks(data.access_token, data.user_id, {
                         stationId: sid
                     })
-
-                    console.log(tracks)
-
                 })
             }
         })

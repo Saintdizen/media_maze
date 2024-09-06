@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner, App} = require("chuijs");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -173,7 +173,7 @@ class PlayerDialogSearch {
                 if (res.tracks.results.length === 0) {
                     break;
                 }
-                console.log(res)
+                //console.log(res)
                 let res_json = {
                     q: this.#search_input.getValue(),
                     results: res.tracks.results
@@ -208,8 +208,7 @@ class PlayerDialogSearch {
                     this.#dialog_add_pl.clear()
                     for (let pl of globalThis.playlists) {
                         let tt = pl.tracks.filter((track) => String(track.id) === String(s_track.id))
-                        this.#dialog_add_pl.addToMainBlock(this.#setButtonTest("", pl.title, false))
-                        console.log(tt)
+                        this.#dialog_add_pl.addToMainBlock(this.#setButtonTest(s_track, pl, tt.length > 0))
                     }
                     this.#dialog_add_pl.open()
                 }
@@ -218,17 +217,31 @@ class PlayerDialogSearch {
             if (s_track.title.toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
         }
     }
-    #setButtonTest(cover, name, exists) {
+    #setButtonTest(track, pl, exists) {
         let chui_playlist = document.createElement("chui_playlist");
         let chui_playlist_cover = document.createElement("chui_playlist_cover")
         let chui_playlist_name = document.createElement("chui_playlist_name");
         let chui_playlist_exists = document.createElement("chui_playlist_exists");
-
-        chui_playlist_name.innerText = name;
-
+        //
+        chui_playlist_name.innerText = pl.title;
+        if (exists) {
+            chui_playlist_exists.innerHTML = new Icon(Icons.AUDIO_VIDEO.PLAYLIST_ADD_CHECK, "24px", 'var(--badge_success_text)').getHTML()
+        } else {
+            chui_playlist.addEventListener("click", async () => {
+                new YaApi().addTrackToPlaylist(pl.kind, track.id, track.albums[0].id).then(async add => {
+                    let wc = App.getWebContents().getAllWebContents()
+                    for (let test of wc) test.send("REGEN_PLAYLISTS")
+                    this.#dialog_add_pl.close()
+                }).catch(err => {
+                    console.error(err)
+                })
+            })
+        }
+        //
         chui_playlist.appendChild(chui_playlist_cover)
         chui_playlist.appendChild(chui_playlist_name)
         chui_playlist.appendChild(chui_playlist_exists)
+        //
         return chui_playlist
     }
     setTitle(name = String()) {
