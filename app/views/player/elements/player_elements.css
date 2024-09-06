@@ -89,18 +89,39 @@
 
 chui_playlist {
     display: flex;
-    padding: var(--test_padding);
+    margin: var(--test_padding);
     color: var(--text_color);
     border-radius: var(--border_radius);
-    height: max-content;
+    height: 150px;
+    width: 150px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-direction: column;
 }
 
 chui_playlist:hover {
-    background: var(--blue_prime_background);
+    background: var(--blue_prime_background_trans);
 }
 
 chui_playlist:hover chui_playlist_name {
     color: var(--text_color_hover);
+}
+
+chui_playlist_cover {
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    background-size: contain;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    border-radius: var(--border_radius);
+}
+
+chui_playlist_name {
+    margin: var(--margin);
+}
+
+chui_playlist_exists {
+
 }

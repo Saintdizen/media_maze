@@ -2,7 +2,8 @@ const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, Progre
     DownloadProgressNotification
 } = require('chuijs');
 const {Player} = require("./views/player/player");
-let {DataBases} = require("./start")
+const {DataBases} = require("./start")
+let api = new YaApi()
 
 class Apps extends AppLayout {
     #progressTracks = new ProgressBar()
@@ -50,6 +51,7 @@ class Apps extends AppLayout {
         ])
 
         DataBases.USER_DB.selectUserData().then(async data => {
+            console.log(data)
             let ub = await this.generateUserButton(data.access_token, data.user_id)
             this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([ub])
@@ -108,7 +110,7 @@ class Apps extends AppLayout {
     async generatePlaylist(auth) {
         this.#dialog.open()
         await DataBases.USER_DB.createUserTable()
-        let udata = await new YaApi().auth()
+        let udata = await api.auth()
         await DataBases.USER_DB.addUserData(udata.access_token, udata.user_id)
         this.removeToHeaderRight([auth])
         //
@@ -163,9 +165,9 @@ class Apps extends AppLayout {
     }
 
     async generateUserButton(token, id) {
-        let datas = await new YaApi(token, id).getUserData()
         global.access_token = token
         global.user_id = id
+        let datas = await new YaApi(token, id).getUserData()
         let displayName = datas.account.displayName
         let defaultEmail = datas.defaultEmail
         return AppLayout.USER_PROFILE({

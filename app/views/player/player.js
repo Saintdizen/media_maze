@@ -1,9 +1,8 @@
 const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
-
 const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
 const fs= require("fs");
-let {playlists, DataBases} = require("../../start")
+let {DataBases} = require("../../start")
 
 class Player extends Page {
     #dialog = undefined
@@ -13,8 +12,7 @@ class Player extends Page {
     search_list = new PlayerDialogSearch("83%", "80%", "Поиск")
     constructor(dialog) {
         super();
-        global.playlist = []
-        global.player = new YaAudio({
+        globalThis.player = new YaAudio({
             width: Styles.SIZE.WEBKIT_FILL,
             height: Styles.SIZE.WEBKIT_FILL,
             coverPath: `file://${require('path').join(__dirname, 'cover.png')}`
@@ -23,14 +21,13 @@ class Player extends Page {
         this.setTitle('Media Maze');
         this.setFullHeight();
         this.setMain(false);
-        global.player.openFolder(path.join(App.userDataPath(), "downloads"))
-        this.add(global.player, this.#dialog)
+        globalThis.player.openFolder(path.join(App.userDataPath(), "downloads"))
+        this.add(globalThis.player, this.#dialog)
         this.addRouteEvent(this, async () => {
-            global.player.restoreFX();
-            let api = new YaApi(global.access_token, global.user_id)
-            for (let test of await api.getUserPlaylists()) {
-                let pl = await api.getPlaylist(test.kind)
-                playlists.push(pl)
+            player.restoreFX();
+            for (let test of await new YaApi().getUserPlaylists()) {
+                let pl = await new YaApi().getPlaylist(test.kind)
+                globalThis.playlists.push(pl)
             }
         })
 
@@ -39,7 +36,7 @@ class Player extends Page {
             this.#dialog.close()
         })
 
-        global.player.addFunctionButton(
+        player.addFunctionButton(
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.ACTIONS.SEARCH,
                 clickEvent: () => this.search_list.open()
@@ -50,12 +47,12 @@ class Player extends Page {
                 icon_off: Icons.AUDIO_VIDEO.SHUFFLE,
                 activateEvent: (evt) => {
                     if (evt.target.checked) {
-                        global.player.setPlayList(shuffle(global.playlist.slice()))
+                        player.setPlayList(shuffle(playlist.slice()))
                         new Notification({
                             title: "Перемешать", text: evt.target.checked, showTime: 1000
                         }).show()
                     } else {
-                        global.player.setPlayList(global.playlist)
+                        player.setPlayList(playlist)
                         new Notification({
                             title: "Перемешать", text: evt.target.checked, showTime: 1000
                         }).show()
@@ -111,18 +108,17 @@ class Player extends Page {
                         })
                     } else {
                         //
-                        global.playlist = []
+                        playlist = []
                         let local_tracks = await DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind)
                         //
-                        new YaApi(global.access_token, global.user_id).getTracks().then(tracks => {
-                            for (let playlist of tracks) {
-                                if (playlist.playlist_name === table.pl_kind) {
-                                    for (let track of playlist.tracks) {
+                        new YaApi().getTracks().then(tracks => {
+                            for (let pl of tracks) {
+                                if (pl.playlist_name === table.pl_kind) {
+                                    for (let track of pl.tracks) {
                                         let loc_track = local_tracks.filter(ltrack => {
                                             return String(track.track_id) === String(ltrack.track_id)
                                         })[0]
                                         if (loc_track !== undefined) {
-                                            console.log(loc_track.mimetype)
                                             let test_track = {
                                                 track_id: loc_track.track_id,
                                                 title: loc_track.title,
@@ -153,14 +149,14 @@ class Player extends Page {
                                                     }
                                                 }
                                             }
-                                            global.playlist.push(test_track)
+                                            playlist.push(test_track)
                                         }
                                     }
                                 }
                             }
                         }).finally(() => {
-                            global.player.setPlayList(global.playlist)
-                            this.track_list.addToMainBlock(global.player.getPlaylist().getPlaylist())
+                            player.setPlayList(playlist)
+                            this.track_list.addToMainBlock(player.getPlaylist().getPlaylist())
                             this.track_list.setTitle(table.pl_title)
                             this.track_list.open()
 
@@ -185,7 +181,7 @@ class Player extends Page {
     remove(track, table) {
         console.log(table)
         DataBases.USER_DB.selectUserData().then(async (udt) => {
-            await new YaApi(udt.access_token, udt.user_id).removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
+            await new YaApi().removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
 
         })
         DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
@@ -196,7 +192,7 @@ class Player extends Page {
     save(track) {
         return new Promise(async resolve => {
             DataBases.USER_DB.selectUserData().then(async (udt) => {
-                let link = await new YaApi(udt.access_token, udt.user_id).getLink(track.track_id)
+                let link = await new YaApi().getLink(track.track_id)
                 DownloadManager.download({
                     url: link,
                     path: track.savePath,
@@ -222,7 +218,7 @@ class Player extends Page {
         return new Promise(async resolve => {
             DataBases.USER_DB.selectUserData().then(async (udt) => {
                 notif.show()
-                let link = await new YaApi(udt.access_token, udt.user_id).getLink(track.track_id)
+                let link = await new YaApi().getLink(track.track_id)
                 DownloadManager.download({
                     url: link,
                     path: track.savePath,

@@ -1,5 +1,4 @@
 const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
-const {playlists} = require("../../../start");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -164,12 +163,12 @@ class PlayerDialogSearch {
         })
     }
     async #renderSearchResults() {
-        global.playlist = []
+        globalThis.playlist = []
         let spinner_big = new Spinner(Spinner.SIZE.BIG, 'auto');
         this.addToMainBlock(spinner_big)
         this.#search_button.setDisabled(true)
         for (let i = 0; i <= 10; i++) {
-            let res = await new YaApi().searchTracks(global.access_token, global.user_id, this.#search_input.getValue(), i, 5000)
+            let res = await new YaApi().searchTracks(this.#search_input.getValue(), i, 5000)
             try {
                 if (res.tracks.results.length === 0) {
                     break;
@@ -184,8 +183,8 @@ class PlayerDialogSearch {
                 break;
             }
         }
-        global.player.setPlayList([...new Set(global.playlist)])
-        this.addToMainBlock(global.player.getPlaylist().getPlaylist())
+        globalThis.player.setPlayList([...new Set(globalThis.playlist)])
+        this.addToMainBlock(globalThis.player.getPlaylist().getPlaylist())
         this.#search_button.setDisabled(false)
     }
     #searchResults(res_json, input_value) {
@@ -207,7 +206,7 @@ class PlayerDialogSearch {
                 path: "",
                 addToPlaylist: async () => {
                     this.#dialog_add_pl.clear()
-                    for (let pl of playlists) {
+                    for (let pl of globalThis.playlists) {
                         let tt = pl.tracks.filter((track) => String(track.id) === String(s_track.id))
                         this.#dialog_add_pl.addToMainBlock(this.#setButtonTest("", pl.title, false))
                         console.log(tt)
@@ -215,8 +214,8 @@ class PlayerDialogSearch {
                     this.#dialog_add_pl.open()
                 }
             }
-            if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) global.playlist.push(test_track)
-            if (s_track.title.toLowerCase().includes(input_value)) global.playlist.push(test_track)
+            if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
+            if (s_track.title.toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
         }
     }
     #setButtonTest(cover, name, exists) {

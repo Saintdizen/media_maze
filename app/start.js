@@ -7,8 +7,11 @@ class DataBases {
     static PLAYLISTS_DB = new PlaylistDB(App.userDataPath())
 }
 
-
 module.exports = {
-    DataBases: DataBases,
-    playlists: []
+    DataBases: DataBases
 }
+
+//
+globalThis.playlists = []
+globalThis.playlist = []
+globalThis.player = undefined
