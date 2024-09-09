@@ -97,10 +97,12 @@ chui_playlist {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background-size: cover;
 }
 
 chui_playlist:hover {
     background: var(--blue_prime_background_trans);
+    background-size: cover;
 }
 
 chui_playlist:hover chui_playlist_name {
@@ -114,8 +116,13 @@ chui_playlist_cover {
     position: absolute;
     top: 0;
     right: 0;
-    z-index: -1;
+    z-index: 0;
     border-radius: var(--border_radius);
+    background-color: #00000088;
+}
+
+chui_playlist_cover:hover {
+    background: var(--blue_prime_background_trans);
 }
 
 chui_playlist_name {

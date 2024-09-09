@@ -149,7 +149,7 @@ class PlayerDialogSearch {
     })
     constructor(width = "max-content", height = "max-content", title = "Поиск") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
-        this.#dialog_add_pl = new PlayerDialog("50%", "50%", "Добавить в плейлист")
+        this.#dialog_add_pl = new PlayerDialog("max-content", "max-content", "Добавить в плейлист")
         this.#title.innerText(title)
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
@@ -158,7 +158,8 @@ class PlayerDialogSearch {
         this.#search_block.set().appendChild(this.#search_button.set())
         this.#dialog.addToBody(this.#search_block, this.#main_block, this.#dialog_add_pl)
 
-        this.#search_button.addClickListener(async () => {
+        this.#search_button.addClickListener(async (event) => {
+            event.preventDefault()
             await this.#renderSearchResults()
         })
     }
@@ -215,7 +216,14 @@ class PlayerDialogSearch {
             }
             if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
             if (s_track.title.toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
+            globalThis.playlist.push(test_track)
         }
+        globalThis.playlist.sort((a) => {
+            console.log(a)
+            let aName = a.artist.toLowerCase();
+            if (aName === input_value) { return -1 }
+            return 0;
+        })
     }
     #setButtonTest(track, pl, exists) {
         let chui_playlist = document.createElement("chui_playlist");
@@ -223,7 +231,9 @@ class PlayerDialogSearch {
         let chui_playlist_name = document.createElement("chui_playlist_name");
         let chui_playlist_exists = document.createElement("chui_playlist_exists");
         //
+        console.error(pl)
         chui_playlist_name.innerText = pl.title;
+        chui_playlist.style.backgroundImage = `url("https://${pl.ogImage.replaceAll("%%", "800x800")}")`
         if (exists) {
             chui_playlist_exists.innerHTML = new Icon(Icons.AUDIO_VIDEO.PLAYLIST_ADD_CHECK, "24px", 'var(--badge_success_text)').getHTML()
         } else {
