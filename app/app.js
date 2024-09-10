@@ -1,4 +1,4 @@
-const {AppLayout, render, Icons, Route, YaApi, App, Notification, Dialog, ProgressBar, Styles, ipcRenderer,
+const {AppLayout, render, Icons, Route, YaApi, Notification, Dialog, ProgressBar, Styles, ipcRenderer,
     DownloadProgressNotification
 } = require('chuijs');
 const {Player} = require("./views/player/player");
@@ -19,21 +19,19 @@ class Apps extends AppLayout {
         // Настройка диалога
         this.#progressTracks.setWidth(Styles.SIZE.WEBKIT_FILL)
         this.#dialog.addToBody(this.#progressTracks)
-
         this.#progressTracks.setProgressCountText("Чтение плейлистов:")
         this.#progressTracks.setProgressText("")
         // Настройка диалога
         this.disableAppMenu()
-
+        //
         this.#auth = AppLayout.BUTTON({
             title: "Войти",
             icon: Icons.AUDIO_VIDEO.QUEUE_MUSIC,
             reverse: true,
             clickEvent: async () => await this.generatePlaylist(this.#auth)
         })
-
+        //
         this.addToHeaderRight([this.#auth])
-
         this.addToHeaderLeftBeforeTitle([
             AppLayout.TABS({
                     default: 0,
@@ -49,7 +47,7 @@ class Apps extends AppLayout {
                 }
             )
         ])
-
+        //
         DataBases.USER_DB.selectUserData().then(async data => {
             let ub = await this.generateUserButton(data.access_token, data.user_id)
             this.removeToHeaderRight([this.#auth])
@@ -59,8 +57,7 @@ class Apps extends AppLayout {
             this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([this.#auth])
         })
-
-
+        //
         ipcRenderer.on("REGEN_PLAYLISTS", async () => {
             await this.regeneratePlaylist()
         })
@@ -83,14 +80,12 @@ class Apps extends AppLayout {
                         playlist.playlist_title
                     )
                     for (let track of playlist.tracks) {
-
                         up_notification.update(
                             "Обновление библиотеки",
                             `${playlist.playlist_title} (${playl.indexOf(playlist)+1} из ${playl.length})`,
                             playlist.tracks.indexOf(track) + 1,
                             playlist.tracks.length
                         )
-
                         let pname = playlist.playlist_name.replace("pl_", "")
                         await DataBases.PLAYLISTS_DB.createPlaylistTable(pname)
                         await DataBases.PLAYLISTS_DB.addTrack(
@@ -103,8 +98,7 @@ class Apps extends AppLayout {
                         )
                     }
                     if (playl.indexOf(playlist) + 1 === playl.length) {
-                        let wc = App.getWebContents().getAllWebContents()
-                        for (let test of wc) test.send("GENPLAYLIST")
+                        DataBases.send("GENPLAYLIST")
                     }
                 }
                 up_notification.done()
@@ -128,19 +122,19 @@ class Apps extends AppLayout {
         //
         let ub = await this.generateUserButton(udata.access_token, udata.user_id)
         this.addToHeaderRight([ub])
-
+        //
         ipcRenderer.on("SEND_PLAYLIST_DATA", (event, args) => {
             //console.log(args)
             this.#progressTracks.setProgressCountText(`Чтение плейлиста: ${args.playlistName}`)
             this.#progressTracks.setMax(args.max)
         })
-
+        //
         ipcRenderer.on("SEND_TRACK_DATA", (event, args) => {
             //console.log(args)
             this.#progressTracks.setValue(args.index)
             this.#progressTracks.setProgressText(args.trackName)
         })
-
+        //
         await DataBases.USER_DB.selectUserData().then(data => {
             new YaApi(data.access_token, data.user_id).getTracks().then(async playl => {
                 await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
@@ -168,8 +162,7 @@ class Apps extends AppLayout {
                         this.#progressTracks.setProgressText(`${track.artist} - ${track.title}`)
                     }
                     if (playl.indexOf(playlist) + 1 === playl.length) {
-                        let wc = App.getWebContents().getAllWebContents()
-                        for (let test of wc) test.send("GENPLAYLIST")
+                        DataBases.send("GENPLAYLIST")
                     }
                 }
             })

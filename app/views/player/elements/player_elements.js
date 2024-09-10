@@ -1,4 +1,5 @@
 const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner, App} = require("chuijs");
+const {DataBases} = require("../../../start");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
 class PlayerDialog {
@@ -234,7 +235,6 @@ class PlayerDialogSearch {
         let chui_playlist_name = document.createElement("chui_playlist_name");
         let chui_playlist_exists = document.createElement("chui_playlist_exists");
         //
-        console.error(pl)
         chui_playlist_name.innerText = pl.title;
         chui_playlist.style.backgroundImage = `url("https://${pl.ogImage.replaceAll("%%", "800x800")}")`
         if (exists) {
@@ -242,8 +242,7 @@ class PlayerDialogSearch {
         } else {
             chui_playlist.addEventListener("click", async () => {
                 new YaApi().addTrackToPlaylist(pl.kind, track.id, track.albums[0].id).then(async add => {
-                    let wc = App.getWebContents().getAllWebContents()
-                    for (let test of wc) test.send("REGEN_PLAYLISTS")
+                    DataBases.send("REGEN_PLAYLISTS")
                     this.#dialog_add_pl.close()
                 }).catch(err => {
                     console.error(err)

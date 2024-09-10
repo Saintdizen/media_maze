@@ -176,11 +176,9 @@ class Player extends Page {
     }
 
     remove(track, table) {
-        console.log(table)
         DataBases.USER_DB.selectUserData().then(async () => {
             await new YaApi().removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
-            let wc = App.getWebContents().getAllWebContents()
-            for (let test of wc) test.send("REGEN_PLAYLISTS")
+            DataBases.send("REGEN_PLAYLISTS")
         })
         DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
             document.getElementsByName(track.track_id)[0].remove()
@@ -194,11 +192,10 @@ class Player extends Page {
                 DownloadManager.download({
                     url: link,
                     path: track.savePath,
-                    onProgress: (progress, item) => {
-                        console.log(progress, item)
-                    }
+                    // onProgress: (progress, item) => {
+                    //     console.log(progress, item)
+                    // }
                 }, (error, info) => {
-                    console.log(info)
                     if (error) { console.error(error); return; }
                     let dl_path = require("path").join(App.userDataPath(), 'downloads')
                     let new_name = path.join(dl_path, track.savePath, track.filename)
@@ -224,7 +221,6 @@ class Player extends Page {
                         notif.update("Загрузка трека", track.filename_old, Number(progress.progress).toFixed(), 100)
                     }
                 }, (error, info) => {
-                    console.log(info)
                     if (error) { console.error(error); return; }
                     let dl_path = require("path").join(App.userDataPath(), 'downloads')
                     let new_name = path.join(dl_path, track.savePath, track.filename)
