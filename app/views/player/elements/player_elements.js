@@ -207,7 +207,7 @@ class PlayerDialogSearch {
                 path: "",
                 addToPlaylist: async () => {
                     this.#dialog_add_pl.clear()
-                    for (let pl of globalThis.playlists) {
+                    for (let pl of new Set([...globalThis.playlists])) {
                         let tt = pl.tracks.filter((track) => String(track.id) === String(s_track.id))
                         this.#dialog_add_pl.addToMainBlock(this.#setButtonTest(s_track, pl, tt.length > 0))
                     }
@@ -216,10 +216,13 @@ class PlayerDialogSearch {
             }
             if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
             if (s_track.title.toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
-            globalThis.playlist.push(test_track)
         }
         globalThis.playlist.sort((a) => {
-            console.log(a)
+            let aName = a.artist.toLowerCase();
+            if (aName.includes(input_value)) { return -1 }
+            return 0;
+        })
+        globalThis.playlist.sort((a) => {
             let aName = a.artist.toLowerCase();
             if (aName === input_value) { return -1 }
             return 0;

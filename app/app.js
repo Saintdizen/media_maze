@@ -41,7 +41,7 @@ class Apps extends AppLayout {
                         AppLayout.BUTTON({
                                 icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
                                 clickEvent: async () => {
-                                    new Route().go(new Player(this.#dialog))
+                                    new Route().go(new Player(this.#dialog, this.regeneratePlaylist()))
                                 }
                             }
                         )
@@ -113,6 +113,9 @@ class Apps extends AppLayout {
                     title: "Обновление библиотеки", text: err, showTime: 1000, style: Notification.STYLE.ERROR
                 }).show()
             })
+        }).catch(err => {
+            console.error(err)
+            DataBases.USER_DB.createUserTable()
         })
     }
 

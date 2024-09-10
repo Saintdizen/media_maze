@@ -101,8 +101,8 @@ chui_playlist {
 }
 
 chui_playlist:hover {
-    background: var(--blue_prime_background_trans);
     background-size: cover;
+    box-shadow: 0 0 3px 2px var(--blue_prime_background_trans);
 }
 
 chui_playlist:hover chui_playlist_name {
@@ -121,14 +121,17 @@ chui_playlist_cover {
     background-color: #00000088;
 }
 
-chui_playlist_cover:hover {
-    background: var(--blue_prime_background_trans);
-}
-
 chui_playlist_name {
     margin: var(--margin);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-chui_playlist_exists {
-
+chui_track_name {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: calc(100% - 40px - var(--margin));
+    text-align: start;
 }

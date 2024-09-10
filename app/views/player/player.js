@@ -10,7 +10,7 @@ class Player extends Page {
     playlist_list = new PlayerDialog()
     track_list = new PlayerDialog("60%", "90%", "Очередь")
     search_list = new PlayerDialogSearch("83%", "80%", "Поиск")
-    constructor(dialog) {
+    constructor(dialog, gen) {
         super();
         globalThis.player = new YaAudio({
             width: Styles.SIZE.WEBKIT_FILL,
@@ -25,11 +25,7 @@ class Player extends Page {
         this.add(globalThis.player, this.#dialog)
         this.addRouteEvent(this, async () => {
             player.restoreFX();
-            globalThis.playlists = []
-            for (let test of await new YaApi().getUserPlaylists()) {
-                let pl = await new YaApi().getPlaylist(test.kind)
-                globalThis.playlists.push(pl)
-            }
+            await gen()
         })
 
         ipcRenderer.on("GENPLAYLIST", () => {
