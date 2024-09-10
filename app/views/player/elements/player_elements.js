@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner, App} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
 const {DataBases} = require("../../../start");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
@@ -18,17 +18,22 @@ class PlayerDialog {
     })
     #search_input = new TextInput({
         transparentBack: true,
-        width: Styles.SIZE.WEBKIT_FILL,
+        width: "-webkit-fill-available",
         placeholder: "Поиск"
     })
-    constructor(width = "max-content", height = "max-content", title = "Список плейлистов") {
-        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
+    constructor(width = "calc(100% - 100px)", height = "calc(100% - 100px)", title = "Список плейлистов") {
+        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: false })
         this.#title.innerText(title)
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
-        this.#dialog.addToHeader(this.#title, this.#button_close)
+
+        //
+        //this.#search_block.set().appendChild(this.#title.set())
         this.#search_block.set().appendChild(this.#search_input.set())
-        this.#dialog.addToBody(this.#search_block, this.#main_block)
+        this.#search_block.set().appendChild(this.#button_close.set())
+        this.#dialog.addToHeader(this.#search_block)
+        //
+        this.#dialog.addToBody(this.#main_block)
 
         this.#search_input.addInputListener((event) => {
             event.preventDefault()
@@ -125,9 +130,6 @@ exports.PlayerDialogButton = PlayerDialogButton
 class PlayerDialogSearch {
     #dialog = undefined
     #dialog_add_pl = undefined
-    #title = new CustomElement({
-        tag: "cust_elem", id: "test_dialog_pl_list_title", pathToCSS: path_css
-    })
     #button_close = new CustomElement({
         tag: "cust_elem", id: "test_close_button_one", pathToCSS: path_css
     })
@@ -138,7 +140,7 @@ class PlayerDialogSearch {
         tag: "cust_elem", id: "test_track_list_main_block2", className: "test_track_list_main_block2", pathToCSS: path_css
     })
     #search_input = new TextInput({
-        transparentBack: true,
+        transparentBack: false,
         width: Styles.SIZE.WEBKIT_FILL,
         placeholder: "Поиск"
     })
@@ -148,16 +150,16 @@ class PlayerDialogSearch {
         icon: undefined,
         transparentBack: false
     })
-    constructor(width = "max-content", height = "max-content", title = "Поиск") {
-        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
-        this.#dialog_add_pl = new PlayerDialog("max-content", "max-content", "Добавить в плейлист")
-        this.#title.innerText(title)
+    constructor(width = "calc(100% - 100px)", height = "calc(100% - 100px)") {
+        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: false })
+        this.#dialog_add_pl = new PlayerDialog(width, height, "Добавить в плейлист")
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
-        this.#dialog.addToHeader(this.#title, this.#button_close)
+        this.#dialog.addToHeader(this.#search_block)
         this.#search_block.set().appendChild(this.#search_input.set())
         this.#search_block.set().appendChild(this.#search_button.set())
-        this.#dialog.addToBody(this.#search_block, this.#main_block, this.#dialog_add_pl)
+        this.#search_block.set().appendChild(this.#button_close.set())
+        this.#dialog.addToBody(this.#main_block, this.#dialog_add_pl)
 
         this.#search_button.addClickListener(async (event) => {
             event.preventDefault()
@@ -255,9 +257,6 @@ class PlayerDialogSearch {
         chui_playlist.appendChild(chui_playlist_exists)
         //
         return chui_playlist
-    }
-    setTitle(name = String()) {
-        this.#title.innerText(name)
     }
     addToHeader(...components) {
         for (let component of components) this.#dialog.addToHeader(component);

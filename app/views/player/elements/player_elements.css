@@ -1,7 +1,8 @@
 #test_close_button_one {
     border-radius: var(--border_radius);
     padding: 5px;
-    margin-left: auto;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 #test_close_button_one:hover {
@@ -17,8 +18,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 150px;
-    width: 150px;
+    height: 200px;
+    width: 200px;
     background: var(--ap_main_background);
     border-radius: var(--border_radius);
     margin: var(--margin);
@@ -60,8 +61,9 @@
     justify-content: center;
     width: -webkit-fill-available;
     height: -webkit-fill-available;
-    margin: 39px 0 0;
-    padding: 6px 0 0;
+    padding: 0;
+    flex-wrap: wrap;
+    overflow: auto;
 }
 
 .test_track_list_main_block  chui_playlist_list{
@@ -81,10 +83,9 @@
 .test_track_list_main_block2 {
     height: max-content;
     width: -webkit-fill-available;
-    position: absolute;
-    top: 0;
-    z-index: 100;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 chui_playlist {
