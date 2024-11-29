@@ -33,11 +33,22 @@ class Player extends Page {
             this.#dialog.close()
         })
 
-        player.addFunctionButton(
+        player.addFunctionButtonToLeft(
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
+                clickEvent: () => this.track_list.open()
+            }),
+            YaAudio.FUNCTION_BUTTON({
+                icon: Icons.AUDIO_VIDEO.PLAYLIST_ADD,
+                clickEvent: () => this.playlist_list.open()
+            }),
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.ACTIONS.SEARCH,
                 clickEvent: () => this.search_list.open()
-            }),
+            })
+        )
+
+        player.addFunctionButtonToRight(
             YaAudio.FUNCTION_ACTIVE_BUTTON({
                 value: false,
                 icon_on: Icons.AUDIO_VIDEO.SHUFFLE_ON,
@@ -55,14 +66,6 @@ class Player extends Page {
                         }).show()
                     }
                 },
-            }),
-            YaAudio.FUNCTION_BUTTON({
-                icon: Icons.AUDIO_VIDEO.PLAYLIST_ADD,
-                clickEvent: () => this.playlist_list.open()
-            }),
-            YaAudio.FUNCTION_BUTTON({
-                icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
-                clickEvent: () => this.track_list.open()
             })
         )
 

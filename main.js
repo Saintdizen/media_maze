@@ -6,8 +6,14 @@ DownloadManager.register({downloadFolder: dl_path});
 //
 const main = new Main({
     name: `${json.productName} (${json.version})`,
-    width: 960,
-    height: 540,
+    sizes: {
+        minWidth: 960,
+        width: 960,
+        minHeight: 540,
+        height: 540
+    },
+    minHeight: 540,
+    minWidth: 960,
     icon: `${__dirname}/resources/icons/app/icon.png`,
     render: `${__dirname}/app/app.js`,
     devTools: false,
