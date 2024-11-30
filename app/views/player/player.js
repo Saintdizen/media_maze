@@ -7,9 +7,9 @@ let {DataBases} = require("../../start")
 class Player extends Page {
     #dialog = undefined
     //
-    playlist_list = new PlayerDialog()
-    track_list = new PlayerDialog("calc(100% - 100px)", "calc(100% - 100px)", "Очередь")
-    search_list = new PlayerDialogSearch("calc(100% - 100px)", "calc(100% - 100px)", "Поиск")
+    playlist_list = new PlayerDialog("80%", "60%")
+    track_list = new PlayerDialog("80%", "60%", "Очередь")
+    search_list = new PlayerDialogSearch("80%", "60%")
     constructor(dialog, gen = () => {}) {
         super();
         globalThis.player = new YaAudio({
