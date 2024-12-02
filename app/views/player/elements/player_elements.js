@@ -140,7 +140,7 @@ class PlayerDialogSearch {
         tag: "cust_elem", id: "test_track_list_main_block2", className: "test_track_list_main_block2", pathToCSS: path_css
     })
     #search_input = new TextInput({
-        transparentBack: false,
+        transparentBack: true,
         width: Styles.SIZE.WEBKIT_FILL,
         placeholder: "Поиск"
     })
@@ -148,10 +148,10 @@ class PlayerDialogSearch {
         //reverse: Boolean(),
         title: "Поиск",
         icon: undefined,
-        transparentBack: false
+        transparentBack: true
     })
     constructor(width = "calc(100% - 100px)", height = "calc(100% - 100px)") {
-        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: false })
+        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
         this.#dialog_add_pl = new PlayerDialog(width, height, "Добавить в плейлист")
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
