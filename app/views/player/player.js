@@ -7,7 +7,7 @@ let {DataBases} = require("../../start")
 class Player extends Page {
     #dialog = undefined
     //
-    playlist_list = new PlayerDialog("80%", "60%")
+    playlist_list = new PlayerDialog("-webkit-fill-available", "-webkit-fill-available")
     track_list = new PlayerDialog("80%", "60%", "Очередь")
     search_list = new PlayerDialogSearch("80%", "60%")
     constructor(dialog, gen = () => {}) {

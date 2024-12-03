@@ -21,7 +21,7 @@ class PlayerDialog {
         width: "-webkit-fill-available",
         placeholder: "Поиск"
     })
-    constructor(width = "calc(100% - 100px)", height = "calc(100% - 100px)", title = "Список плейлистов") {
+    constructor(width = String(), height = String(), title = "Список плейлистов") {
         this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: false })
         this.#title.innerText(title)
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
