@@ -70,13 +70,16 @@ class PlayerDialog {
     addToBody(...components) {
         for (let component of components) this.#dialog.addToBody(component);
     }
-    open() {
+    openAndClose() {
         this.#search_input.setValue("")
-        this.#dialog.open()
+        this.#dialog.openAndClose()
     }
     close() {
         this.#search_input.setValue("")
         this.#dialog.close()
+    }
+    isOpen() {
+        return this.#dialog.isOpen
     }
     clear() {
         this.#main_block.set().innerHTML = ''
@@ -264,9 +267,12 @@ class PlayerDialogSearch {
     addToBody(...components) {
         for (let component of components) this.#dialog.addToBody(component);
     }
-    open() {
+    openAndClose() {
         //this.#search_input.setValue("")
-        this.#dialog.open()
+        this.#dialog.openAndClose()
+    }
+    isOpen() {
+        return this.#dialog.isOpen
     }
     close() {
         //this.#search_input.setValue("")

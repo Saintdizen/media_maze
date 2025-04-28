@@ -36,15 +36,27 @@ class Player extends Page {
         player.addFunctionButtonToLeft(
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.AUDIO_VIDEO.PLAYLIST_PLAY,
-                clickEvent: () => this.track_list.open()
+                clickEvent: () => {
+                    if (this.playlist_list.isOpen()) this.playlist_list.close()
+                    if (this.search_list.isOpen()) this.search_list.close()
+                    this.track_list.openAndClose()
+                }
             }),
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.AUDIO_VIDEO.PLAYLIST_ADD,
-                clickEvent: () => this.playlist_list.open()
+                clickEvent: () => {
+                    if (this.search_list.isOpen()) this.search_list.close()
+                    if (this.track_list.isOpen()) this.track_list.close()
+                    this.playlist_list.openAndClose()
+                }
             }),
             YaAudio.FUNCTION_BUTTON({
                 icon: Icons.ACTIONS.SEARCH,
-                clickEvent: () => this.search_list.open()
+                clickEvent: () => {
+                    if (this.playlist_list.isOpen()) this.playlist_list.close()
+                    if (this.track_list.isOpen()) this.track_list.close()
+                    this.search_list.openAndClose()
+                }
             })
         )
 
