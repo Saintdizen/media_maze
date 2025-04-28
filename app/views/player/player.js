@@ -170,7 +170,7 @@ class Player extends Page {
                             player.setPlayList(playlist)
                             this.track_list.addToMainBlock(player.getPlaylist().getPlaylist())
                             this.track_list.setTitle(table.pl_title)
-                            this.track_list.open()
+                            this.track_list.openAndClose()
 
                         })
                         this.playlist_list.close()
