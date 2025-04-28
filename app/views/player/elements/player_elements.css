@@ -119,7 +119,7 @@ chui_playlist_cover {
     right: 0;
     z-index: 0;
     border-radius: var(--border_radius);
-    background-color: #00000088;
+    background: var(--ap_main_background);
 }
 
 chui_playlist_name {

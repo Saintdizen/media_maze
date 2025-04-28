@@ -113,6 +113,7 @@ class PlayerDialogButton {
         tag: "cust_elem", id: "test_download", className: "test_controls_button", pathToCSS: path_css
     })
     constructor(table, listener = () => {}) {
+        console.log(table)
         this.#main_block.addEventListener("click", listener)
         this.#title.innerText(table.pl_title)
         this.#download.innerHTML(new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML())
@@ -154,7 +155,7 @@ class PlayerDialogSearch {
         transparentBack: true
     })
     constructor(width = "calc(100% - 100px)", height = "calc(100% - 100px)") {
-        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: true })
+        this.#dialog = new Dialog({ closeOutSideClick: false, width: width, height: height, transparentBack: false })
         this.#dialog_add_pl = new PlayerDialog(width, height, "Добавить в плейлист")
         this.#button_close.innerHTML(new Icon(Icons.NAVIGATION.CLOSE, "18px").getHTML())
         this.#button_close.addEventListener("click", () => this.#dialog.close())
@@ -175,7 +176,7 @@ class PlayerDialogSearch {
         this.addToMainBlock(spinner_big)
         this.#search_button.setDisabled(true)
         for (let i = 0; i <= 10; i++) {
-            let res = await new YaApi().searchTracks(this.#search_input.getValue(), i, 5000)
+            let res = await new YaApi().searchAll(this.#search_input.getValue(), i, 5000)
             try {
                 if (res.tracks.results.length === 0) {
                     break;
@@ -217,7 +218,7 @@ class PlayerDialogSearch {
                         let tt = pl.tracks.filter((track) => String(track.id) === String(s_track.id))
                         this.#dialog_add_pl.addToMainBlock(this.#setButtonTest(s_track, pl, tt.length > 0))
                     }
-                    this.#dialog_add_pl.open()
+                    this.#dialog_add_pl.openAndClose()
                 }
             }
             if (artist_name.join(", ").toString().toLowerCase().includes(input_value)) globalThis.playlist.push(test_track)
@@ -241,7 +242,7 @@ class PlayerDialogSearch {
         let chui_playlist_exists = document.createElement("chui_playlist_exists");
         //
         chui_playlist_name.innerText = pl.title;
-        chui_playlist.style.backgroundImage = `url("https://${pl.ogImage.replaceAll("%%", "800x800")}")`
+        // chui_playlist.style.backgroundImage = `url("https://${pl.ogImage.replaceAll("%%", "800x800")}")`
         if (exists) {
             chui_playlist_exists.innerHTML = new Icon(Icons.AUDIO_VIDEO.PLAYLIST_ADD_CHECK, "24px", 'var(--badge_success_text)').getHTML()
         } else {

@@ -120,6 +120,9 @@ class Player extends Page {
                         })
                     } else {
                         //
+                        new Notification({
+                            title: `Чтение плейлиста`, text: table.pl_title, showTime: 2000
+                        }).show()
                         playlist = []
                         let local_tracks = await DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind)
                         //
@@ -171,7 +174,6 @@ class Player extends Page {
                             this.track_list.addToMainBlock(player.getPlaylist().getPlaylist())
                             this.track_list.setTitle(table.pl_title)
                             this.track_list.openAndClose()
-
                         })
                         this.playlist_list.close()
                     }
