@@ -1,6 +1,7 @@
 const {AppLayout, render, Icons, Route, YaApi, Notification, Dialog, ProgressBar, Styles, ipcRenderer,
-    DownloadProgressNotification
+    DownloadProgressNotification, Log, Button
 } = require('chuijs');
+const {Auth} = require("./views/player/auth");
 const {Player} = require("./views/player/player");
 const {DataBases} = require("./start")
 let api = new YaApi()
@@ -14,6 +15,7 @@ class Apps extends AppLayout {
         transparentBack: true,
     })
     #auth = undefined
+    #auth2 = undefined
     constructor() {
         super();
         // Настройка диалога
@@ -30,32 +32,42 @@ class Apps extends AppLayout {
             reverse: true,
             clickEvent: async () => await this.generatePlaylist(this.#auth)
         })
+
+        this.#auth2 = new Button({
+            title: "Войти",
+            icon: Icons.AUDIO_VIDEO.QUEUE_MUSIC,
+            reverse: true,
+            clickEvent: async () => await this.generatePlaylist(this.#auth)
+        })
         //
-        this.addToHeaderRight([this.#auth])
-        this.addToHeaderLeftBeforeTitle([
-            AppLayout.TABS({
-                    default: 0,
-                    tabs: [
-                        AppLayout.BUTTON({
-                                icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
-                                clickEvent: async () => {
-                                    new Route().go(new Player(this.#dialog, this.regeneratePlaylist()))
-                                }
-                            }
-                        )
-                    ]
-                }
-            )
-        ])
+        // this.addToHeaderRight([this.#auth])
         //
         DataBases.USER_DB.selectUserData().then(async data => {
             let ub = await this.generateUserButton(data.access_token, data.user_id)
-            this.removeToHeaderRight([this.#auth])
+            // this.removeToHeaderRight([this.#auth])
             this.addToHeaderRight([ub])
+            new Route().go(new Player(this.#dialog, this.regeneratePlaylist()))
+
+            // this.addToHeaderLeftBeforeTitle([
+            //     AppLayout.TABS({
+            //             default: -1,
+            //             tabs: [
+            //                 AppLayout.BUTTON({
+            //                         icon: Icons.AUDIO_VIDEO.LIBRARY_MUSIC,
+            //                         clickEvent: async () => {
+            //                             new Route().go(new Player(this.#dialog, this.regeneratePlaylist()))
+            //                         }
+            //                     }
+            //                 )
+            //             ]
+            //         }
+            //     )
+            // ])
         }).catch(err => {
-            console.error(err)
-            this.removeToHeaderRight([this.#auth])
-            this.addToHeaderRight([this.#auth])
+            new Route().go(new Auth(this.#auth2, this.#dialog))
+            Log.error(err.message)
+            // this.removeToHeaderRight([this.#auth])
+            // this.addToHeaderRight([this.#auth])
         })
         //
         ipcRenderer.on("REGEN_PLAYLISTS", async () => {
@@ -118,7 +130,7 @@ class Apps extends AppLayout {
         await DataBases.USER_DB.createUserTable()
         let udata = await api.auth()
         await DataBases.USER_DB.addUserData(udata.access_token, udata.user_id)
-        this.removeToHeaderRight([auth])
+        // this.removeToHeaderRight([auth])
         //
         let ub = await this.generateUserButton(udata.access_token, udata.user_id)
         this.addToHeaderRight([ub])
@@ -166,6 +178,7 @@ class Apps extends AppLayout {
                     }
                 }
             })
+            new Route().go(new Player(this.#dialog))
         })
     }
 
