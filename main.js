@@ -23,20 +23,16 @@ const main = new Main({
     }
 });
 
+let menu = [
+    new MenuItem().help(`Версия: ${json.version}`),
+    new MenuItem().button('Консоль', () => main.toggleDevTools()),
+    new MenuItem().quit('Выход')
+]
+
 main.start({
     hideOnClose: true,
-    tray: [
-        new MenuItem().separator(),
-        new MenuItem().help(`Версия: ${json.version}`),
-        //new MenuItem().separator(),
-        //new MenuItem().button('Воспроизведение | Пауза', () => main.getWindow().webContents.send("PLAY_PAUSE")),
-        //new MenuItem().button('Следующий трек', () => main.getWindow().webContents.send("NEXT_TRACK")),
-        //new MenuItem().button('Предыдущий трек', () => main.getWindow().webContents.send("PREV_TRACK")),
-        new MenuItem().separator(),
-        new MenuItem().button('Показать | Скрыть', () => main.hideAndShow()),
-        new MenuItem().button('Консоль', () => main.toggleDevTools()),
-        new MenuItem().quit('Выход')
-    ]
+    tray: menu,
+    globalMenu: menu
 });
 
 // App.get().on('session-created', (session) => {
