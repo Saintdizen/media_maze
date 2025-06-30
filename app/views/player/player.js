@@ -1,5 +1,5 @@
-const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi} = require('chuijs');
-const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch} = require("./elements/player_elements");
+const {Page, YaAudio, Styles, path, App, ipcRenderer, Icons, Notification, DownloadProgressNotification, YaApi, Log} = require('chuijs');
+const {PlayerDialog, PlayerDialogButton, PlayerDialogSearch, PlayerDialogButtonCollection} = require("./elements/player_elements");
 const DownloadManager = require("@electron/remote").require("electron-download-manager");
 const fs= require("fs");
 let {DataBases} = require("../../start")
@@ -81,7 +81,7 @@ class Player extends Page {
             })
         )
 
-        this.#generatePlayList()
+        // this.#generatePlayList()
         this.add(this.playlist_list, this.track_list, this.search_list)
     }
 
@@ -119,55 +119,45 @@ class Player extends Page {
                             }
                         })
                     } else {
-                        //
                         new Notification({
                             title: `Чтение плейлиста`, text: table.pl_title, showTime: 2000
                         }).show()
                         playlist = []
                         let local_tracks = await DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind)
-                        //
-                        new YaApi().getTracks().then(tracks => {
-                            for (let pl of tracks) {
-                                if (pl.playlist_name === table.pl_kind) {
-                                    for (let track of pl.tracks) {
-                                        let loc_track = local_tracks.filter(ltrack => {
-                                            return String(track.track_id) === String(ltrack.track_id)
-                                        })[0]
-                                        if (loc_track !== undefined) {
-                                            let test_track = {
+                        new YaApi().getTracksFromPlaylist(String(table.pl_kind)).then(async tracks => {
+                            for (let track of tracks) {
+                                let loc_track = local_tracks.filter(ltrack => {
+                                    return String(track.track_id) === String(ltrack.track_id)
+                                })[0]
+                                let test_track = {
+                                    track_id: track.track_id,
+                                    title: track.title,
+                                    artist: track.artist,
+                                    album: `https://${track.album.replaceAll("%%", "800x800")}`,
+                                    mimetype: track.mimetype,
+                                    path: loc_track.path,
+                                    remove: () => this.remove(loc_track, table),
+                                    download: async () => {
+                                        let links = []
+                                        if (loc_track.path === "") {
+                                            links.push({
+                                                table: table.pl_kind,
+                                                pl_title: table.pl_title,
                                                 track_id: loc_track.track_id,
-                                                title: loc_track.title,
-                                                artist: loc_track.artist,
-                                                album: `https://${loc_track.album.replaceAll("%%", "800x800")}`,
-                                                mimetype: loc_track.mimetype,
-                                                path: loc_track.path,
-                                                remove: () => {
-                                                    this.remove(loc_track, table)
-                                                },
-                                                download: async () => {
-                                                    let links = []
-                                                    if (loc_track.path === "") {
-                                                        links.push({
-                                                            table: table.pl_kind,
-                                                            pl_title: table.pl_title,
-                                                            track_id: loc_track.track_id,
-                                                            savePath: table.pl_kind,
-                                                            filename: `${loc_track.artist.replaceAll(/\/|\s/gm, '_')}_-_${loc_track.title.replaceAll(/\/|\s/gm, "_")}.mp3`,
-                                                            filename_old: `${loc_track.artist} - ${loc_track.title}.mp3`
-                                                        })
-                                                    }
-                                                    if (links.length !== 0) {
-                                                        for (let track of links) {
-                                                            let info = await this.saveOne(track)
-                                                            await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
-                                                        }
-                                                    }
-                                                }
+                                                savePath: table.pl_kind,
+                                                filename: `${loc_track.artist.replaceAll(/\/|\s/gm, '_')}_-_${loc_track.title.replaceAll(/\/|\s/gm, "_")}.mp3`,
+                                                filename_old: `${loc_track.artist} - ${loc_track.title}.mp3`
+                                            })
+                                        }
+                                        if (links.length !== 0) {
+                                            for (let track of links) {
+                                                let info = await this.saveOne(track)
+                                                await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
                                             }
-                                            playlist.push(test_track)
                                         }
                                     }
                                 }
+                                playlist.push(test_track)
                             }
                         }).finally(() => {
                             player.setPlayList(playlist)
@@ -187,7 +177,6 @@ class Player extends Page {
                     }
                     this.playlist_list.addToMainBlock(button.set())
                 })
-
             }
         })
     }
@@ -213,11 +202,11 @@ class Player extends Page {
                     //     console.log(progress, item)
                     // }
                 }, (error, info) => {
-                    if (error) { console.error(error); return; }
+                    if (error) { Log.error(error); return; }
                     let dl_path = require("path").join(App.userDataPath(), 'downloads')
                     let new_name = path.join(dl_path, track.savePath, track.filename)
                     fs.rename(info.filePath, new_name, (err) => {
-                        if ( err ) console.error('ERROR: ' + err);
+                        if ( err ) Log.error('ERROR: ' + err);
                         resolve(new_name)
                     });
                 });
@@ -238,11 +227,11 @@ class Player extends Page {
                         notif.update("Загрузка трека", track.filename_old, Number(progress.progress).toFixed(), 100)
                     }
                 }, (error, info) => {
-                    if (error) { console.error(error); return; }
+                    if (error) { Log.error(error); return; }
                     let dl_path = require("path").join(App.userDataPath(), 'downloads')
                     let new_name = path.join(dl_path, track.savePath, track.filename)
                     fs.rename(info.filePath, new_name, (err) => {
-                        if ( err ) console.error('ERROR: ' + err);
+                        if ( err ) Log.error('ERROR: ' + err);
                         notif.done()
                         resolve(new_name)
                     });

@@ -76,32 +76,28 @@ class Apps extends AppLayout {
     }
 
     async regeneratePlaylist() {
-        globalThis.playlists = []
-        for (let test of await new YaApi().getUserPlaylists()) {
-            let pl = await new YaApi().getPlaylist(test.kind)
-            globalThis.playlists.push(pl)
-        }
-        await DataBases.USER_DB.selectUserData().then(data => {
+        await DataBases.USER_DB.selectUserData().then(() => {
             const up_notification = new DownloadProgressNotification({title: "Обновление библиотеки"})
             up_notification.show()
-            new YaApi(data.access_token, data.user_id).getTracks().then(async playl => {
+
+            new YaApi().getUserPlaylists().then(async playlists => {
                 await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
-                for (let playlist of playl) {
+                for (let playlist of playlists) {
                     await DataBases.PLAYLISTS_DB.addPlaylistData(
-                        playlist.playlist_name,
-                        playlist.playlist_title
+                        playlist.kind,
+                        playlist.title
                     )
-                    for (let track of playlist.tracks) {
+                    let tracks = await new YaApi().getTracksFromPlaylist(playlist.kind)
+                    for (let track of tracks) {
                         up_notification.update(
                             "Обновление библиотеки",
-                            `${playlist.playlist_title} (${playl.indexOf(playlist)+1} из ${playl.length})`,
-                            playlist.tracks.indexOf(track) + 1,
-                            playlist.tracks.length
+                            `${playlist.title} (${playlists.indexOf(playlist)+1} из ${playlists.length})`,
+                            tracks.indexOf(track) + 1,
+                            tracks.length
                         )
-                        let pname = playlist.playlist_name.replace("pl_", "")
-                        await DataBases.PLAYLISTS_DB.createPlaylistTable(pname)
+                        await DataBases.PLAYLISTS_DB.createPlaylistTable(playlist.kind)
                         await DataBases.PLAYLISTS_DB.addTrack(
-                            pname,
+                            playlist.kind,
                             track.track_id,
                             track.title,
                             track.artist,
@@ -109,7 +105,7 @@ class Apps extends AppLayout {
                             track.mimetype
                         )
                     }
-                    if (playl.indexOf(playlist) + 1 === playl.length) {
+                    if (playlists.indexOf(playlist) + 1 === playlists.length) {
                         DataBases.send("GENPLAYLIST")
                     }
                 }
@@ -120,12 +116,12 @@ class Apps extends AppLayout {
                 }).show()
             })
         }).catch(err => {
-            console.error(err)
             DataBases.USER_DB.createUserTable()
+            Log.error(err)
         })
     }
 
-    async generatePlaylist(auth) {
+    async generatePlaylist() {
         this.#dialog.open()
         await DataBases.USER_DB.createUserTable()
         let udata = await api.auth()
@@ -147,37 +143,34 @@ class Apps extends AppLayout {
             this.#progressTracks.setProgressText(args.trackName)
         })
         //
-        await DataBases.USER_DB.selectUserData().then(data => {
-            new YaApi(data.access_token, data.user_id).getTracks().then(async playl => {
-                await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
-                for (let playlist of playl) {
-                    await DataBases.PLAYLISTS_DB.addPlaylistData(
-                        playlist.playlist_name,
-                        playlist.playlist_title
+        new YaApi().getUserPlaylists().then(async playlists => {
+            await DataBases.PLAYLISTS_DB.createPlaylistDictTable()
+            for (let playlist of playlists) {
+                await DataBases.PLAYLISTS_DB.addPlaylistData(
+                    playlist.kind,
+                    playlist.title
+                )
+                let tracks = await new YaApi().getTracksFromPlaylist(playlist.kind)
+                this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.title}`)
+                this.#progressTracks.setMax(tracks.length)
+                //
+                for (let track of tracks) {
+                    await DataBases.PLAYLISTS_DB.createPlaylistTable(playlist.kind)
+                    await DataBases.PLAYLISTS_DB.addTrack(
+                        playlist.kind,
+                        track.track_id,
+                        track.title,
+                        track.artist,
+                        track.album,
+                        track.mimetype
                     )
-                    this.#progressTracks.setProgressCountText(`Формирование плейлиста: ${playlist.playlist_title}`)
-                    this.#progressTracks.setMax(playlist.tracks.length)
-
-                    for (let track of playlist.tracks) {
-                        let pname = playlist.playlist_name.replace("pl_", "")
-                        await DataBases.PLAYLISTS_DB.createPlaylistTable(pname)
-                        await DataBases.PLAYLISTS_DB.addTrack(
-                            pname,
-                            track.track_id,
-                            track.title,
-                            track.artist,
-                            track.album,
-                            track.mimetype
-                        )
-
-                        this.#progressTracks.setValue(playlist.tracks.indexOf(track))
-                        this.#progressTracks.setProgressText(`${track.artist} - ${track.title}`)
-                    }
-                    if (playl.indexOf(playlist) + 1 === playl.length) {
-                        DataBases.send("GENPLAYLIST")
-                    }
+                    this.#progressTracks.setValue(tracks.indexOf(track))
+                    this.#progressTracks.setProgressText(`${track.artist} - ${track.title}`)
                 }
-            })
+                if (playlists.indexOf(playlist) + 1 === playlists.length) {
+                    DataBases.send("GENPLAYLIST")
+                }
+            }
             new Route().go(new Player(this.#dialog))
         })
     }
@@ -189,7 +182,8 @@ class Apps extends AppLayout {
         let displayName = datas.account.displayName
         let defaultEmail = datas.defaultEmail
         return AppLayout.USER_PROFILE({
-            username: `${displayName} [${defaultEmail}]`,
+            //username: `${displayName} [${defaultEmail}]`,
+            username: `${displayName}`,
             image: {
                 noImage: true
             },
@@ -203,4 +197,4 @@ class Apps extends AppLayout {
     }
 }
 
-render(() => new Apps()).catch(err => console.error(err))
+render(() => new Apps()).catch(err => Log.error(err))

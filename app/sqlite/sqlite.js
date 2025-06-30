@@ -1,4 +1,5 @@
 const fs = require("fs");
+const {Log} = require("chuijs");
 const sqlite3 = require("sqlite3").verbose();
 
 
@@ -10,7 +11,7 @@ class UserDB {
             this.#user_db = new sqlite3.Database(filepath);
         } else {
             this.#user_db = new sqlite3.Database(filepath, (error) => {
-                if (error) return console.error(error.message);
+                if (error) Log.error(error.message);
             });
         }
     }
@@ -35,7 +36,7 @@ class UserDB {
         this.#user_db.run(`UPDATE user SET access_token = ? WHERE user_id = ?`,
             [access_token, user_id],
             (error) => {
-                if (error) console.error(error.message);
+                if (error) Log.error(error.message);
             }
         );
     }
@@ -50,7 +51,7 @@ class UserDB {
     async deleteUserData(user_id) {
         this.#user_db.run(`DELETE FROM user WHERE user_id = ?`, [user_id],
             (error) => {
-            if (error) return console.error(error.message);
+            if (error) Log.error(error.message);
         });
     }
 }
@@ -63,7 +64,7 @@ class PlaylistDB {
             this.#pl_db = new sqlite3.Database(filepath);
         } else {
             this.#pl_db = new sqlite3.Database(filepath, (error) => {
-                if (error) return console.error(error.message);
+                if (error) Log.error(error.message);
             });
         }
     }
@@ -117,7 +118,7 @@ class PlaylistDB {
     }
     getTrack(name, track_id) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT * FROM ${name} WHERE track_id = ?`, [track_id], (error, rows) => {
+            this.#pl_db.all(`SELECT * FROM pl_${name} WHERE track_id = ?`, [track_id], (error, rows) => {
                 if (error) reject(error.message);
                 resolve(rows[0])
             });
@@ -125,7 +126,7 @@ class PlaylistDB {
     }
     getPlaylist(name) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.all(`SELECT * FROM ${name}`, (error, rows) => {
+            this.#pl_db.all(`SELECT * FROM pl_${name}`, (error, rows) => {
                 if (error) reject(error.message);
                 resolve(rows)
             });
@@ -133,7 +134,7 @@ class PlaylistDB {
     }
     updateTrack(t_name, track_id, path) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.run(`UPDATE ${t_name} SET path = ? WHERE track_id = ?`,
+            this.#pl_db.run(`UPDATE pl_${t_name} SET path = ? WHERE track_id = ?`,
                 [path, track_id],
                 (error) => {
                     if (error) reject(error.message);
@@ -143,7 +144,7 @@ class PlaylistDB {
     }
     async deleteRow(tableName, track_id) {
         return new Promise((resolve, reject) => {
-            this.#pl_db.run(`DELETE FROM ${tableName} WHERE track_id = ?`,
+            this.#pl_db.run(`DELETE FROM pl_${tableName} WHERE track_id = ?`,
                 [track_id],
                 (error) => {
                     if (error) reject(error.message);

@@ -1,4 +1,4 @@
-const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner} = require("chuijs");
+const {Dialog, CustomElement, Icon, Icons, TextInput, Styles, YaApi, Button, Spinner, Log} = require("chuijs");
 const {DataBases} = require("../../../start");
 let path_css = require("path").join(__dirname, "player_elements.css")
 
@@ -113,7 +113,6 @@ class PlayerDialogButton {
         tag: "cust_elem", id: "test_download", className: "test_controls_button", pathToCSS: path_css
     })
     constructor(table, listener = () => {}) {
-        console.log(table)
         this.#main_block.addEventListener("click", listener)
         this.#title.innerText(table.pl_title)
         this.#download.innerHTML(new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML())
@@ -130,6 +129,38 @@ class PlayerDialogButton {
 }
 
 exports.PlayerDialogButton = PlayerDialogButton
+
+class PlayerDialogButtonCollection {
+    #main_block = new CustomElement({
+        tag: "cust_elem", id: "test_main_block", className: "test_main_block", pathToCSS: path_css
+    })
+    #title = new CustomElement({
+        tag: "cust_elem", id: "test_title", className: "test_title", pathToCSS: path_css
+    })
+    //
+    #controls = new CustomElement({
+        tag: "cust_elem", id: "test_controls_block", className: "test_controls_block", pathToCSS: path_css
+    })
+    #download = new CustomElement({
+        tag: "cust_elem", id: "test_download", className: "test_controls_button", pathToCSS: path_css
+    })
+    constructor(title, listener = () => {}) {
+        this.#main_block.addEventListener("click", listener)
+        this.#title.innerText(title)
+        this.#download.innerHTML(new Icon(Icons.FILE.DOWNLOAD, "18px").getHTML())
+        //
+        this.#main_block.set().appendChild(this.#title.set())
+        this.#main_block.set().appendChild(this.#controls.set())
+    }
+    addDownloadButton() {
+        this.#controls.set().appendChild(this.#download.set())
+    }
+    set() {
+        return this.#main_block
+    }
+}
+
+exports.PlayerDialogButtonCollection = PlayerDialogButtonCollection
 
 class PlayerDialogSearch {
     #dialog = undefined
@@ -251,7 +282,7 @@ class PlayerDialogSearch {
                     DataBases.send("REGEN_PLAYLISTS")
                     this.#dialog_add_pl.close()
                 }).catch(err => {
-                    console.error(err)
+                    Log.error(err)
                 })
             })
         }
