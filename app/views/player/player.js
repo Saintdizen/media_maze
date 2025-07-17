@@ -125,39 +125,43 @@ class Player extends Page {
                         playlist = []
                         let local_tracks = await DataBases.PLAYLISTS_DB.getPlaylist(table.pl_kind)
                         new YaApi().getTracksFromPlaylist(String(table.pl_kind)).then(async tracks => {
+                            console.log(tracks)
                             for (let track of tracks) {
-                                let loc_track = local_tracks.filter(ltrack => {
-                                    return String(track.track_id) === String(ltrack.track_id)
-                                })[0]
-                                let test_track = {
-                                    track_id: track.track_id,
-                                    title: track.title,
-                                    artist: track.artist,
-                                    album: `https://${track.album.replaceAll("%%", "800x800")}`,
-                                    mimetype: track.mimetype,
-                                    path: loc_track.path,
-                                    remove: () => this.remove(loc_track, table),
-                                    download: async () => {
-                                        let links = []
-                                        if (loc_track.path === "") {
-                                            links.push({
-                                                table: table.pl_kind,
-                                                pl_title: table.pl_title,
-                                                track_id: loc_track.track_id,
-                                                savePath: table.pl_kind,
-                                                filename: `${loc_track.artist.replaceAll(/\/|\s/gm, '_')}_-_${loc_track.title.replaceAll(/\/|\s/gm, "_")}.mp3`,
-                                                filename_old: `${loc_track.artist} - ${loc_track.title}.mp3`
-                                            })
-                                        }
-                                        if (links.length !== 0) {
-                                            for (let track of links) {
-                                                let info = await this.saveOne(track)
-                                                await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
+                                try {
+                                    let loc_track = local_tracks.filter(ltrack => { return String(track.track_id) === String(ltrack.track_id) })[0]
+                                    let test_track = {
+                                        track_id: track.track_id,
+                                        title: track.title,
+                                        artist: track.artist,
+                                        album: `https://${track.album.replace("%%", "800x800")}`,
+                                        mimetype: track.mimetype,
+                                        path: loc_track.path,
+                                        remove: () => this.remove(loc_track, table),
+                                        download: async () => {
+                                            let links = []
+                                            if (loc_track.path === "") {
+                                                links.push({
+                                                    table: table.pl_kind,
+                                                    pl_title: table.pl_title,
+                                                    track_id: loc_track.track_id,
+                                                    savePath: table.pl_kind,
+                                                    filename: `${loc_track.artist.replaceAll(/\/|\s/gm, '_')}_-_${loc_track.title.replaceAll(/\/|\s/gm, "_")}.mp3`,
+                                                    filename_old: `${loc_track.artist} - ${loc_track.title}.mp3`
+                                                })
+                                            }
+                                            if (links.length !== 0) {
+                                                for (let track of links) {
+                                                    let info = await this.saveOne(track)
+                                                    await DataBases.PLAYLISTS_DB.updateTrack(track.table, track.track_id, info)
+                                                }
                                             }
                                         }
                                     }
+                                    playlist.push(test_track)
+                                } catch (e) {
+                                    Log.error(e.message)
+                                    this.remove2(track, table)
                                 }
-                                playlist.push(test_track)
                             }
                         }).finally(() => {
                             player.setPlayList(playlist)
@@ -186,6 +190,16 @@ class Player extends Page {
             await new YaApi().removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
             DataBases.send("REGEN_PLAYLISTS")
         })
+        DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
+            document.getElementsByName(track.track_id)[0].remove()
+        })
+    }
+
+    remove2(track, table) {
+        // DataBases.USER_DB.selectUserData().then(async () => {
+        //     await new YaApi().removeTrack(Number(table.pl_kind.replace("pl_", "")), track.track_id)
+        //     DataBases.send("REGEN_PLAYLISTS")
+        // })
         DataBases.PLAYLISTS_DB.deleteRow(table.pl_kind, track.track_id).then(() => {
             document.getElementsByName(track.track_id)[0].remove()
         })
